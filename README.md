@@ -1,4 +1,3 @@
-# azul_zero
 # Azul Zero
 
 A self-play reinforcement learning framework for the board game *Azul*, inspired by AlphaZero and AlphaGo Zero. This project implements:
