@@ -2,6 +2,7 @@
 
 from enum import IntEnum
 from typing import List, Tuple
+import numpy as np
 
 class Color(IntEnum):
     BLUE = 0
@@ -16,6 +17,7 @@ def validate_origin(factories: List[List[int]], center: List[int], source: Tuple
     in the specified factory or in the center.
     source = ("factory", idx) or ("center", None)
     """
+    #print(f"[DEBUG] validate_origin: source={source}, color={color}, factories={factories}, center={center}")
     source_type, idx = source
     if source_type == "factory":
         return factories[idx][color] > 0
@@ -24,14 +26,14 @@ def validate_origin(factories: List[List[int]], center: List[int], source: Tuple
     else:
         raise ValueError(f"Unknown source type: {source_type}")
 
-def place_on_pattern_line(pattern_line: List[int], color: Color, count: int) -> Tuple[List[int], int]:
+def place_on_pattern_line(pattern_line: List[int], color: Color, count: int) -> Tuple[np.ndarray, int]:
     """
     Attempts to place `count` tiles of `color` on a pattern line.
     Returns (new_line, overflow_to_floor).
     """
     # If line contains a different color, all tiles overflow
     if any(slot != -1 and slot != color for slot in pattern_line):
-        return pattern_line.copy(), count
+        return np.array(pattern_line, dtype=int), count
 
     empty_indices = [i for i, slot in enumerate(pattern_line) if slot == -1]
     placeable = min(len(empty_indices), count)
@@ -39,7 +41,7 @@ def place_on_pattern_line(pattern_line: List[int], color: Color, count: int) -> 
     for i in range(placeable):
         new_line[empty_indices[i]] = color
     overflow = count - placeable
-    return new_line, overflow
+    return np.array(new_line, dtype=int), overflow
 
 def transfer_to_wall(wall: List[List[int]], pattern_line: List[int], row: int) -> int:
     """

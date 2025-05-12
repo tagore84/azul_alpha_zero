@@ -2,13 +2,13 @@ import sys
 import os
 # Add project src folder to PYTHONPATH for module resolution
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-
+from constants import SEED
 import random
 from azul.rules import validate_origin, place_on_pattern_line, Color
 from azul.env import AzulEnv
 
 def random_game():
-    env = AzulEnv(num_players=2, factories_count=5)
+    env = AzulEnv(num_players=2, factories_count=5, seed=SEED)
     obs = env.reset()
     done = False
     total_rewards = [0, 0]

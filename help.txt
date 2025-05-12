@@ -2,8 +2,41 @@ python3 scripts/train_azul.py \
   --n_games 100 \
   --simulations 200 \
   --epochs 20 \
-  --eval_interval 3 \
-  --eval_games 100
+  --eval_interval 10 \
+  --eval_games 20 \
   --checkpoint_dir data/checkpoint_dir
-  --log_dir logs 
-  --help
+
+python3 scripts/train_azul.py \
+  --n_games 2 \
+  --simulations 2 \
+  --epochs 20 \
+  --eval_interval 50 \
+  --eval_games 50 \
+  --resume data/checkpoint_dir \
+  --checkpoint_dir data/checkpoint_dir
+
+python3 scripts/train_azul.py \
+  --n_games 1 \
+  --simulations 1 \
+  --epochs 20 \
+  --checkpoint_dir data/checkpoint_dir
+
+  python3 scripts/one_shot_self_game.py \
+  --checkpoint_dir data/checkpoints
+
+
+ToDo:
+  1.	Entrenamiento con aprendizaje por refuerzo y MCTS para el juego de mesa Azul:
+	  •	El agente utiliza MCTS con 200 simulaciones por movimiento para tomar decisiones durante las partidas.
+	2.	Experience Replay:
+	  •	Permite almacenar experiencias pasadas (estados, acciones, recompensas) en un búfer, y entrenar el modelo con muestras aleatorias de ese búfer.
+	  •	Se vuelve más efectiva con el tiempo, al combinar experiencias de múltiples ejecuciones, enriqueciendo el entrenamiento y evitando el sobreajuste a experiencias recientes.
+	3.	Entrenamiento iterativo vs. entrenamiento en bloque:
+	  •	Entrenar el modelo de manera iterativa, es decir, en ciclos donde se generan partidas, se entrena el modelo, y se repite el proceso, suele ser más efectivo.
+	  •	Esto permite retroalimentación continua, mejor uso de los datos, adaptación progresiva y detección temprana de problemas.
+	4.	Tamaño del dataset y número de partidas:
+	  •	Para un juego como Azul, un dataset inicial de decenas de miles de estados podría requerir alrededor de 100 a 500 partidas, mientras que un dataset más robusto (cientos de miles o millones de estados) podría requerir miles de partidas.
+	5.	Estimación del tiempo de simulación:
+	  •	Con 200 simulaciones por movimiento en un MacBook Pro, simular 5,000 partidas podría tardar alrededor de 5 días de ejecución continua.
+	6.	Importancia del enfoque iterativo:
+	•	Entrenar de forma iterativa suele ser más beneficioso que entrenar todo el modelo de una sola vez al final, ya que mejora la adaptabilidad del agente, permite ajustes graduales y optimiza el uso de los datos.

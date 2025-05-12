@@ -1,14 +1,24 @@
+# src/azul/env.py
+
 import gym
 from gym import spaces
 import numpy as np
 from typing import Tuple
+
+from azul.utils import print_wall
 from .rules import validate_origin, place_on_pattern_line, transfer_to_wall, calculate_round_score, calculate_final_bonus, Color
+import random  # Añade esto al principio del archivo
+from constants import SEED
+import copy  # Add this import at the top of the file if not present
 
 class AzulEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, num_players: int = 2, factories_count: int = 5):
+    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None):
         super().__init__()
+        if seed is not None:
+            np.random.seed(seed)
+            random.seed(seed)
         self.num_players = num_players
         self.C: int = len(Color)
         self.N: int = factories_count
@@ -26,12 +36,13 @@ class AzulEnv(gym.Env):
             {
                 'pattern_lines': [np.full(i+1, -1, dtype=int) for i in range(5)],
                 'wall': np.full((5, 5), -1, dtype=int),
-                'floor_line': np.zeros(self.L_floor, dtype=int),
+                'floor_line': np.full(self.L_floor, -1, dtype=int),
                 'score': 0
             }
             for _ in range(self.num_players)
         ]
         self.current_player: int = 0
+        self.round_count: int = 1
 
         # Action: (source_idx 0..N-1 factories, N=center), color 0..C-1, dest 0..5 (pattern lines 0-4, 5=floor)
         self.action_space = spaces.Tuple((
@@ -59,7 +70,7 @@ class AzulEnv(gym.Env):
         # Initialize game
         self.reset()
 
-    def reset(self):
+    def reset(self, initial: bool = False):
         # Reset bag and discard
         self.bag[:] = 20
         self.discard[:] = 0
@@ -67,9 +78,10 @@ class AzulEnv(gym.Env):
         # Reset player states
         for p in self.players:
             p['pattern_lines'] = [np.full(i+1, -1, dtype=int) for i in range(5)]
-            p['wall'] = np.full((5, 5), -1, dtype=int)
-            p['floor_line'] = np.zeros(self.L_floor, dtype=int)
-            p['score'] = 0
+            if initial:  # ✅ solo al principio del todo
+                p['wall'] = np.full((5, 5), -1, dtype=int)
+                p['score'] = 0
+            p['floor_line'] = np.full(self.L_floor, -1, dtype=int)
 
         # Clear factories and center before refill
         self.factories[:] = 0
@@ -78,25 +90,38 @@ class AzulEnv(gym.Env):
         # Fill factories and center
         self.first_player_token = True
         self.current_player = 0
+        self.round_count = 1
         self._refill_factories()
 
         return self._get_obs()
 
-    def step(self, action: Tuple[int, int, int]):
+    def step(self, action: Tuple[int, int, int], is_sim: bool = False):
+        if len(self.get_valid_actions()) == 0:
+            raise RuntimeError("No valid actions available. Possible deadlock.")
         source_idx, color, dest = action
+        # Direct reference to player dict to ensure modifications persist
         p = self.players[self.current_player]
+        
         before_score = p['score']
 
         # Handle source removal
         if source_idx < self.N:
             # factory
             count = int(self.factories[source_idx, color])
+            if self.factories[source_idx].sum() == 0 or count == 0:
+                raise ValueError(f"Invalid action: factory {source_idx} has no tiles of color {color}")
             # move other colors to center
-            self.center += self.factories[source_idx]
-            self.factories[source_idx, :] = 0
+            other_colors = self.factories[source_idx].copy()
+            other_colors[color] = 0
+            self.center += other_colors
+            # Ensure global state is mutated, avoid shallow copy issues
+            for c in range(self.C):
+                self.factories[source_idx, c] = 0
         else:
             # center
             count = int(self.center[color])
+            if self.center.sum() == 0 or count == 0:
+                raise ValueError(f"Invalid action: center has no tiles of color {color}")
             self.center[color] = 0
             if self.first_player_token:
                 # penalty token
@@ -110,30 +135,30 @@ class AzulEnv(gym.Env):
         if dest < 5:
             new_line, overflow = place_on_pattern_line(p['pattern_lines'][dest], color, count)
             p['pattern_lines'][dest] = new_line
+            # Explicitly write back to main data structure in case of view/copy issues
+            self.players[self.current_player]['pattern_lines'][dest] = new_line
             # overflow to floor
             fl = p['floor_line']
             for _ in range(overflow):
-                idxs = np.where(fl == 0)[0]
+                idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
-                    fl[idxs[0]] = color + 1
+                    fl[idxs[0]] = color
         else:
             # all to floor
             fl = p['floor_line']
             for _ in range(count):
-                idxs = np.where(fl == 0)[0]
+                idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
-                    fl[idxs[0]] = color + 1
-
-        # Next player turn
-        self.current_player = (self.current_player + 1) % self.num_players
-
+                    fl[idxs[0]] = color
         # Check round end
         done = False
         reward = 0
         if self._is_round_over():
             done = self._end_round()
             reward = p['score'] - before_score
-
+        else:
+            # Next player turn
+            self.current_player = (self.current_player + 1) % self.num_players
         obs = self._get_obs()
         info = {}
         return obs, reward, done, info
@@ -191,7 +216,8 @@ class AzulEnv(gym.Env):
             for tile in p['floor_line']:
                 if tile > 0:
                     self.discard[int(tile)-1] += 1
-            p['floor_line'] = np.zeros(self.L_floor, dtype=int)
+            p['floor_line'] = np.full(self.L_floor, -1, dtype=int)
+            
 
         # Check game end (any full wall row)
         game_over = any(all(cell != -1 for cell in row) for p in self.players for row in p['wall'])
@@ -203,6 +229,7 @@ class AzulEnv(gym.Env):
         else:
             self.first_player_token = True
             self._refill_factories()
+        self.round_count += 1
         return game_over
 
     def _get_obs(self):
@@ -214,13 +241,15 @@ class AzulEnv(gym.Env):
             'first_player_token': self.first_player_token,
             'players': [
                 {
-                    'pattern_lines': [pl.copy() for pl in p['pattern_lines']],
+                    'pattern_lines': [np.array(line, dtype=int) for line in p['pattern_lines']],
+                    'pattern_lines_padded': [np.pad(pl.copy(), (0, 5 - len(pl)), constant_values=-1) for pl in p['pattern_lines']],
                     'wall': p['wall'].copy(),
                     'floor_line': p['floor_line'].copy(),
                     'score': p['score']
                 } for p in self.players
             ],
-            'current_player': self.current_player
+            'current_player': self.current_player,
+            'round_count': self.round_count
         }
 
     def encode_observation(self, obs: dict) -> np.ndarray:
@@ -264,6 +293,29 @@ class AzulEnv(gym.Env):
         source_idx, color, dest = action
         return source_idx * (self.C * 6) + color * 6 + dest
 
+    def clone(self) -> 'AzulEnv':
+        new = AzulEnv.__new__(AzulEnv)  # crea instancia sin llamar a __init__
+        gym.Env.__init__(new)  # inicializa parte base sin resetear
+        new.num_players = self.num_players
+        new.C = self.C
+        new.N = self.N
+        new.L_floor = self.L_floor
+        new.action_space = self.action_space
+        new.observation_space = self.observation_space
+        new.action_size = self.action_size
+
+        # Copia de estado del juego
+        new.bag = self.bag.copy()
+        new.discard = self.discard.copy()
+        new.factories = self.factories.copy()
+        new.center = self.center.copy()
+        new.first_player_token = self.first_player_token
+        new.current_player = self.current_player
+        new.players = copy.deepcopy(self.players)
+        new.round_count = self.round_count
+
+        return new
+
     def index_to_action(self, index: int) -> Tuple[int, int, int]:
         """
         Convert a flat index into an action tuple (source_idx, color, dest).
@@ -285,3 +337,39 @@ class AzulEnv(gym.Env):
             print("Floor line:", p['floor_line'])
         print("Factories:\n", self.factories)
         print("Center:", self.center, "First token present:", self.first_player_token)
+
+    def get_valid_actions(self) -> list:
+        """
+        Returns a list of valid actions (source_idx, color, dest).
+        An action is valid if the source has at least one tile of the chosen color,
+        passes validate_origin, and no conflict with wall rules.
+        """
+        valid_actions = []
+        for source_idx in range(self.N + 1):  # factories and center
+            source = self.factories[source_idx] if source_idx < self.N else self.center
+            origin = ("factory", source_idx) if source_idx < self.N else ("center", None)
+            for color in range(self.C):
+                if source[color] == 0:
+                    continue
+                if not validate_origin(self.factories, self.center, origin, color):
+                    continue
+                for dest in range(6):
+                    if dest < 5:
+                        wall_row = self.players[self.current_player]['wall'][dest]
+                        if color in wall_row:
+                            continue  # ya está ese color en la fila del muro
+                    valid_actions.append((source_idx, color, dest))
+        return valid_actions
+    
+    def get_debug_wall_value(self, player_idx:int) -> int:
+        """
+        Recorre el muro del jugador sumando 1 si la celda es distinta de -1 y 0 en caso contrario.
+        Devuelve el valor total.
+        """
+        wall = self.players[player_idx]['wall']
+        total = 0
+        for row in wall:
+            for cell in row:
+                if cell != -1:
+                    total += 1
+        return total

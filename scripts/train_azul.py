@@ -1,8 +1,9 @@
 import sys
 import os
+from datetime import datetime
 # Add project src folder to PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-
+from constants import SEED
 import argparse
 import torch
 from torch.utils.data import DataLoader, random_split
@@ -11,9 +12,6 @@ import copy
 from mcts.mcts import MCTS
 from net.azul_net import AzulNet
 from azul.env import AzulEnv
-
-from azul.env import AzulEnv
-from net.azul_net import AzulNet
 from train.self_play import generate_self_play_games
 from train.dataset import AzulDataset
 from train.trainer import Trainer
@@ -30,7 +28,7 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
         obs = env.reset()
         done = False
         while not done:
-            current = env.current_player - 1  # 0 or 1
+            current = env.current_player  # 0 or 1
             model = current_model if current == 0 else previous_model
             mcts = MCTS(
                 env.__class__(num_players=env.num_players, factories_count=env.N),
@@ -49,8 +47,9 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
 
 def main():
     parser = argparse.ArgumentParser(description="Train Azul Zero network via self-play")
-    parser.add_argument('--n_games', type=int, default=50, help='Number of self-play games to generate')
-    parser.add_argument('--simulations', type=int, default=100, help='MCTS simulations per move')
+    parser.add_argument('--verbose', type=bool, default=False, help='Logging verbosity')
+    parser.add_argument('--n_games', type=int, default=2, help='Number of self-play games to generate')
+    parser.add_argument('--simulations', type=int, default=2, help='MCTS simulations per move')
     parser.add_argument('--cpuct', type=float, default=1.0, help='MCTS exploration constant')
     parser.add_argument('--batch_size', type=int, default=64, help='Training batch size')
     parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
@@ -66,14 +65,20 @@ def main():
                         help='Number of games to play in each evaluation')
     args = parser.parse_args()
 
-    prev_checkpoint = args.resume if args.resume else None
+    prev_checkpoint = None
+    if args.resume:
+        files = [f for f in os.listdir(args.resume) if f.endswith('.pt')]
+        files.sort()
+        checkpoint_path = os.path.join(args.resume, files[-1])
+        print(f"Resuming from checkpoint: {checkpoint_path}")
+        prev_checkpoint = checkpoint_path
 
     # Select device
     device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
     print(f"Using device: {device}")
 
     # Initialize environment and model
-    env = AzulEnv(num_players=2, factories_count=5)
+    env = AzulEnv(num_players=2, factories_count=5, seed=SEED)
     # Dynamically compute observation sizes from a sample reset
     sample_obs = env.reset()
     obs_flat = env.encode_observation(sample_obs)
@@ -90,13 +95,18 @@ def main():
         global_size=global_size,
         action_size=action_size
     )
+    model = model.to(device)
+    if prev_checkpoint:
+        checkpoint = torch.load(prev_checkpoint, map_location=device)
+        model.load_state_dict(checkpoint['model_state'])
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
 
     # Generate self-play data
-    print("Generating self-play games...")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Generating self-play games...")
     examples = generate_self_play_games(
+        verbose=args.verbose,
         n_games=args.n_games,
         env=env,
         model=model,
@@ -105,8 +115,15 @@ def main():
     )
     print(f"Generated {len(examples)} examples")
 
-    # Create dataset and split
-    dataset = AzulDataset(examples)
+    replay_buffer_path = os.path.join(args.checkpoint_dir, 'replay_buffer.pt')
+    if os.path.exists(replay_buffer_path):
+        print(f"Loading replay buffer from {replay_buffer_path}")
+        saved = torch.load(replay_buffer_path, weights_only=False)
+        examples += saved['examples']
+        if len(examples) > 50000:
+            examples = examples[-50000:]
+
+    dataset = AzulDataset(examples.copy())
     train_size = int(len(dataset) * args.train_ratio)
     val_size = len(dataset) - train_size
     train_set, val_set = random_split(dataset, [train_size, val_size])
@@ -118,10 +135,10 @@ def main():
         trainer.fit(
             train_loader=train_loader,
             val_loader=val_loader,
-            epochs=1,
+            epochs=epoch,
             checkpoint_dir=args.checkpoint_dir
         )
-        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch}.pt")
+        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}.pt")
         torch.save({'model_state': model.state_dict()}, checkpoint_path)
         print(f"Saved checkpoint: {checkpoint_path}")
 
@@ -141,6 +158,8 @@ def main():
             print(f"Eval at epoch {epoch}: current wins {wins_current}, previous wins {wins_prev}")
             trainer.writer.add_scalar('eval/current_wins', wins_current, epoch)
             trainer.writer.add_scalar('eval/previous_wins', wins_prev, epoch)
+        torch.save({'examples': examples}, replay_buffer_path)
+        print(f"Saved replay buffer to {replay_buffer_path}")
         prev_checkpoint = checkpoint_path
 
 if __name__ == "__main__":

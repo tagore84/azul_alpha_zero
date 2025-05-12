@@ -2,6 +2,8 @@
 
 import sys
 import os
+
+from constants import SEED
 # Add project src folder to PYTHONPATH for module resolution
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
@@ -26,7 +28,7 @@ class DummyModel:
 
 def main():
     # Initialize the Azul environment
-    env = AzulEnv(num_players=2, factories_count=5)
+    env = AzulEnv(num_players=2, factories_count=5, seed=SEED)
 
     # Instantiate the dummy model
     model = DummyModel(env.action_size)

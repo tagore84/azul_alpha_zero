@@ -1,6 +1,9 @@
+# src/mcts/mcts.py
+
 import math
 import random
 import numpy as np
+import time
 from typing import Optional, Tuple, Dict, Any
 from azul.env import AzulEnv
 
@@ -34,7 +37,7 @@ class MCTS:
         simulations: number of MCTS simulations per move.
         cpuct: exploration constant.
         """
-        self.root = MCTS.Node(env, parent=None, prior=1.0)
+        self.root = MCTS.Node(env.clone(), parent=None, prior=1.0)
         self.model = model
         self.simulations = simulations
         self.cpuct = cpuct
@@ -61,27 +64,31 @@ class MCTS:
         """
         obs = node.env._get_obs()
         # generate valid actions
-        valid_actions = []
-        for source in range(node.env.N + 1):
-            origin = ("factory", source) if source < node.env.N else ("center", None)
-            for color in range(node.env.C):
-                if not hasattr(node.env, 'validate_origin') or node.env.validate_origin(node.env.factories.tolist(), node.env.center.tolist(), origin, node.env.Color(color)):
-                    for dest in range(6):
-                        valid_actions.append((source, color, dest))
+        valid_actions = node.env.get_valid_actions()
         # Compute policy logits from the network and convert to priors
         obs = node.env._get_obs()
         obs_flat = node.env.encode_observation(obs)
         pi_logits, _ = self.model.predict(np.array([obs_flat]))
         logits = pi_logits[0]
-        exp_logits = np.exp(logits - np.max(logits))
-        priors = exp_logits / np.sum(exp_logits)
+        # Mask out invalid actions
+        mask = np.zeros_like(logits, dtype=bool)
         for action in valid_actions:
-            # clone environment
-            new_env = node.env.__class__(num_players=node.env.num_players,
-                                         factories_count=node.env.N)
-            new_env.__dict__ = node.env.__dict__.copy()
+            idx = node.env.action_to_index(action)
+            mask[idx] = True
+        # Compute priors only over valid actions
+        exp_logits = np.exp(logits - np.max(logits))
+        exp_logits[~mask] = 0
+        total = exp_logits.sum()
+        if total > 0:
+            priors = exp_logits / total
+        else:
+            # If all masked out, assign uniform over valid
+            priors = mask.astype(float) / mask.sum()
+        for action in valid_actions:
+            # clone environment efficiently
+            new_env = node.env.clone()
             # apply action
-            new_env.step(action)
+            new_env.step(action, is_sim=True)
             idx = node.env.action_to_index(action)
             node.children[action] = MCTS.Node(new_env, parent=node, prior=priors[idx])
 
@@ -99,7 +106,10 @@ class MCTS:
         """
         Perform MCTS simulations starting from the root.
         """
-        for _ in range(self.simulations):
+        if root_env is not None:
+            self.root = MCTS.Node(root_env.clone(), parent=None, prior=1.0)
+        
+        for sim in range(self.simulations):
             leaf, path = self.select()
             # If terminal state, get value
             obs = leaf.env._get_obs()
@@ -117,25 +127,21 @@ class MCTS:
                 # assume last reward
                 value = 1.0
                 self.backpropagate(path, value)
+        
 
     def select_action(self) -> Tuple[int, int, int]:
         """
-        After running simulations, pick the most visited child action.
+        After running simulations, pick the most visited child action, but ensure it's still valid in the current env.
         """
         if not self.root.children:
             self.run()
-        action, node = max(self.root.children.items(), key=lambda item: item[1].visits)
+        valid_actions = self.root.env.get_valid_actions()
+        candidates = [(a, n) for a, n in self.root.children.items() if a in valid_actions]
+        if not candidates:
+            print("[WARN] No valid children in MCTS, selecting random valid action")
+            return random.choice(valid_actions)
+        action, node = max(candidates, key=lambda item: item[1].visits)
         return action
 
-    def advance(self, action: Tuple[int, int, int]):
-        """
-        Advance the root to the chosen child, discarding other branches.
-        """
-        if action in self.root.children:
-            self.root = self.root.children[action]
-            self.root.parent = None
-        else:
-            # Recreate root if action not found
-            new_env = self.root.env
-            new_env.step(action)
-            self.root = MCTS.Node(new_env, parent=None, prior=1.0)
+    def advance(self, env: AzulEnv):
+        self.root = MCTS.Node(env.clone(), parent=None, prior=1.0)

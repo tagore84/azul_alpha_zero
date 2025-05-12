@@ -175,3 +175,7 @@ cython_debug/
 
 #logs
 logs/
+
+# Ignore all files in data/ except .gitkeep to keep the directory
+data/*
+!data/.gitkeep

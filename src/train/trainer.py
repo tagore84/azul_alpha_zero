@@ -1,5 +1,3 @@
-
-
 import os
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -100,7 +98,6 @@ class Trainer:
 
             # Save checkpoint
             if checkpoint_dir:
-                os.makedirs(checkpoint_dir, exist_ok=True)
-                ckpt_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch}.pth")
+                ckpt_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch:03}.pth")
                 torch.save(self.model.state_dict(), ckpt_path)
                 print(f"Saved checkpoint: {ckpt_path}")
