@@ -1,4 +1,4 @@
-python3 scripts/train_azul.py \
+caffeinate python3 scripts/train_azul.py \
   --n_games 100 \
   --simulations 200 \
   --epochs 20 \
@@ -40,3 +40,16 @@ ToDo:
 	  •	Con 200 simulaciones por movimiento en un MacBook Pro, simular 5,000 partidas podría tardar alrededor de 5 días de ejecución continua.
 	6.	Importancia del enfoque iterativo:
 	•	Entrenar de forma iterativa suele ser más beneficioso que entrenar todo el modelo de una sola vez al final, ya que mejora la adaptabilidad del agente, permite ajustes graduales y optimiza el uso de los datos.
+
+
+
+  Docker to Synology:
+
+docker buildx create --use --name azul_builder
+docker buildx build --platform linux/amd64 -t azul_ai --load .
+docker save azul_ai > azul_ai.tar
+
+docker run --rm \
+  -v /volume1/docker/azul_logs:/app/logs \
+  -v /volume1/docker/azul_data:/app/data \
+  azul_ai

@@ -9,7 +9,7 @@ from azul.env import AzulEnv
 from mcts.mcts import MCTS
 
 def _run_one_game(game_idx: int, env: AzulEnv, model: Any, simulations: int, cpuct: float) -> List[Dict[str, Any]]:
-    print(f"[Self-play] Worker starting game {game_idx}", flush=True)
+    #print(f"[Self-play] Worker starting game {game_idx}", flush=True)
     examples = play_game(env.clone(), model, simulations, cpuct)
     return examples
 
@@ -26,7 +26,7 @@ def play_game(
       - 'pi':  policy target distribution (np.ndarray)
       - 'v':   value target (+1/-1) for the player to move
     """
-    print("[Play-game] Starting new self-play game", flush=True)
+    
     start_time = time.perf_counter()
     move_idx = 0
     mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
@@ -62,7 +62,7 @@ def play_game(
         mcts.advance(env)
         move_idx += 1
     elapsed = time.perf_counter() - start_time
-    print(f"[Play-game] Finished game in {move_idx} moves, time: {elapsed:.2f}s", flush=True)
+    print(f"[Play-game] Finished game in {move_idx} moves at {time.strftime('%H:%M:%S')}, time: {elapsed:.2f}s", flush=True)
     # Determine game winner (highest final score)
     final_obs = env._get_obs()
     scores = [p['score'] for p in final_obs['players']]
@@ -98,6 +98,8 @@ def generate_self_play_games(
     Returns a flat list of training examples.
     """
     device = next(model.parameters()).device
+    global_start = time.time()
+    print(f"[Self-play] Estimated total end time will be shown after first game...", flush=True)
     if device.type == 'mps':
         print(f"[Self-play] MPS detected ({device}), running games sequentially", flush=True)
         all_examples: List[Dict[str, Any]] = []
@@ -105,6 +107,12 @@ def generate_self_play_games(
             examples = _run_one_game(i+1, env, model, simulations, cpuct)
             all_examples.extend(examples)
             print(f"[Self-play] Completed game {i+1}/{n_games}", flush=True)
+            if True:
+                elapsed = time.time() - global_start
+                estimated_total = elapsed / (i+1) * n_games
+                estimated_end = time.localtime(global_start + estimated_total)
+                estimated_str = time.strftime('%H:%M:%S', estimated_end)
+                print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
         print(f"[Self-play] Completed generation of {n_games} games", flush=True)
         return all_examples
     else:
@@ -117,12 +125,20 @@ def generate_self_play_games(
 
         with ThreadPoolExecutor(max_workers=n_workers) as executor:
             futures = {executor.submit(_run_one_game, i+1, env, model, simulations, cpuct): i+1 for i in range(n_games)}
+            completed_games = 0
             for future in as_completed(futures):
                 idx = futures[future]
                 try:
                     examples = future.result()
                     all_examples.extend(examples)
+                    completed_games += 1
                     print(f"[Self-play] Completed game {idx}/{n_games}", flush=True)
+                    if completed_games == 1:
+                        elapsed = time.time() - global_start
+                        estimated_total = elapsed / completed_games * n_games
+                        estimated_end = time.localtime(global_start + estimated_total)
+                        estimated_str = time.strftime('%H:%M:%S', estimated_end)
+                        print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
                 except Exception as e:
                     print(f"[Self-play] Game {idx} failed with error: {e}", flush=True)
 
