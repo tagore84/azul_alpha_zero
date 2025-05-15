@@ -1,9 +1,11 @@
 import random
 import torch
 import numpy as np
+from .base_player import BasePlayer
 
-class HeuristicPlayer:
+class HeuristicPlayer(BasePlayer):
     def __init__(self):
+        super().__init__()
         self.device = torch.device("cpu")
 
     def predict(self, obs):

@@ -69,6 +69,7 @@ class AzulEnv(gym.Env):
 
         # Initialize game
         self.reset()
+        self.done = False
 
     def reset(self, initial: bool = False):
         # Reset bag and discard
@@ -158,6 +159,7 @@ class AzulEnv(gym.Env):
         opponent_score_before = self.players[opponent]['score']
         if self._is_round_over():
             done = self._end_round()
+            self.done = done
             reward = (p['score'] - before_score) - 0.5 * (self.players[opponent]['score'] - opponent_score_before)
         else:
             # Next player turn
