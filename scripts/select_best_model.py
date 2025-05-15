@@ -3,13 +3,12 @@
 import os
 import sys
 import torch
-from train.eval import evaluate_against_previous
+from net.azul_net import AzulNet, evaluate_against_previous
 from azul.env import AzulEnv
-from model.model import AzulModel
 
 def load_model(path, device='cpu'):
     checkpoint = torch.load(path, map_location=device)
-    model = AzulModel()
+    model = AzulNet()
     model.load_state_dict(checkpoint['model_state'])
     model.to(device)
     model.eval()

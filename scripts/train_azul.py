@@ -10,44 +10,14 @@ import torch
 from torch.utils.data import DataLoader, random_split
 
 import copy
-from mcts.mcts import MCTS
-from net.azul_net import AzulNet
+
+from net.azul_net import AzulNet, evaluate_against_previous
 from azul.env import AzulEnv
 from train.self_play import generate_self_play_games
 from train.dataset import AzulDataset
 from train.trainer import Trainer
 
-def evaluate_against_previous(current_model, previous_model, env_args, simulations, cpuct, n_games):
-    """
-    Play n_games between current_model (player 0) and previous_model (player 1).
-    Returns wins_current, wins_previous.
-    """
-    wins_current = 0
-    wins_prev    = 0
-    for _ in range(n_games):
-        env = AzulEnv(**env_args)
-        obs = env.reset()
-        done = False
-        while not done:
-            current = env.current_player  # 0 or 1
-            model = current_model if current == 0 else previous_model
-            if hasattr(model, "predict_without_mcts"):
-                action = env.index_to_action(model.predict_without_mcts(obs))
-            else:
-                mcts = MCTS(
-                    env.__class__(num_players=env.num_players, factories_count=env.N),
-                    model, simulations=simulations, cpuct=cpuct
-                )
-                mcts.root.env.__dict__ = copy.copy(env.__dict__)
-                mcts.run()
-                action = mcts.select_action()
-            obs, reward, done, info = env.step(action)
-        total_rewards = info.get('total_rewards', [0,0])
-        if total_rewards[0] > total_rewards[1]:
-            wins_current += 1
-        else:
-            wins_prev += 1
-    return wins_current, wins_prev
+
 
 def main():
     parser = argparse.ArgumentParser(description="Train Azul Zero network via self-play")
