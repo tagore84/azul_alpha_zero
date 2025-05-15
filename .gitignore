@@ -174,8 +174,19 @@ cython_debug/
 .pypirc
 
 #logs
-logs/
+logs/*
+!logs/.gitkeep
 
-# Ignore all files in data/ except .gitkeep to keep the directory
+# data
 data/*
 !data/.gitkeep
+
+# Allow merged and best files
+!data/replay_buffer_merged.pkl
+!data/checkpoint_best.pth
+
+# Allow machine-specific latest files
+!data/replay_buffer_mac.pkl
+!data/replay_buffer_lg.pkl
+!data/checkpoint_latest_mac.pth
+!data/checkpoint_latest_lg.pth

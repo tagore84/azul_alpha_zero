@@ -150,15 +150,18 @@ class AzulEnv(gym.Env):
                 idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
                     fl[idxs[0]] = color
+
         # Check round end
         done = False
         reward = 0
+        opponent = (self.current_player + 1) % self.num_players
+        opponent_score_before = self.players[opponent]['score']
         if self._is_round_over():
             done = self._end_round()
-            reward = p['score'] - before_score
+            reward = (p['score'] - before_score) - 0.5 * (self.players[opponent]['score'] - opponent_score_before)
         else:
             # Next player turn
-            self.current_player = (self.current_player + 1) % self.num_players
+            self.current_player = opponent
         obs = self._get_obs()
         info = {}
         return obs, reward, done, info
@@ -373,3 +376,7 @@ class AzulEnv(gym.Env):
                 if cell != -1:
                     total += 1
         return total
+    
+    def get_final_scores(self):
+        return [p['score'] for p in self.players]
+

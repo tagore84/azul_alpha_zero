@@ -102,6 +102,39 @@ Key options:
 - `--eval_games`: Number of games in each evaluation.  
 - `--resume`: Path to a checkpoint to continue training.
 
+### Distributed Training & Merging
+
+To train the AI on multiple machines and combine results:
+
+1. **Set machine ID (e.g. `mac` or `lg`)**:
+   ```bash
+   export AZUL_MACHINE_ID=mac
+   ```
+   > 💡 Tip: To make this permanent, add the line `export AZUL_MACHINE_ID=mac` (or `lg`) to your `~/.zshrc` or `~/.bash_profile`, then run `source ~/.zshrc` (or `source ~/.bash_profile`) to apply the change.
+
+2. **Run training normally** (files will be tagged with the machine ID):
+   ```bash
+   python3 scripts/train_azul.py \
+     --n_games 100 \
+     --simulations 200 \
+     --epochs 20 \
+     --eval_interval 5 \
+     --eval_games 100
+   ```
+
+3. **After training**, move the replay buffers and latest checkpoints to a shared location or one of the machines.
+
+4. **Merge and evaluate models** using:
+   ```bash
+   python3 scripts/merge_all.py
+   ```
+
+This will:
+- Merge the replay buffers from both machines (e.g. `replay_buffer_mac.pkl` and `replay_buffer_lg.pkl`) into `replay_buffer_merged.pkl`
+- Select the better model between `checkpoint_latest_mac.pth` and `checkpoint_latest_lg.pth`, saving it as `checkpoint_best.pth`
+
+Future training runs will automatically pick up the best checkpoint and merged replay buffer if present.
+
 ## Configuration
 
 - The **observation encoding** and **action encoding** are defined in `src/azul/env.py`.
@@ -126,3 +159,9 @@ python3 -m unittest discover -v tests
 ## License
 
 This project is licensed under the MIT License.  
+
+## Model Architecture
+
+The following diagram illustrates the neural network architecture used in Azul Zero:
+
+![AzulNet Architecture](./docs/azul_net_architecture.png)

@@ -1,6 +1,7 @@
 import sys
 import os
 from datetime import datetime
+MACHINE_ID = os.environ.get("AZUL_MACHINE_ID", "default")
 # Add project src folder to PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from constants import SEED
@@ -30,13 +31,16 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
         while not done:
             current = env.current_player  # 0 or 1
             model = current_model if current == 0 else previous_model
-            mcts = MCTS(
-                env.__class__(num_players=env.num_players, factories_count=env.N),
-                model, simulations=simulations, cpuct=cpuct
-            )
-            mcts.root.env.__dict__ = copy.copy(env.__dict__)
-            mcts.run()
-            action = mcts.select_action()
+            if hasattr(model, "predict_without_mcts"):
+                action = env.index_to_action(model.predict_without_mcts(obs))
+            else:
+                mcts = MCTS(
+                    env.__class__(num_players=env.num_players, factories_count=env.N),
+                    model, simulations=simulations, cpuct=cpuct
+                )
+                mcts.root.env.__dict__ = copy.copy(env.__dict__)
+                mcts.run()
+                action = mcts.select_action()
             obs, reward, done, info = env.step(action)
         total_rewards = info.get('total_rewards', [0,0])
         if total_rewards[0] > total_rewards[1]:
@@ -66,12 +70,19 @@ def main():
     args = parser.parse_args()
 
     prev_checkpoint = None
+    best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pth')
     if args.resume:
-        files = [f for f in os.listdir(args.resume) if f.endswith('.pt')]
-        files.sort()
-        checkpoint_path = os.path.join(args.resume, files[-1])
+        checkpoint_path = args.resume
         print(f"Resuming from checkpoint: {checkpoint_path}")
         prev_checkpoint = checkpoint_path
+    elif os.path.exists(best_checkpoint):
+        print(f"Auto-loading best checkpoint from {best_checkpoint}")
+        prev_checkpoint = best_checkpoint
+    else:
+        default_latest = os.path.join(args.checkpoint_dir, f'checkpoint_latest_{MACHINE_ID}.pth')
+        if os.path.exists(default_latest):
+            print(f"Auto-loading latest checkpoint from {default_latest}")
+            prev_checkpoint = default_latest
 
     # Select device
     device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
@@ -115,13 +126,24 @@ def main():
     )
     print(f"Generated {len(examples)} examples")
 
-    replay_buffer_path = os.path.join(args.checkpoint_dir, 'replay_buffer.pt')
-    if os.path.exists(replay_buffer_path):
-        print(f"Loading replay buffer from {replay_buffer_path}")
-        saved = torch.load(replay_buffer_path, weights_only=False)
+    merged_buffer = os.path.join(args.checkpoint_dir, 'replay_buffer_merged.pkl')
+    if os.path.exists(merged_buffer):
+        print(f"Loading merged replay buffer from {merged_buffer}")
+        saved = torch.load(merged_buffer, weights_only=False)
         examples += saved['examples']
-        if len(examples) > 50000:
-            examples = examples[-50000:]
+    else:
+        replay_buffer_path = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
+        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pkl')
+        if os.path.exists(replay_buffer_path):
+            print(f"Loading replay buffer from {replay_buffer_path}")
+            saved = torch.load(replay_buffer_path, weights_only=False)
+            examples += saved['examples']
+        elif os.path.exists(replay_buffer_latest):
+            print(f"Loading latest replay buffer from {replay_buffer_latest}")
+            saved = torch.load(replay_buffer_latest, weights_only=False)
+            examples += saved['examples']
+    if len(examples) > 50000:
+        examples = examples[-50000:]
 
     dataset = AzulDataset(examples.copy())
     train_size = int(len(dataset) * args.train_ratio)
@@ -138,8 +160,10 @@ def main():
             epochs=epoch,
             checkpoint_dir=args.checkpoint_dir
         )
-        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}.pt")
+        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
+        latest_checkpoint_path = os.path.join(args.checkpoint_dir, f"checkpoint_latest_{MACHINE_ID}.pth")
         torch.save({'model_state': model.state_dict()}, checkpoint_path)
+        torch.save({'model_state': model.state_dict()}, latest_checkpoint_path)
         print(f"Saved checkpoint: {checkpoint_path}")
 
         # Periodic evaluation against previous checkpoint
@@ -158,8 +182,29 @@ def main():
             print(f"Eval at epoch {epoch}: current wins {wins_current}, previous wins {wins_prev}")
             trainer.writer.add_scalar('eval/current_wins', wins_current, epoch)
             trainer.writer.add_scalar('eval/previous_wins', wins_prev, epoch)
+
+            # Evaluación contra jugador heurístico
+            from players.heuristic_player import HeuristicPlayer
+            class HeuristicWrapper:
+                def predict(self, obs):
+                    player = HeuristicPlayer()
+                    return player.predict(obs)
+                def predict_without_mcts(self, obs):
+                    return self.predict(obs)
+            baseline_model = HeuristicWrapper()
+            wins_vs_heuristic, _ = evaluate_against_previous(
+                current_model, baseline_model,
+                {'num_players': env.num_players, 'factories_count': env.N},
+                simulations=args.simulations, cpuct=args.cpuct, n_games=args.eval_games
+            )
+            print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
+            trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
+        replay_buffer_path = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
+        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pkl')
         torch.save({'examples': examples}, replay_buffer_path)
         print(f"Saved replay buffer to {replay_buffer_path}")
+        torch.save({'examples': examples}, replay_buffer_latest)
+        print(f"Saved latest replay buffer to {replay_buffer_latest}")
         prev_checkpoint = checkpoint_path
 
 if __name__ == "__main__":

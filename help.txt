@@ -1,4 +1,5 @@
-caffeinate python3 scripts/train_azul.py \
+First:
+AZUL_MACHINE_ID=mac caffeinate python3 scripts/train_azul.py \
   --n_games 100 \
   --simulations 200 \
   --epochs 20 \
@@ -6,23 +7,25 @@ caffeinate python3 scripts/train_azul.py \
   --eval_games 20 \
   --checkpoint_dir data/checkpoint_dir
 
-python3 scripts/train_azul.py \
-  --n_games 2 \
-  --simulations 2 \
+Others:
+AZUL_MACHINE_ID=mac caffeinate python3 scripts/train_azul.py \
+  --n_games 100 \
+  --simulations 200 \
   --epochs 20 \
-  --eval_interval 50 \
-  --eval_games 50 \
+  --eval_interval 25 \
+  --eval_games 25 \
   --resume data/checkpoint_dir \
   --checkpoint_dir data/checkpoint_dir
 
-python3 scripts/train_azul.py \
-  --n_games 1 \
-  --simulations 1 \
-  --epochs 20 \
-  --checkpoint_dir data/checkpoint_dir
-
-  python3 scripts/one_shot_self_game.py \
-  --checkpoint_dir data/checkpoints
+Test:
+AZUL_MACHINE_ID=mac python scripts/train_azul.py \
+  --n_games 10 \
+  --simulations 20 \
+  --epochs 2 \
+  --eval_interval 1 \
+  --eval_games 4 \
+  --checkpoint_dir data/checkpoint_dir_test \
+  --log_dir logs/test_run
 
 
 ToDo:
@@ -43,13 +46,19 @@ ToDo:
 
 
 
-  Docker to Synology:
+LOGS:
+tensorboard --logdir logs
 
-docker buildx create --use --name azul_builder
-docker buildx build --platform linux/amd64 -t azul_ai --load .
-docker save azul_ai > azul_ai.tar
 
-docker run --rm \
-  -v /volume1/docker/azul_logs:/app/logs \
-  -v /volume1/docker/azul_data:/app/data \
-  azul_ai
+MERGE REPLAY BUFFER:
+AZUL_MACHINE_ID=mac python scripts/merge_replay_buffers.py data/replay_buffer_merged.pkl \
+    data/replay_buffer_mac.pkl data/replay_buffer_lg.pkl
+
+CHOOSE BEST MODEL:
+AZUL_MACHINE_ID=mac python scripts/select_best_model.py \
+    data/checkpoint_latest_mac.pth \
+    data/checkpoint_latest_lg.pth \
+    data/checkpoint_best.pth
+
+MERGE ALL:
+AZUL_MACHINE_ID=mac python scripts/merge_all.py
