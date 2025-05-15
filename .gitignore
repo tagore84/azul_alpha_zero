@@ -180,6 +180,7 @@ logs/*
 # data
 data/*
 !data/.gitkeep
+!data/checkpoint_dir/
 
 # Allow merged and best files
 !data/checkpoint_dir/replay_buffer.pt

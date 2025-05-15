@@ -79,7 +79,11 @@ def main():
     model = model.to(device)
     if prev_checkpoint:
         checkpoint = torch.load(prev_checkpoint, map_location=device)
-        model.load_state_dict(checkpoint['model_state'])
+        # Support checkpoints with different key names
+        state_dict = checkpoint.get('model_state',
+                       checkpoint.get('state_dict',
+                                      checkpoint))
+        model.load_state_dict(state_dict)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
