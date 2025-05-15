@@ -182,8 +182,8 @@ data/*
 !data/.gitkeep
 
 # Allow merged and best files
-!data/replay_buffer_merged.pkl
-!data/checkpoint_best.pth
+!data/replay_buffer.pkl
+!data/checkpoint_dir/checkpoint_best.pth
 
 # Allow machine-specific latest files
 !data/replay_buffer_mac.pkl
