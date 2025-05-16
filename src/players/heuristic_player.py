@@ -1,11 +1,9 @@
 import random
 import torch
 import numpy as np
-from .base_player import BasePlayer
 
-class HeuristicPlayer(BasePlayer):
+class HeuristicPlayer:
     def __init__(self):
-        super().__init__()
         self.device = torch.device("cpu")
 
     def predict(self, obs):
@@ -61,10 +59,17 @@ class HeuristicPlayer(BasePlayer):
             raise ValueError("No fallback action possible in heuristic player")
 
 def decode_action(index):
-    # Sustituye esta función por la real usada en tu entorno
-    factory = index // 25
-    color = (index % 25) // 5
-    row = index % 5
+    """
+    Decode an action index into (factory/source index, color, destination row).
+    Actions are encoded as: index = source_idx * (C * 6) + color * 6 + dest.
+    C is number of colors (5), dest count is 6 (pattern lines 0–4 and floor as 5).
+    """
+    C = 5  # number of colors
+    D = 6  # number of possible destinations (5 pattern rows + floor)
+    factory = index // (C * D)
+    remainder = index % (C * D)
+    color = remainder // D
+    row = remainder % D
     return factory, color, row
 
 def is_row_closable(row):
