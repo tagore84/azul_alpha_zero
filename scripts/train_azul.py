@@ -30,7 +30,7 @@ def main():
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
     parser.add_argument('--train_ratio', type=float, default=0.9, help='Fraction of data for training')
     parser.add_argument('--log_dir', type=str, default='logs', help='TensorBoard log directory')
-    parser.add_argument('--checkpoint_dir', type=str, default='checkpoint_dir', help='Directory to save checkpoints')
+    parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoint_dir', help='Directory to save checkpoints')
     parser.add_argument('--resume', type=str, default=None,
                         help='Path to a model checkpoint to resume training from')
     parser.add_argument('--eval_interval', type=int, default=10,
