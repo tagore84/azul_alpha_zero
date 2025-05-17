@@ -22,25 +22,25 @@ from train.trainer import Trainer
 def main():
     parser = argparse.ArgumentParser(description="Train Azul Zero network via self-play")
     parser.add_argument('--verbose', type=bool, default=False, help='Logging verbosity')
-    parser.add_argument('--n_games', type=int, default=2, help='Number of self-play games to generate')
-    parser.add_argument('--simulations', type=int, default=2, help='MCTS simulations per move')
+    parser.add_argument('--n_games', type=int, default=100, help='Number of self-play games to generate')
+    parser.add_argument('--simulations', type=int, default=200, help='MCTS simulations per move')
     parser.add_argument('--cpuct', type=float, default=1.0, help='MCTS exploration constant')
     parser.add_argument('--batch_size', type=int, default=64, help='Training batch size')
-    parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
+    parser.add_argument('--epochs', type=int, default=20, help='Number of training epochs')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
     parser.add_argument('--train_ratio', type=float, default=0.9, help='Fraction of data for training')
     parser.add_argument('--log_dir', type=str, default='logs', help='TensorBoard log directory')
-    parser.add_argument('--checkpoint_dir', type=str, default='checkpoints', help='Directory to save checkpoints')
+    parser.add_argument('--checkpoint_dir', type=str, default='checkpoint_dir', help='Directory to save checkpoints')
     parser.add_argument('--resume', type=str, default=None,
                         help='Path to a model checkpoint to resume training from')
-    parser.add_argument('--eval_interval', type=int, default=5,
+    parser.add_argument('--eval_interval', type=int, default=10,
                         help='Number of epochs between self-play evaluations')
-    parser.add_argument('--eval_games',    type=int, default=100,
+    parser.add_argument('--eval_games',    type=int, default=20,
                         help='Number of games to play in each evaluation')
     args = parser.parse_args()
 
     prev_checkpoint = None
-    best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pth')
+    best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pt')
     if args.resume:
         checkpoint_path = args.resume
         print(f"Resuming from checkpoint: {checkpoint_path}")
@@ -49,7 +49,7 @@ def main():
         print(f"Auto-loading best checkpoint from {best_checkpoint}")
         prev_checkpoint = best_checkpoint
     else:
-        default_latest = os.path.join(args.checkpoint_dir, f'checkpoint_latest_{MACHINE_ID}.pth')
+        default_latest = os.path.join(args.checkpoint_dir, f'checkpoint_latest_{MACHINE_ID}.pt')
         if os.path.exists(default_latest):
             print(f"Auto-loading latest checkpoint from {default_latest}")
             prev_checkpoint = default_latest
@@ -100,20 +100,15 @@ def main():
     )
     print(f"Generated {len(examples)} examples")
 
-    merged_buffer = os.path.join(args.checkpoint_dir, 'replay_buffer_merged.pkl')
+    merged_buffer = os.path.join(args.checkpoint_dir, 'replay_buffer_merged.pt')
     if os.path.exists(merged_buffer):
         print(f"Loading merged replay buffer from {merged_buffer}")
         saved = torch.load(merged_buffer, weights_only=False)
         examples += saved['examples']
     else:
-        replay_buffer_path = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
-        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pkl')
-        if os.path.exists(replay_buffer_path):
-            print(f"Loading replay buffer from {replay_buffer_path}")
-            saved = torch.load(replay_buffer_path, weights_only=False)
-            examples += saved['examples']
-        elif os.path.exists(replay_buffer_latest):
-            print(f"Loading latest replay buffer from {replay_buffer_latest}")
+        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
+        if os.path.exists(replay_buffer_latest):
+            print(f"Loading replay buffer from {replay_buffer_latest}")
             saved = torch.load(replay_buffer_latest, weights_only=False)
             examples += saved['examples']
     if len(examples) > 50000:
@@ -135,7 +130,7 @@ def main():
             checkpoint_dir=args.checkpoint_dir
         )
         checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
-        latest_checkpoint_path = os.path.join(args.checkpoint_dir, f"checkpoint_latest_{MACHINE_ID}.pth")
+        latest_checkpoint_path = os.path.join(args.checkpoint_dir, f"checkpoint_latest_{MACHINE_ID}.pt")
         torch.save({'model_state': model.state_dict()}, checkpoint_path)
         torch.save({'model_state': model.state_dict()}, latest_checkpoint_path)
         print(f"Saved checkpoint: {checkpoint_path}")
@@ -173,12 +168,9 @@ def main():
             )
             print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
             trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
-        replay_buffer_path = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
-        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pkl')
-        torch.save({'examples': examples}, replay_buffer_path)
-        print(f"Saved replay buffer to {replay_buffer_path}")
+        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
         torch.save({'examples': examples}, replay_buffer_latest)
-        print(f"Saved latest replay buffer to {replay_buffer_latest}")
+        print(f"Saved replay buffer to {replay_buffer_latest}")
         prev_checkpoint = checkpoint_path
 
 if __name__ == "__main__":

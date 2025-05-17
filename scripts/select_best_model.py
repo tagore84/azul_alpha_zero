@@ -16,7 +16,7 @@ def load_model(path, device='cpu'):
 
 def main():
     if len(sys.argv) != 4:
-        print("Usage: python select_best_model.py modelA.pth modelB.pth output_best.pth")
+        print("Usage: python select_best_model.py modelA.pt modelB.pt output_best.pt")
         sys.exit(1)
 
     model_a_path, model_b_path, output_path = sys.argv[1:]
