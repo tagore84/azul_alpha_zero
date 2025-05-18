@@ -49,8 +49,13 @@ def main():
 
     if not args.buffer or not os.path.exists(args.buffer):
         raise ValueError(f"Replay buffer not found: {args.buffer}")
-    saved = torch.load(args.buffer, weights_only=False)
+    import pickle
+    with open(args.buffer, 'rb') as f:
+        saved = pickle.load(f)
     examples = saved['examples']
+    print(f"Loaded examples type: {type(examples)}, length: {len(examples)}")
+    if len(examples) > 0:
+        print(f"First example: {examples[0]}")
 
     dataset = AzulDataset(examples.copy())
     train_size = int(len(dataset) * args.train_ratio)
@@ -72,6 +77,7 @@ def main():
     # Initialize environment sizes from saved examples
     # We assume the environment sizes are saved in the checkpoint or can be inferred
     # Here we infer from example observation shape
+    print(f"Loaded examples type: {type(examples)}, length: {len(examples)}")
     obs_example = examples[0][0]
     total_obs_size = obs_example.shape[0]
     in_channels = total_obs_size // (5 * 5)
