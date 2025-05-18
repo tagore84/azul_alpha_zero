@@ -9,7 +9,6 @@ from players.maximilian_times import MaximilianTimes
 from players.lillo_expertillo import LilloExpertillo
 from players.random_player import RandomPlayer
 import argparse
-from collections import defaultdict
 from players.deep_mcts_player import DeepMCTSPlayer 
 from players.expert_player import ExpertPlayer
 from players.heuristic_player import HeuristicPlayer
@@ -96,15 +95,16 @@ if __name__ == "__main__":
 
     players = {
         "Heu": HeuristicPlayer(),
-        #"Heu2": HeuristicPlayer(),
-        "AlphaB": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_best.pth", device="cpu", mcts_iters=50, cpuct=0.5),
-        "AlphaM": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_best.pth", device="cpu", mcts_iters=1, cpuct=0.5),
-        "AlphaR": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_best.pth", device="cpu", mcts_iters=1, cpuct=5),
+        "A100B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=50, cpuct=0.5),
+        "A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
+        "A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
+        "A200B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=0.5),
+        "A200M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=5, cpuct=0.1),
+        "A200R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=10, cpuct=3.0),
         "Exp": ExpertPlayer(),
-        #"Exp2": ExpertPlayer(),
         "Rand": RandomPlayer(),
         "Lillo": LilloExpertillo(),
-        "Maxi": MaximilianTimes(5, 5, 1.2, 1.0),
+        "Maxi": MaximilianTimes(5, 2, 1.2, 1.0),
         # añade más aquí
     }
 

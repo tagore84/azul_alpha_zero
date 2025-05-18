@@ -2,10 +2,12 @@ First:
 AZUL_MACHINE_ID=mac caffeinate python3 scripts/train_azul.py \
   --n_games 100 \
   --simulations 200 \
-  --epochs 20 \
-  --eval_interval 10 \
+  --epochs 40 \
+  --eval_interval 20 \
   --eval_games 10 \
-  --checkpoint_dir data/checkpoint_dir
+  --checkpoint_dir data/checkpoint_dir \
+  --lr 2e-3 \
+  --batch_size 128
 
 Others:
 AZUL_MACHINE_ID=mac caffeinate python3 scripts/train_azul.py \
@@ -56,9 +58,9 @@ AZUL_MACHINE_ID=mac python scripts/merge_replay_buffers.py data/replay_buffer_me
 
 CHOOSE BEST MODEL:
 AZUL_MACHINE_ID=mac python scripts/select_best_model.py \
-    data/checkpoint_latest_mac.pth \
-    data/checkpoint_latest_lg.pth \
-    data/checkpoint_best.pth
+    data/checkpoint_latest_mac.pt \
+    data/checkpoint_latest_lg.pt \
+    data/checkpoint_best.pt
 
 MERGE ALL:
 AZUL_MACHINE_ID=mac python scripts/merge_all.py

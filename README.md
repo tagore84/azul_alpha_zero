@@ -90,7 +90,7 @@ python3 scripts/train_azul.py \
   --epochs 20 \
   --eval_interval 5 \
   --eval_games 100 \
-  --resume checkpoints/model_epoch_20.pth
+  --resume checkpoints/model_epoch_20.pt
 ```
 
 Key options:
@@ -131,7 +131,7 @@ To train the AI on multiple machines and combine results:
 
 This will:
 - Merge the replay buffers from both machines (e.g. `replay_buffer_mac.pkl` and `replay_buffer_lg.pkl`) into `replay_buffer_merged.pkl`
-- Select the better model between `checkpoint_latest_mac.pth` and `checkpoint_latest_lg.pth`, saving it as `checkpoint_best.pth`
+- Select the better model between `checkpoint_latest_mac.pt` and `checkpoint_latest_lg.pt`, saving it as `checkpoint_best.pt`
 
 Future training runs will automatically pick up the best checkpoint and merged replay buffer if present.
 

@@ -69,12 +69,12 @@ def value_game_state(game_state, player, ruin_factor):
         final_phase = getattr(p, 'final_phase_points', lambda: None)
         final_game = getattr(p, 'final_game_points', lambda: None)
         get_points = getattr(p, 'get_points', lambda: 0)
-        is_human = getattr(p, 'is_human', lambda: False)
         final_phase()
         final_game()
         if p == player:
             pts += get_points()
-        elif is_human():
+        elif p != player:
+            # Penalize all other players, not just humans
             pts -= (2 * ruin_factor) * (get_points() / (len(clone.get_players()) - 1))
     return pts
 
