@@ -119,6 +119,10 @@ def main():
     if len(examples) > 50000:
         examples = examples[-50000:]
 
+    replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
+    torch.save({'examples': examples}, replay_buffer_latest)
+    print(f"Saved replay buffer to {replay_buffer_latest}")
+    
     dataset = AzulDataset(examples.copy())
     train_size = int(len(dataset) * args.train_ratio)
     val_size = len(dataset) - train_size
@@ -173,9 +177,7 @@ def main():
             )
             print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
             trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
-        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
-        torch.save({'examples': examples}, replay_buffer_latest)
-        print(f"Saved replay buffer to {replay_buffer_latest}")
+
         prev_checkpoint = checkpoint_path
 
 if __name__ == "__main__":
