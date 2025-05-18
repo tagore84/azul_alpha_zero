@@ -97,9 +97,12 @@ def generate_self_play_games(
     Generate multiple self-play games in parallel.
     Returns a flat list of training examples.
     """
+    from multiprocessing import get_context
+
     device = next(model.parameters()).device
     global_start = time.time()
     print(f"[Self-play] Estimated total end time will be shown after first game...", flush=True)
+
     if device.type == 'mps':
         print(f"[Self-play] MPS detected ({device}), running games sequentially", flush=True)
         all_examples: List[Dict[str, Any]] = []
@@ -115,14 +118,28 @@ def generate_self_play_games(
                 print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
         print(f"[Self-play] Completed generation of {n_games} games", flush=True)
         return all_examples
+
+    elif device.type == 'cuda':
+        print(f"[Self-play] CUDA GPU detected ({device}), running games sequentially (with GPU reuse)", flush=True)
+        all_examples: List[Dict[str, Any]] = []
+        for i in range(n_games):
+            examples = _run_one_game(i+1, env, model, simulations, cpuct)
+            all_examples.extend(examples)
+            print(f"[Self-play] Completed game {i+1}/{n_games}", flush=True)
+            if i == 0:
+                elapsed = time.time() - global_start
+                estimated_total = elapsed * n_games
+                estimated_end = time.localtime(global_start + estimated_total)
+                estimated_str = time.strftime('%H:%M:%S', estimated_end)
+                print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
+        print(f"[Self-play] Completed generation of {n_games} games", flush=True)
+        return all_examples
+
     else:
         print(f"[Self-play] Starting generation of {n_games} games", flush=True)
-        # Determine number of threads
         n_workers = min(32, os.cpu_count() or 1)
         print(f"[Self-play] Launching {n_workers} parallel workers", flush=True)
-
         all_examples: List[Dict[str, Any]] = []
-
         with ThreadPoolExecutor(max_workers=n_workers) as executor:
             futures = {executor.submit(_run_one_game, i+1, env, model, simulations, cpuct): i+1 for i in range(n_games)}
             completed_games = 0
@@ -141,6 +158,5 @@ def generate_self_play_games(
                         print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
                 except Exception as e:
                     print(f"[Self-play] Game {idx} failed with error: {e}", flush=True)
-
         print(f"[Self-play] Completed generation of {n_games} games", flush=True)
         return all_examples
