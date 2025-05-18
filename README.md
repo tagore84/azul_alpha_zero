@@ -45,24 +45,64 @@ A self-play reinforcement learning framework for the board game *Azul*, inspired
 azul_zero/
 ├── src/
 │   ├── azul/
-│   │   ├── env.py          # Environment and game state management
-│   │   ├── rules.py        # Azul game rules and scoring
+│   │   ├── env.py               # Environment and game state management
+│   │   ├── rules.py             # Azul game rules and scoring
+|   |   └── utils.py
 │   ├── mcts/
-│   │   └── mcts.py         # Monte Carlo Tree Search implementation
+│   │   └── mcts.py              # Monte Carlo Tree Search implementation
 │   ├── net/
-│   │   └── azul_net.py     # PyTorch model for policy and value
+│   │   └── azul_net.py          # PyTorch model for policy and value
+│   ├── players/
+│   │   ├── base_player.py       # Base class por IA players
+│   │   ├── deep_mcts_player.py  # RL MCTS player
+│   │   ├── expert_player.py     
+│   │   ├── heuristic_player.py       
+│   │   ├── lillo_expertillo.py       
+│   │   ├── maximilian_times.py       
+│   │   ├── random_player.py       
 │   ├── train/
-│   │   ├── self_play.py    # Generate self-play examples using MCTS + network
-│   │   └── trainer.py      # Training loop, loss computation, TensorBoard logging
+│   │   ├── self_play.py         # Generate self-play examples using MCTS + network
+│   │   ├── dataset.py.py        
+│   │   ├── self_play_without_mcts.py         
+│   │   └── trainer.py           # Training loop, loss computation, TensorBoard logging
+│   └── constants.py
+│
+├── data/
+│   ├── checpoint_dir/
+│   │   ├── checkpoint_latest_mac.pt
+│   │   └── replay_buffer_mac.pt
+│
+├── logs/
+│   ├── architecture.md
+│   └── azul_net_architecture.py
+├── docs/
+│
+├── notebooks/
 │
 ├── scripts/
-│   ├── random_game.py      # Run a random-play demonstration
-│   ├── demo_mcts.py        # Demonstrate MCTS + network in action
-│   └── train_azul.py       # Main training script
+│   ├── debug_play.py            # Run a random-play demonstration
+│   ├── demo_mcts.py             # Demonstrate MCTS + network in action
+│   ├── install_deps.sh
+│   ├── merge_all.py
+│   ├── merge_replay_buffers.py
+│   ├── one_shot_self_game_no_mcts.py
+│   ├── one_shot_self_game_no_train.py
+│   ├── one_shot_self_game.py
+│   ├── random_game.py
+│   ├── select_best_model.py
+│   ├── tournament.py
+│   ├── train_azul_in_synology.py
+│   ├── test_heuristic_vs_heuristic.py
+│   └── train_azul.py            # Main training script
 │
-├── tests/                  # Unit tests for rules and environment
-├── requirements.txt        # Python dependencies
-└── README.md               # This file
+├── tests/                       # Unit tests for rules and environment
+│   ├── test_env.py           
+│   ├── test_mcts.py           
+│   ├── test_network.py   
+│   └── test_rules.py        
+├── requirements.txt             # Python dependencies
+├── setup.py
+└── README.md                    # This file
 ```
 
 ## Usage

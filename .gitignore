@@ -189,7 +189,6 @@ data/*
 # Allow machine-specific latest files
 !data/replay_buffer_mac.pkl
 !data/replay_buffer_lg.pkl
-!data/checkpoint_latest_mac.pth
 !data/checkpoint_latest_lg.pth
 data/checkpoint_dir/model_epoch_001_mac.pt
 data/checkpoint_dir/model_epoch_001.pth
