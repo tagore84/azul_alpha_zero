@@ -210,3 +210,4 @@ data/checkpoint_dir/model_epoch_009_mac.pt
 data/checkpoint_dir/model_epoch_009.pth
 data/checkpoint_dir/model_epoch_010_mac.pt
 data/checkpoint_dir/model_epoch_010.pth
+data/checkpoint_dir/replay_buffer_mac.pt
