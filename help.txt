@@ -1,3 +1,10 @@
+DATASET:
+AZUL_MACHINE_ID=mac caffeinate python3 scripts/generate_dataset.py \
+  --n_games 100 \
+  --simulations 200 \
+  --cpuct 1.0 \
+  --checkpoint_dir data/checkpoint_dir
+
 First:
 AZUL_MACHINE_ID=mac caffeinate python3 scripts/train_azul.py \
   --n_games 100 \

@@ -1,0 +1,159 @@
+import sys
+import os
+from datetime import datetime
+MACHINE_ID = os.environ.get("AZUL_MACHINE_ID", "default")
+# Add project src folder to PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from constants import SEED
+import argparse
+import torch
+import copy
+
+from net.azul_net import AzulNet, evaluate_against_previous
+from train.dataset import AzulDataset
+from train.trainer import Trainer
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Train Azul Zero network via self-play")
+    parser.add_argument('--verbose', type=bool, default=False, help='Logging verbosity')
+    parser.add_argument('--batch_size', type=int, default=64, help='Training batch size')
+    parser.add_argument('--epochs', type=int, default=20, help='Number of training epochs')
+    parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
+    parser.add_argument('--train_ratio', type=float, default=0.9, help='Fraction of data for training')
+    parser.add_argument('--log_dir', type=str, default='logs', help='TensorBoard log directory')
+    parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoint_dir', help='Directory to save checkpoints')
+    parser.add_argument('--resume', type=str, default=None,
+                        help='Path to a model checkpoint to resume training from')
+    parser.add_argument('--eval_interval', type=int, default=10,
+                        help='Number of epochs between self-play evaluations')
+    parser.add_argument('--eval_games',    type=int, default=20,
+                        help='Number of games to play in each evaluation')
+    parser.add_argument('--buffer', type=str, default=None, help='Path to the replay buffer to load')
+    args = parser.parse_args()
+
+    prev_checkpoint = None
+    best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pt')
+    if args.resume:
+        checkpoint_path = args.resume
+        print(f"Resuming from checkpoint: {checkpoint_path}")
+        prev_checkpoint = checkpoint_path
+    elif os.path.exists(best_checkpoint):
+        print(f"Auto-loading best checkpoint from {best_checkpoint}")
+        prev_checkpoint = best_checkpoint
+    else:
+        default_latest = os.path.join(args.checkpoint_dir, f'checkpoint_latest_{MACHINE_ID}.pt')
+        if os.path.exists(default_latest):
+            print(f"Auto-loading latest checkpoint from {default_latest}")
+            prev_checkpoint = default_latest
+
+    if not args.buffer or not os.path.exists(args.buffer):
+        raise ValueError(f"Replay buffer not found: {args.buffer}")
+    saved = torch.load(args.buffer, weights_only=False)
+    examples = saved['examples']
+
+    dataset = AzulDataset(examples.copy())
+    train_size = int(len(dataset) * args.train_ratio)
+    val_size = len(dataset) - train_size
+    from torch.utils.data import DataLoader, random_split
+    train_set, val_set = random_split(dataset, [train_size, val_size])
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
+    val_loader = DataLoader(val_set, batch_size=args.batch_size)
+
+    # Select device
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
+    print(f"Using device: {device}")
+
+    # Initialize environment sizes from saved examples
+    # We assume the environment sizes are saved in the checkpoint or can be inferred
+    # Here we infer from example observation shape
+    obs_example = examples[0][0]
+    total_obs_size = obs_example.shape[0]
+    in_channels = total_obs_size // (5 * 5)
+    spatial_size = in_channels * 5 * 5
+    global_size = total_obs_size - spatial_size
+    # Action size must be saved or known; here we load from a checkpoint if possible
+    if prev_checkpoint:
+        checkpoint = torch.load(prev_checkpoint, map_location=device)
+        action_size = checkpoint.get('action_size', None)
+    else:
+        action_size = None
+    if action_size is None:
+        # Fallback: infer action_size from examples (assuming action is index)
+        action_size = max([ex[2] for ex in examples]) + 1
+
+    model = AzulNet(
+        in_channels=in_channels,
+        global_size=global_size,
+        action_size=action_size
+    )
+    model = model.to(device)
+    if prev_checkpoint:
+        checkpoint = torch.load(prev_checkpoint, map_location=device)
+        # Support checkpoints with different key names
+        state_dict = checkpoint.get('model_state',
+                       checkpoint.get('state_dict',
+                                      checkpoint))
+        model.load_state_dict(state_dict)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
+
+    # Train
+    for epoch in range(1, args.epochs + 1):
+        trainer.fit(
+            train_loader=train_loader,
+            val_loader=val_loader,
+            epochs=epoch,
+            checkpoint_dir=args.checkpoint_dir
+        )
+        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
+        latest_checkpoint_path = os.path.join(args.checkpoint_dir, f"checkpoint_latest_{MACHINE_ID}.pt")
+        torch.save({'model_state': model.state_dict()}, checkpoint_path)
+        torch.save({'model_state': model.state_dict()}, latest_checkpoint_path)
+        print(f"Saved checkpoint: {checkpoint_path}")
+
+        # Periodic evaluation against previous checkpoint
+        if prev_checkpoint and (epoch % args.eval_interval == 0):
+            prev_model = AzulNet(in_channels, global_size, action_size)
+            prev_model.load_state_dict(torch.load(prev_checkpoint, map_location=device)['model_state'])
+            prev_model.to(device)
+            current_model = copy.deepcopy(model)
+            current_model.eval()
+            prev_model.eval()
+            from azul.env import AzulEnv
+            env = AzulEnv(num_players=2, factories_count=5, seed=SEED)
+            wins_current, wins_prev = evaluate_against_previous(
+                current_model, prev_model,
+                {'num_players': env.num_players, 'factories_count': env.N},
+                simulations=200, cpuct=1.0, n_games=args.eval_games
+            )
+            print(f"Eval at epoch {epoch}: current wins {wins_current}, previous wins {wins_prev}")
+            trainer.writer.add_scalar('eval/current_wins', wins_current, epoch)
+            trainer.writer.add_scalar('eval/previous_wins', wins_prev, epoch)
+
+            # Evaluación contra jugador heurístico
+            from players.heuristic_player import HeuristicPlayer
+            class HeuristicWrapper:
+                def predict(self, obs):
+                    player = HeuristicPlayer()
+                    return player.predict(obs)
+                def predict_without_mcts(self, obs):
+                    return self.predict(obs)
+            baseline_model = HeuristicWrapper()
+            wins_vs_heuristic, _ = evaluate_against_previous(
+                current_model, baseline_model,
+                {'num_players': env.num_players, 'factories_count': env.N},
+                simulations=200, cpuct=1.0, n_games=args.eval_games
+            )
+            print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
+            trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
+        prev_checkpoint = checkpoint_path
+
+if __name__ == "__main__":
+    main()
