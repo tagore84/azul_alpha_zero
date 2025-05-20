@@ -138,6 +138,7 @@ class MaximilianTimes(BasePlayer):
         self.num_crystals_factor = num_crystals_factor
         self.ruin_factor = ruin_factor
         self.total_seconds_thinking = 0.0
+        print("Estoy roto, hay que arreglarme")
 
     def predict(self, obs):
         original_state = GameState.from_obs(obs)

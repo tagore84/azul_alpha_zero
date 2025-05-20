@@ -1,9 +1,7 @@
-
-
 import subprocess
 import os
 
-CHECKPOINT_DIR = "data"
+CHECKPOINT_DIR = "data/checkpoint_dir/"
 TAG1 = "mac"
 TAG2 = "lg"
 MERGED_BUFFER = os.path.join(CHECKPOINT_DIR, "replay_buffer_merged.pt")
@@ -23,7 +21,7 @@ def main():
     # Select best model
     ckpt1 = os.path.join(CHECKPOINT_DIR, f"checkpoint_latest_{TAG1}.pt")
     ckpt2 = os.path.join(CHECKPOINT_DIR, f"checkpoint_latest_{TAG2}.pt")
-    best_cmd = f"python scripts/select_best_model.py {ckpt1} {ckpt2} {BEST_CHECKPOINT}"
+    best_cmd = f"python scripts/merge_select_best_model.py {ckpt1} {ckpt2} {BEST_CHECKPOINT}"
     run(best_cmd)
 
 if __name__ == "__main__":

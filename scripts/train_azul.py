@@ -138,12 +138,8 @@ def main():
             epochs=epoch,
             checkpoint_dir=args.checkpoint_dir
         )
-        checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
-        latest_checkpoint_path = os.path.join(args.checkpoint_dir, f"checkpoint_latest_{MACHINE_ID}.pt")
-        torch.save({'model_state': model.state_dict()}, checkpoint_path)
-        torch.save({'model_state': model.state_dict()}, latest_checkpoint_path)
-        print(f"Saved checkpoint: {checkpoint_path}")
-
+        
+        
         # Periodic evaluation against previous checkpoint
         if prev_checkpoint and (epoch % args.eval_interval == 0):
             prev_model = AzulNet(in_channels, global_size, action_size)
@@ -177,8 +173,11 @@ def main():
             )
             print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
             trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
-
-        prev_checkpoint = checkpoint_path
+        if epoch % args.eval_interval == 0:
+            checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
+            torch.save({'model_state': model.state_dict()}, checkpoint_path)
+            
+        
 
 if __name__ == "__main__":
     main()

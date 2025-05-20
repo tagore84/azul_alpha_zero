@@ -78,7 +78,7 @@ class Option:
             return self.slotNum  > other.slotNum
         else:
             # ALL_TO_FLOOR: queremos num mayor primero
-            return self.num       > other.num
+            return self.num       < other.num
 
     def __eq__(self, other):
         return (
@@ -98,6 +98,7 @@ class LilloExpertillo(BasePlayer):
     """
     def __init__(self):
         super().__init__()
+        print("Estoy roto, hay que arreglarme")
 
     def predict(self, obs):
         """

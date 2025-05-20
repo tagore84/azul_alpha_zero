@@ -91,7 +91,7 @@ def transfer_to_wall(wall: List[List[int]], pattern_line: List[int], row: int) -
         score += v_count
     return score
 
-def calculate_round_score(wall: List[List[int]], floor_line: List[int]) -> int:
+def calculate_floor_penalization(floor_line: List[int]) -> int:
     """
     Calculates the score for the round by evaluating the wall
     and the floor line according to the game rules.
@@ -101,7 +101,7 @@ def calculate_round_score(wall: List[List[int]], floor_line: List[int]) -> int:
     score = 0
     # Subtract penalties for each placed tile in the floor line
     for idx, tile in enumerate(floor_line):
-        if tile != 0:  # non-zero indicates a tile is present
+        if tile != -1:  # non-zero indicates a tile is present
             score += penalties[idx]
     return score
 

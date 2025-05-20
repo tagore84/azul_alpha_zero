@@ -145,9 +145,11 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
                 mcts.run()
                 action = mcts.select_action()
             obs, reward, done, info = env.step(action)
-        total_rewards = info.get('total_rewards', [0,0])
-        if total_rewards[0] > total_rewards[1]:
+        
+        winners = env.get_winner()
+        print(f"Game result: {winners}, info: {info}")
+        if 0 in env.get_winner():
             wins_current += 1
-        else:
+        elif 1 in env.get_winner():
             wins_prev += 1
     return wins_current, wins_prev

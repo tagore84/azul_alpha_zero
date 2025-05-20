@@ -60,9 +60,8 @@ tensorboard --logdir logs
 
 
 MERGE REPLAY BUFFER:
-AZUL_MACHINE_ID=mac python scripts/merge_replay_buffers.py data/replay_buffer_merged.pkl \
-    data/replay_buffer_mac.pkl data/replay_buffer_lg.pkl
-
+AZUL_MACHINE_ID=mac python scripts/merge_replay_buffers.py data/checkpoint_dir/replay_buffer_merged.pt \
+    data/checkpoint_dir/replay_buffer_mac.pt data/checkpoint_dir/replay_buffer_lg.pt
 CHOOSE BEST MODEL:
 AZUL_MACHINE_ID=mac python scripts/select_best_model.py \
     data/checkpoint_latest_mac.pt \
@@ -71,3 +70,4 @@ AZUL_MACHINE_ID=mac python scripts/select_best_model.py \
 
 MERGE ALL:
 AZUL_MACHINE_ID=mac python scripts/merge_all.py
+

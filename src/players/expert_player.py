@@ -18,27 +18,24 @@ class ExpertPlayer(BasePlayer):
         one_shot_row_action = None
         some_no_foor_action = None
         best_floor_action = None
-        floor_crystals = 0
+        floor_crystals = 1000
         for action in valid_actions:
             flat_action = action.item()
             factory, color, row = decode_action(flat_action)
             has_color = False
             empty_slots = 0
             number_crystals_of_color = 0
+            if factory < 5:
+                number_crystals_of_color = obs["factories"][factory][color]
+            else:
+                number_crystals_of_color = obs["center"][color]
+            empty_slots = row + 1
             if row < 5:
-                if factory < 5:
-                    for i in range(len(obs["factories"][factory])):
-                        if obs["factories"][factory][i] == color:
-                            number_crystals_of_color += 1
-                else:
-                    for i in range(len(obs["center"])):
-                        if obs["center"][i] == color:
-                            number_crystals_of_color += 1
                 for i in range(len(pattern_lines[row])):
-                    if pattern_lines[row][i] == -1:
-                        empty_slots += 1
-                    elif pattern_lines[row][i] == color:
-                        has_color = True
+                    if pattern_lines[row][i] > -1:
+                        empty_slots -= 1
+                        if pattern_lines[row][i] == color:
+                            has_color = True
                 if row < 5 and has_color and empty_slots == number_crystals_of_color:
                     complete_row_action = flat_action
                     break
@@ -47,15 +44,9 @@ class ExpertPlayer(BasePlayer):
                 if row < 5 and empty_slots >= number_crystals_of_color:
                     some_no_foor_action = flat_action
             else:
-                # Count crystals of this color on the current player's floor line
-                floor_line = obs["players"][current_player]["floor_line"]
-                number_crystals_of_color = 0
-                for tile in floor_line:
-                    if tile == color:
-                        number_crystals_of_color += 1
-                if best_floor_action is None or number_crystals_of_color > floor_crystals:
-                    best_floor_action = flat_action
+                if floor_crystals > number_crystals_of_color:
                     floor_crystals = number_crystals_of_color
+                    best_floor_action = flat_action
 
 
 

@@ -4,7 +4,9 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from azul.utils import render_obs
 from players.maximilian_times import MaximilianTimes
 from players.lillo_expertillo import LilloExpertillo
 from players.random_player import RandomPlayer
@@ -94,17 +96,19 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     players = {
-        "Heu": HeuristicPlayer(),
-        "A100B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=50, cpuct=0.5),
-        "A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
-        "A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
-        "A200B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=0.5),
-        "A200M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=5, cpuct=0.1),
-        "A200R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=10, cpuct=3.0),
+        #"Heu": HeuristicPlayer(),
+        "Alfa100": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=1.0),
+        #"A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
+        #"A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
+        #"A200B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=0.5),
+        #"A200M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=5, cpuct=0.1),
+        #"A200R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=10, cpuct=3.0),
         "Exp": ExpertPlayer(),
+        #"Exp2": ExpertPlayer(),
         "Rand": RandomPlayer(),
-        "Lillo": LilloExpertillo(),
-        "Maxi": MaximilianTimes(5, 2, 1.2, 1.0),
+        #"Lillo1": LilloExpertillo(),
+        #"Lillo2": LilloExpertillo(),
+        #"Maxi": MaximilianTimes(5, 1, 1.2, 1.0),
         # añade más aquí
     }
 

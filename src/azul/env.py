@@ -5,8 +5,8 @@ from gym import spaces
 import numpy as np
 from typing import Tuple
 
-from azul.utils import print_wall
-from .rules import validate_origin, place_on_pattern_line, transfer_to_wall, calculate_round_score, calculate_final_bonus, Color
+from azul.utils import print_floor, print_wall
+from .rules import validate_origin, place_on_pattern_line, transfer_to_wall, calculate_floor_penalization, calculate_final_bonus, Color
 import random  # Añade esto al principio del archivo
 from constants import SEED
 import copy  # Add this import at the top of the file if not present
@@ -70,6 +70,17 @@ class AzulEnv(gym.Env):
         # Initialize game
         self.reset()
         self.done = False
+
+    def get_winner(self):
+        """
+        Returns the index of the player with the highest score in array.
+        If there is a tie, returns the index of all winners.
+        """
+        if self.done:
+            scores = [p['score'] for p in self.players]
+            max_score = max(scores)
+            winners = [i for i, score in enumerate(scores) if score == max_score]
+        return winners if winners else []
 
     def reset(self, initial: bool = False):
         # Reset bag and discard
@@ -165,7 +176,7 @@ class AzulEnv(gym.Env):
             # Next player turn
             self.current_player = opponent
         obs = self._get_obs()
-        info = {}
+        info = {'p0_score': p['score'], 'p1_score': self.players[opponent]['score'], 'round': self.round_count}
         return obs, reward, done, info
 
     def _refill_factories(self):
@@ -211,16 +222,19 @@ class AzulEnv(gym.Env):
                     color = int(line[0])
                     pts = transfer_to_wall(p['wall'], line, row_idx)
                     p['score'] += pts
+                    if p == self.current_player: # ToDo remove this
+                        print_wall(p['wall'])
+                        print(f"Pts: {pts}")
                     # discard leftover tiles
                     leftover = len(line) - 1
                     self.discard[color] += leftover
                     p['pattern_lines'][row_idx] = np.full(len(line), -1, dtype=int)
             # floor line penalties
-            pen = calculate_round_score(p['wall'], p['floor_line'])
+            pen = calculate_floor_penalization(p['floor_line'])
             p['score'] += pen
             for tile in p['floor_line']:
-                if tile > 0:
-                    self.discard[int(tile)-1] += 1
+                if tile >= 0:
+                    self.discard[int(tile)] += 1
             p['floor_line'] = np.full(self.L_floor, -1, dtype=int)
             
 
