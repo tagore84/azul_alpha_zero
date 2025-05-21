@@ -49,9 +49,8 @@ def main():
 
     if not args.buffer or not os.path.exists(args.buffer):
         raise ValueError(f"Replay buffer not found: {args.buffer}")
-    import pickle
     with open(args.buffer, 'rb') as f:
-        saved = pickle.load(f)
+        saved = torch.load(args.buffer, map_location=device)
     examples = saved['examples']
     print(f"Loaded examples type: {type(examples)}, length: {len(examples)}")
     if len(examples) > 0:
