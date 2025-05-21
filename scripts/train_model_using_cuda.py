@@ -77,7 +77,7 @@ def main():
     # We assume the environment sizes are saved in the checkpoint or can be inferred
     # Here we infer from example observation shape
     print(f"Loaded examples type: {type(examples)}, length: {len(examples)}")
-    obs_example = examples[0][0]
+    obs_example = examples[0]['obs']
     total_obs_size = obs_example.shape[0]
     in_channels = total_obs_size // (5 * 5)
     spatial_size = in_channels * 5 * 5
