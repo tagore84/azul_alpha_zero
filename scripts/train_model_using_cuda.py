@@ -31,6 +31,15 @@ def main():
                         help='Number of games to play in each evaluation')
     parser.add_argument('--buffer', type=str, default=None, help='Path to the replay buffer to load')
     args = parser.parse_args()
+    
+    # Select device
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
+    print(f"Using device: {device}")
 
     prev_checkpoint = None
     best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pt')
@@ -63,15 +72,6 @@ def main():
     train_set, val_set = random_split(dataset, [train_size, val_size])
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
-
-    # Select device
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-    elif torch.backends.mps.is_available():
-        device = torch.device('mps')
-    else:
-        device = torch.device('cpu')
-    print(f"Using device: {device}")
 
     # Initialize environment sizes from saved examples
     # We assume the environment sizes are saved in the checkpoint or can be inferred
