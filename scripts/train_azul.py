@@ -131,53 +131,12 @@ def main():
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
 
     # Train
-    for epoch in range(1, args.epochs + 1):
-        trainer.fit(
-            train_loader=train_loader,
-            val_loader=val_loader,
-            epochs=epoch,
-            checkpoint_dir=args.checkpoint_dir
-        )
-        
-        
-        # Periodic evaluation against previous checkpoint
-        if prev_checkpoint and (epoch % args.eval_interval == 0):
-            prev_model = AzulNet(in_channels, global_size, action_size)
-            prev_model.load_state_dict(torch.load(prev_checkpoint, map_location=device)['model_state'])
-            prev_model.to(device)
-            current_model = copy.deepcopy(model)
-            current_model.eval()
-            prev_model.eval()
-            wins_current, wins_prev = evaluate_against_previous(
-                current_model, prev_model,
-                {'num_players': env.num_players, 'factories_count': env.N},
-                simulations=args.simulations, cpuct=args.cpuct, n_games=args.eval_games
-            )
-            print(f"Eval at epoch {epoch}: current wins {wins_current}, previous wins {wins_prev}")
-            trainer.writer.add_scalar('eval/current_wins', wins_current, epoch)
-            trainer.writer.add_scalar('eval/previous_wins', wins_prev, epoch)
-
-            # Evaluación contra jugador heurístico
-            from players.heuristic_player import HeuristicPlayer
-            class HeuristicWrapper:
-                def predict(self, obs):
-                    player = HeuristicPlayer()
-                    return player.predict(obs)
-                def predict_without_mcts(self, obs):
-                    return self.predict(obs)
-            baseline_model = HeuristicWrapper()
-            wins_vs_heuristic, _ = evaluate_against_previous(
-                current_model, baseline_model,
-                {'num_players': env.num_players, 'factories_count': env.N},
-                simulations=args.simulations, cpuct=args.cpuct, n_games=args.eval_games
-            )
-            print(f"Eval vs heuristic at epoch {epoch}: wins {wins_vs_heuristic}")
-            trainer.writer.add_scalar('eval/vs_heuristic_wins', wins_vs_heuristic, epoch)
-        if epoch % args.eval_interval == 0:
-            checkpoint_path = os.path.join(args.checkpoint_dir, f"model_epoch_{epoch:03}_{MACHINE_ID}.pt")
-            torch.save({'model_state': model.state_dict()}, checkpoint_path)
-            
-        
+    trainer.fit(
+        train_loader=train_loader,
+        val_loader=val_loader,
+        epochs=args.epochs,
+        checkpoint_dir=args.checkpoint_dir
+    )
 
 if __name__ == "__main__":
     main()

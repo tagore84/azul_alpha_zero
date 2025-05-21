@@ -95,3 +95,8 @@ class Trainer:
             if val_loader:
                 val_loss = self.evaluate(val_loader, epoch)
                 print(f"Epoch {epoch}/{epochs} - Val   Loss: {val_loss:.4f}")
+
+            if checkpoint_dir:
+                os.makedirs(checkpoint_dir, exist_ok=True)
+                checkpoint_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch:03}.pt")
+                torch.save({'model_state': self.model.state_dict()}, checkpoint_path)
