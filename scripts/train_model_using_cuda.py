@@ -89,8 +89,8 @@ def main():
     else:
         action_size = None
     if action_size is None:
-        # Fallback: infer action_size from examples (assuming action is index)
-        action_size = max([ex[2] for ex in examples]) + 1
+        # Fallback: infer action_size from examples (assuming action is the index of the highest probability in 'pi')
+        action_size = max([ex['pi'].argmax().item() for ex in examples]) + 1
 
     model = AzulNet(
         in_channels=in_channels,
@@ -117,7 +117,7 @@ def main():
         checkpoint_dir=args.checkpoint_dir
     )
     last_checkpoint_path = os.path.join(args.checkpoint_dir, f"last_checkpoint_model.pt")
-    torch.save({'model_state': model.state_dict()}, checkpoint_path)
+    torch.save({'model_state': model.state_dict()}, last_checkpoint_path)
 
 if __name__ == "__main__":
     main()
