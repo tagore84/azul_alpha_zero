@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--base_model', type=str, default=None,
                         help='Path to a model checkpoint to resume training from')
     parser.add_argument('--base_dataset', type=str, default=None, help='Path to a dataset to resume training from')
-    parser.add_argument('--new_dataset', type=str, default=None, help='Path to a dataset to resume training from')
+    parser.add_argument('--last_dataset', type=str, default=None, help='Path to a dataset to resume training from')
     parser.add_argument('--eval_interval', type=int, default=10,
                         help='Number of epochs between self-play evaluations')
     parser.add_argument('--eval_games',    type=int, default=20,
@@ -42,13 +42,13 @@ def main():
 
     base_model = None
     base_dataset = None
-    new_dataset = None
+    last_dataset = None
     if args.base_model:
         base_model = args.base_model
     if args.base_dataset:
         base_dataset = args.base_dataset
-    if args.new_dataset:
-        new_dataset = args.new_dataset
+    if args.last_dataset:
+        last_dataset = args.last_dataset
         
     # Select device
     if torch.cuda.is_available():
@@ -88,7 +88,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
     
-    new_examples = torch.load(new_dataset, weights_only=False)
+    new_examples = torch.load(last_dataset, weights_only=False)
     if base_dataset:
         print(f"Loading base dataset from {base_dataset}")
         historical = torch.load(base_dataset, weights_only=False)
