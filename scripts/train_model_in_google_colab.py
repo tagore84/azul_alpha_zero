@@ -88,7 +88,10 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
     
-    new_examples = torch.load(last_dataset, weights_only=False)
+    new_examples_data = torch.load(last_dataset, weights_only=False)
+    new_examples = new_examples_data['examples']
+    if not isinstance(new_examples, list):
+        raise ValueError("The loaded dataset must contain a list under the 'examples' key")
     print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
         historical = torch.load(base_dataset, weights_only=False)
