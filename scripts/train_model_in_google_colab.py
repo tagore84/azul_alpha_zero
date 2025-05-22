@@ -89,10 +89,10 @@ def main():
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
     
     new_examples = torch.load(last_dataset, weights_only=False)
+    print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
-        print(f"Loading base dataset from {base_dataset}")
         historical = torch.load(base_dataset, weights_only=False)
-        
+        print(f"Loaded base dataset: {type(historical)}, length: {len(historical)}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= 50000:
             examples = new_examples[-50000:]
