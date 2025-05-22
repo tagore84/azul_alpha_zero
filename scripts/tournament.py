@@ -97,7 +97,9 @@ if __name__ == "__main__":
 
     players = {
         #"Heu": HeuristicPlayer(),
-        "Alfa100": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=1.0),
+        "Alfa240": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_best.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa250": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_050.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"Alfa240": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_040_mac.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
         #"A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
         #"A200B": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=50, cpuct=0.5),
