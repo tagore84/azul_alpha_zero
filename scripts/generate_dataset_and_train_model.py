@@ -1,7 +1,6 @@
 import sys
 import os
 from datetime import datetime
-MACHINE_ID = os.environ.get("AZUL_MACHINE_ID", "default")
 # Add project src folder to PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from constants import SEED
@@ -16,7 +15,8 @@ from azul.env import AzulEnv
 from train.self_play import generate_self_play_games
 from train.dataset import AzulDataset
 from train.trainer import Trainer
-
+import random
+    
 
 
 def main():
@@ -31,29 +31,22 @@ def main():
     parser.add_argument('--train_ratio', type=float, default=0.9, help='Fraction of data for training')
     parser.add_argument('--log_dir', type=str, default='logs', help='TensorBoard log directory')
     parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoint_dir', help='Directory to save checkpoints')
-    parser.add_argument('--resume', type=str, default=None,
+    parser.add_argument('--base_model', type=str, default=None,
                         help='Path to a model checkpoint to resume training from')
+    parser.add_argument('--base_dataset', type=str, default=None, help='Path to a dataset to resume training from')
     parser.add_argument('--eval_interval', type=int, default=10,
                         help='Number of epochs between self-play evaluations')
     parser.add_argument('--eval_games',    type=int, default=20,
                         help='Number of games to play in each evaluation')
     args = parser.parse_args()
 
-    prev_checkpoint = None
-    best_checkpoint = os.path.join(args.checkpoint_dir, 'checkpoint_best.pt')
-    if args.resume:
-        checkpoint_path = args.resume
-        print(f"Resuming from checkpoint: {checkpoint_path}")
-        prev_checkpoint = checkpoint_path
-    elif os.path.exists(best_checkpoint):
-        print(f"Auto-loading best checkpoint from {best_checkpoint}")
-        prev_checkpoint = best_checkpoint
-    else:
-        default_latest = os.path.join(args.checkpoint_dir, f'checkpoint_latest_{MACHINE_ID}.pt')
-        if os.path.exists(default_latest):
-            print(f"Auto-loading latest checkpoint from {default_latest}")
-            prev_checkpoint = default_latest
-
+    base_model = None
+    base_dataset = None
+    if args.base_model:
+        base_model = args.base_model
+    if args.base_dataset:
+        base_dataset = args.base_dataset
+        
     # Select device
     if torch.cuda.is_available():
         device = torch.device('cuda')
@@ -82,20 +75,19 @@ def main():
         action_size=action_size
     )
     model = model.to(device)
-    if prev_checkpoint:
-        checkpoint = torch.load(prev_checkpoint, map_location=device)
-        # Support checkpoints with different key names
+    if base_model:
+        checkpoint = torch.load(base_model, map_location=device)
         state_dict = checkpoint.get('model_state',
-                       checkpoint.get('state_dict',
-                                      checkpoint))
+                       checkpoint.get('state_dict', checkpoint))
         model.load_state_dict(state_dict)
+    
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
 
     # Generate self-play data
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Generating self-play games...")
-    examples = generate_self_play_games(
+    new_examples = generate_self_play_games(
         verbose=args.verbose,
         n_games=args.n_games,
         env=env,
@@ -103,25 +95,27 @@ def main():
         simulations=args.simulations,
         cpuct=args.cpuct
     )
-    print(f"Generated {len(examples)} examples")
-
-    merged_buffer = os.path.join(args.checkpoint_dir, 'replay_buffer_merged.pt')
-    if os.path.exists(merged_buffer):
-        print(f"Loading merged replay buffer from {merged_buffer}")
-        saved = torch.load(merged_buffer, weights_only=False)
-        examples += saved['examples']
+    print(f"Generated {len(new_examples)} examples")
+    torch.save({'examples': new_examples}, os.path.join(args.checkpoint_dir, 'last_dataset.pt'))
+    examples = None
+    if base_dataset:
+        print(f"Loading base dataset from {base_dataset}")
+        historical = torch.load(base_dataset, weights_only=False)
+        torch.save({'examples': historical['examples'] + new_examples}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
+        random.seed(SEED)  # Usa la misma semilla para consistencia
+        if len(new_examples) >= 50000:
+            examples = new_examples[-50000:]
+        else:
+            num_old_needed = 50000 - len(new_examples)
+            selected_old_examples = random.sample(historical['examples'], min(len(historical['examples']), num_old_needed))
+            examples = selected_old_examples + new_examples
+        random.shuffle(examples)
     else:
-        replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
-        if os.path.exists(replay_buffer_latest):
-            print(f"Loading replay buffer from {replay_buffer_latest}")
-            saved = torch.load(replay_buffer_latest, weights_only=False)
-            examples += saved['examples']
-    if len(examples) > 50000:
-        examples = examples[-50000:]
+        examples = new_examples
+        all_historical = new_examples
+        torch.save({'examples': all_historical}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
 
-    replay_buffer_latest = os.path.join(args.checkpoint_dir, f'replay_buffer_{MACHINE_ID}.pt')
-    torch.save({'examples': examples}, replay_buffer_latest)
-    print(f"Saved replay buffer to {replay_buffer_latest}")
+    
     
     dataset = AzulDataset(examples.copy())
     train_size = int(len(dataset) * args.train_ratio)
@@ -137,6 +131,7 @@ def main():
         epochs=args.epochs,
         checkpoint_dir=args.checkpoint_dir
     )
+    torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
 
 if __name__ == "__main__":
     main()
