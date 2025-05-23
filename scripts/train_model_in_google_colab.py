@@ -135,5 +135,16 @@ def main():
     print(f"Training completed. Saving model to {os.path.join(args.checkpoint_dir, 'model_checkpoint.pt')}")
     torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
 
+    # Guardar backup del dataset histórico antes de sobrescribirlo
+    if base_dataset and historical:
+        backup_path = base_dataset.replace('.pt', '_backup.pt')
+        torch.save(historical, backup_path)
+        print(f"Backup del dataset histórico guardado en: {backup_path}")
+
+        # Combinar ejemplos nuevos e históricos y guardar
+        combined_examples = {'examples': examples}
+        torch.save(combined_examples, base_dataset)
+        print(f"Dataset combinado guardado en: {base_dataset}")
+
 if __name__ == "__main__":
     main()
