@@ -97,7 +97,7 @@ def main():
         raise ValueError("The loaded dataset must contain a list under the 'examples' key")
     print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
-        historical = torch.load(base_dataset)
+        historical = torch.load(base_dataset, weights_only=False)
         print(f"Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= args.max_dataset_size:
