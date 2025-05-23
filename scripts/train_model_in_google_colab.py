@@ -38,6 +38,8 @@ def main():
                         help='Number of epochs between self-play evaluations')
     parser.add_argument('--eval_games',    type=int, default=20,
                         help='Number of games to play in each evaluation')
+    parser.add_argument('--max_dataset_size', type=int, default=50000,
+                        help='Maximum number of examples to keep in the training dataset')
     args = parser.parse_args()
 
     base_model = None
@@ -98,10 +100,10 @@ def main():
         historical = torch.load(base_dataset, weights_only=False)
         print(f"Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
-        if len(new_examples) >= 50000:
-            examples = new_examples[-50000:]
+        if len(new_examples) >= args.max_dataset_size:
+            examples = new_examples[-args.max_dataset_size:]
         else:
-            num_old_needed = 50000 - len(new_examples)
+            num_old_needed = args.max_dataset_size - len(new_examples)
             selected_old_examples = random.sample(historical['examples'], min(len(historical['examples']), num_old_needed))
             examples = selected_old_examples + new_examples
         random.shuffle(examples)

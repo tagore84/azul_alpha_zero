@@ -38,6 +38,8 @@ def main():
                         help='Number of epochs between self-play evaluations')
     parser.add_argument('--eval_games',    type=int, default=20,
                         help='Number of games to play in each evaluation')
+    parser.add_argument('--max_dataset_size', type=int, default=50000,
+                        help='Maximum number of examples to keep in the training dataset')
     args = parser.parse_args()
 
     base_model = None
@@ -102,10 +104,10 @@ def main():
         print(f"Loading base dataset from {base_dataset}")
         historical = torch.load(base_dataset, weights_only=False)
         random.seed(SEED)  # Usa la misma semilla para consistencia
-        if len(new_examples) >= 50000:
-            examples = new_examples[-50000:]
+        if len(new_examples) >= args.max_dataset_size:
+            examples = new_examples[-args.max_dataset_size:]
         else:
-            num_old_needed = 50000 - len(new_examples)
+            num_old_needed = args.max_dataset_size - len(new_examples)
             selected_old_examples = random.sample(historical['examples'], min(len(historical['examples']), num_old_needed))
             examples = selected_old_examples + new_examples
         random.shuffle(examples)
@@ -121,6 +123,8 @@ def main():
     train_set, val_set = random_split(dataset, [train_size, val_size])
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
+
+    print(f"Training with {len(train_set)} examples, validation with {len(val_set)} examples, total: {len(dataset)}")
 
     # Train
     trainer.fit(
