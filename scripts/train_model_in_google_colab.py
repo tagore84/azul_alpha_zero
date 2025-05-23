@@ -84,7 +84,7 @@ def main():
         state_dict = checkpoint.get('model_state',
                        checkpoint.get('state_dict', checkpoint))
         model.load_state_dict(state_dict)
-    
+    print(f"Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
