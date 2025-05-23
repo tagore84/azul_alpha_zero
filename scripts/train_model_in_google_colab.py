@@ -113,10 +113,13 @@ def main():
 
     
     
-    dataset = AzulDataset(examples.copy())
+    dataset = AzulDataset(examples.copy(), augment_factories=True)
     train_size = int(len(dataset) * args.train_ratio)
     val_size = len(dataset) - train_size
-    train_set, val_set = random_split(dataset, [train_size, val_size])
+    train_examples = examples[:train_size]
+    val_examples = examples[train_size:]
+    train_set = AzulDataset(train_examples, augment_factories=True)
+    val_set = AzulDataset(val_examples, augment_factories=False)
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
 
