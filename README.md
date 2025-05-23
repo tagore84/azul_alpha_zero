@@ -210,3 +210,5 @@ This project is licensed under the MIT License.
 The following diagram illustrates the neural network architecture used in Azul Zero:
 
 ![AzulNet Architecture](./docs/azul_net_architecture.png)
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tagore84/azul_alpha_zero)
