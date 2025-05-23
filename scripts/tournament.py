@@ -37,45 +37,47 @@ def expected_score(rating_a, rating_b):
 def update_elo(rating, expected, score, k=32):
     return rating + k * (score - expected)
 
-def run_tournament(players, num_games, base_rating=1500):
-    ratings = {name: base_rating for name in players}
-    # Crea un array con 0's por cada jugador
-    wins = {name: 0 for name in players}
-    # Head-to-head wins matrix: filas=ganador, columnas=perdedor
-    results_matrix = {
-        name: {opponent: 0 for opponent in players if opponent != name}
-        for name in players
-    }
+def run_tournament(players, num_games, base_rating=1500, num_passes=20):
+    match_results = []
     for i, (name_a, A) in enumerate(players.items()):
         for name_b, B in list(players.items())[i+1:]:
             for _ in range(num_games):
                 print(f"Jugando {name_a} vs {name_b} - Partida {_ + 1}/{num_games}")
                 scores = play_game(A, B)
-                # asumimos jugador 0 → A, 1 → B
-                if scores[0] > scores[1]:
-                    result_a, result_b = 1, 0
-                    wins[name_a] += 1
-                    # Update head-to-head matrix
-                    if result_a == 1:
-                        results_matrix[name_a][name_b] += 1
-                    elif result_b == 1:
-                        results_matrix[name_b][name_a] += 1
-                elif scores[0] < scores[1]:
-                    result_a, result_b = 0, 1
-                    wins[name_b] += 1
-                    # Update head-to-head matrix
-                    if result_a == 1:
-                        results_matrix[name_a][name_b] += 1
-                    elif result_b == 1:
-                        results_matrix[name_b][name_a] += 1
-                else:
-                    result_a = result_b = 0.5
-                ea = expected_score(ratings[name_a], ratings[name_b])
-                eb = expected_score(ratings[name_b], ratings[name_a])
-                ratings[name_a] = update_elo(ratings[name_a], ea, result_a)
-                ratings[name_b] = update_elo(ratings[name_b], eb, result_b)
+                match_results.append((name_a, name_b, scores[0], scores[1]))
                 print(f"Resultados: {name_a} {scores[0]} - {name_b} {scores[1]}")
                 print("\n")
+
+    import random
+    ratings = {name: base_rating for name in players}
+
+    for _ in range(num_passes):
+        random.shuffle(match_results)
+        for name_a, name_b, score_a, score_b in match_results:
+            if score_a > score_b:
+                result_a, result_b = 1, 0
+            elif score_a < score_b:
+                result_a, result_b = 0, 1
+            else:
+                result_a = result_b = 0.5
+            ea = expected_score(ratings[name_a], ratings[name_b])
+            eb = expected_score(ratings[name_b], ratings[name_a])
+            ratings[name_a] = update_elo(ratings[name_a], ea, result_a)
+            ratings[name_b] = update_elo(ratings[name_b], eb, result_b)
+
+    wins = {name: 0 for name in players}
+    results_matrix = {
+        name: {opponent: 0 for opponent in players if opponent != name}
+        for name in players
+    }
+    for name_a, name_b, score_a, score_b in match_results:
+        if score_a > score_b:
+            wins[name_a] += 1
+            results_matrix[name_a][name_b] += 1
+        elif score_b > score_a:
+            wins[name_b] += 1
+            results_matrix[name_b][name_a] += 1
+
     print("Resultados finales:")
     sorted_ratings = sorted(ratings.items(), key=lambda x: x[1], reverse=True)
     for i, (name, rating) in enumerate(sorted_ratings):
@@ -92,13 +94,16 @@ def run_tournament(players, num_games, base_rating=1500):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--games", type=int, default=5, help="Partidas por enfrentamiento")
+    parser.add_argument("--n_games", type=int, default=5, help="Partidas por enfrentamiento")
+    parser.add_argument("--n_passes", type=int, default=20, help="Número de pasadas para cálculo de Elo")
     args = parser.parse_args()
 
     players = {
         #"Heu": HeuristicPlayer(),
-        "Alfa240": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_best.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "Alfa250": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_050.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa200": DeepMCTSPlayer("data/model_history/model_checkpoint_200.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa300": DeepMCTSPlayer("data/model_history/model_checkpoint_300.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa40g": DeepMCTSPlayer("data/model_history/model_checkpoint_400_g.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa40m": DeepMCTSPlayer("data/model_history/model_checkpoint_400.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"Alfa240": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_040_mac.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
         #"A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
@@ -114,4 +119,4 @@ if __name__ == "__main__":
         # añade más aquí
     }
 
-    final_ratings = run_tournament(players, num_games=args.games)
+    final_ratings = run_tournament(players, num_games=args.n_games, num_passes=args.n_passes)

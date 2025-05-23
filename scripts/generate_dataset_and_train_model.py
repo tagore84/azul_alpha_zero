@@ -101,7 +101,6 @@ def main():
     if base_dataset:
         print(f"Loading base dataset from {base_dataset}")
         historical = torch.load(base_dataset, weights_only=False)
-        torch.save({'examples': historical['examples'] + new_examples}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= 50000:
             examples = new_examples[-50000:]
@@ -112,8 +111,7 @@ def main():
         random.shuffle(examples)
     else:
         examples = new_examples
-        all_historical = new_examples
-        torch.save({'examples': all_historical}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
+        
 
     
     
@@ -132,6 +130,7 @@ def main():
         checkpoint_dir=args.checkpoint_dir
     )
     torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
-
+    if base_dataset:    
+        torch.save({'examples': historical['examples'] + new_examples}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
 if __name__ == "__main__":
     main()

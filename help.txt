@@ -1,6 +1,9 @@
+source .venv/bin/activate
+
 caffeinate python3 scripts/generate_dataset_and_train_model.py \
   --n_games 100 \
   --simulations 200 \
+  --log_dir logs \
   --epochs 40 \
   --eval_interval 20 \
   --eval_games 10 \
@@ -10,6 +13,7 @@ caffeinate python3 scripts/generate_dataset_and_train_model.py \
   --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
   --base_model data/checkpoint_dir/model_checkpoint.pt
 
+caffeinate python3 scripts/tournament.py --n_games 100
 
 
 ToDo:

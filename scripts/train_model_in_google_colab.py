@@ -80,6 +80,7 @@ def main():
     model = model.to(device)
     if base_model:
         checkpoint = torch.load(base_model, map_location=device)
+        print(f"Loaded base model: {base_model}")
         state_dict = checkpoint.get('model_state',
                        checkpoint.get('state_dict', checkpoint))
         model.load_state_dict(state_dict)
@@ -95,7 +96,7 @@ def main():
     print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
         historical = torch.load(base_dataset, weights_only=False)
-        print(f"Loaded base dataset: {type(historical)}, length: {len(historical)}")
+        print(f"Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= 50000:
             examples = new_examples[-50000:]
@@ -117,6 +118,8 @@ def main():
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
 
+    # Print training/validation set sizes
+    print(f"Training with {len(train_set)} examples, validation with {len(val_set)} examples, total: {len(dataset)}")
     # Train
     trainer.fit(
         train_loader=train_loader,
@@ -124,6 +127,7 @@ def main():
         epochs=args.epochs,
         checkpoint_dir=args.checkpoint_dir
     )
+    print(f"Training completed. Saving model to {os.path.join(args.checkpoint_dir, 'model_checkpoint.pt')}")
     torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
 
 if __name__ == "__main__":
