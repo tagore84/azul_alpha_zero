@@ -11,9 +11,11 @@ caffeinate python3 scripts/generate_dataset_and_train_model.py \
   --lr 2e-3 \
   --batch_size 128 \
   --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
-  --base_model data/checkpoint_dir/model_checkpoint.pt
+  --base_model data/checkpoint_dir/model_checkpoint.pt\
+  --max_dataset_size 100000
 
-caffeinate python3 scripts/tournament.py --n_games 100
+
+caffeinate python3 scripts/tournament.py --n_games 100 --n_passes 50
 
 
 ToDo:

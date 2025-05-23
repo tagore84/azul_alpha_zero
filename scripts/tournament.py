@@ -100,10 +100,11 @@ if __name__ == "__main__":
 
     players = {
         #"Heu": HeuristicPlayer(),
-        "Alfa200": DeepMCTSPlayer("data/model_history/model_checkpoint_200.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "Alfa300": DeepMCTSPlayer("data/model_history/model_checkpoint_300.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"Alfa200": DeepMCTSPlayer("data/model_history/model_checkpoint_200.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"Alfa300": DeepMCTSPlayer("data/model_history/model_checkpoint_300.pt", device="cpu", mcts_iters=1, cpuct=0),
         "Alfa40g": DeepMCTSPlayer("data/model_history/model_checkpoint_400_g.pt", device="cpu", mcts_iters=1, cpuct=0),
         "Alfa40m": DeepMCTSPlayer("data/model_history/model_checkpoint_400.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa4gA": DeepMCTSPlayer("data/model_history/model_checkpoint_g_50_a.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"Alfa240": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_040_mac.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
         #"A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),

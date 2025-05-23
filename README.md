@@ -124,13 +124,19 @@ python3 scripts/demo_mcts.py \
 ### Train the Neural Network
 
 ```bash
-python3 scripts/train_azul.py \
+caffeinate python3 scripts/generate_dataset_and_train_model.py \
   --n_games 100 \
   --simulations 200 \
-  --epochs 20 \
-  --eval_interval 5 \
-  --eval_games 100 \
-  --resume checkpoints/model_epoch_20.pt
+  --log_dir logs \
+  --epochs 40 \
+  --eval_interval 20 \
+  --eval_games 10 \
+  --checkpoint_dir data/checkpoint_dir \
+  --lr 2e-3 \
+  --batch_size 128 \
+  --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
+  --base_model data/checkpoint_dir/model_checkpoint.pt\
+  --max_dataset_size 100000
 ```
 
 Key options:
@@ -140,7 +146,6 @@ Key options:
 - `--epochs`: Training epochs per run.  
 - `--eval_interval`: Evaluate against previous network every N epochs.  
 - `--eval_games`: Number of games in each evaluation.  
-- `--resume`: Path to a checkpoint to continue training.
 
 ### Distributed Training & Merging
 
