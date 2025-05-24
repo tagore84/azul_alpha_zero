@@ -22,9 +22,6 @@ import random
 def main():
     parser = argparse.ArgumentParser(description="Train Azul Zero network via self-play")
     parser.add_argument('--verbose', type=bool, default=False, help='Logging verbosity')
-    parser.add_argument('--n_games', type=int, default=100, help='Number of self-play games to generate')
-    parser.add_argument('--simulations', type=int, default=200, help='MCTS simulations per move')
-    parser.add_argument('--cpuct', type=float, default=1.0, help='MCTS exploration constant')
     parser.add_argument('--batch_size', type=int, default=64, help='Training batch size')
     parser.add_argument('--epochs', type=int, default=20, help='Number of training epochs')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
@@ -34,20 +31,20 @@ def main():
     parser.add_argument('--base_model', type=str, default=None,
                         help='Path to a model checkpoint to resume training from')
     parser.add_argument('--base_dataset', type=str, default=None, help='Path to a dataset to resume training from')
-    parser.add_argument('--eval_interval', type=int, default=10,
-                        help='Number of epochs between self-play evaluations')
-    parser.add_argument('--eval_games',    type=int, default=20,
-                        help='Number of games to play in each evaluation')
+    parser.add_argument('--last_dataset', type=str, default=None, help='Path to a dataset to resume training from')
     parser.add_argument('--max_dataset_size', type=int, default=50000,
                         help='Maximum number of examples to keep in the training dataset')
     args = parser.parse_args()
 
     base_model = None
     base_dataset = None
+    last_dataset = None
     if args.base_model:
         base_model = args.base_model
     if args.base_dataset:
         base_dataset = args.base_dataset
+    if args.last_dataset:
+        last_dataset = args.last_dataset
         
     # Select device
     if torch.cuda.is_available():
@@ -79,53 +76,49 @@ def main():
     model = model.to(device)
     if base_model:
         checkpoint = torch.load(base_model, map_location=device)
+        print(f"Loaded base model: {base_model}")
         state_dict = checkpoint.get('model_state',
                        checkpoint.get('state_dict', checkpoint))
         model.load_state_dict(state_dict)
-    
+        torch.save({'model_state': model.state_dict()}, base_model.replace('.pt', '_prev.pt'))
+    print(f"Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
-
-    # Generate self-play data
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Generating self-play games...")
-    new_examples = generate_self_play_games(
-        verbose=args.verbose,
-        n_games=args.n_games,
-        env=env,
-        model=model,
-        simulations=args.simulations,
-        cpuct=args.cpuct
-    )
-    print(f"Generated {len(new_examples)} examples")
-    torch.save({'examples': new_examples}, os.path.join(args.checkpoint_dir, 'last_dataset.pt'))
-    examples = None
+    
+    new_examples_data = torch.load(last_dataset, weights_only=False)
+    new_examples = new_examples_data['examples']
+    if not isinstance(new_examples, list):
+        raise ValueError("The loaded dataset must contain a list under the 'examples' key")
+    print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
-        print(f"Loading base dataset from {base_dataset}")
         historical = torch.load(base_dataset, weights_only=False)
+        print(f"Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= args.max_dataset_size:
             examples = new_examples[-args.max_dataset_size:]
         else:
             num_old_needed = args.max_dataset_size - len(new_examples)
-            selected_old_examples = random.sample(historical['examples'], min(len(historical['examples']), num_old_needed))
+            selected_old_examples = historical['examples'][-num_old_needed:]
             examples = selected_old_examples + new_examples
-        random.shuffle(examples)
     else:
         examples = new_examples
         
-
+    shuffled_examples = examples.copy()
+    random.shuffle(shuffled_examples)
     
-    
-    dataset = AzulDataset(examples.copy())
-    train_size = int(len(dataset) * args.train_ratio)
-    val_size = len(dataset) - train_size
-    train_set, val_set = random_split(dataset, [train_size, val_size])
+    dataset = AzulDataset(examples.copy(), augment_factories=True)
+    train_size = int(len(shuffled_examples) * args.train_ratio)
+    val_size = len(shuffled_examples) - train_size
+    train_examples = shuffled_examples[:train_size]
+    val_examples = shuffled_examples[train_size:]
+    train_set = AzulDataset(train_examples, augment_factories=True)
+    val_set = AzulDataset(val_examples, augment_factories=False)
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
 
+    # Print training/validation set sizes
     print(f"Training with {len(train_set)} examples, validation with {len(val_set)} examples, total: {len(dataset)}")
-
     # Train
     trainer.fit(
         train_loader=train_loader,
@@ -133,8 +126,19 @@ def main():
         epochs=args.epochs,
         checkpoint_dir=args.checkpoint_dir
     )
+    print(f"Training completed. Saving model to {os.path.join(args.checkpoint_dir, 'model_checkpoint.pt')}")
     torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
-    if base_dataset:    
-        torch.save({'examples': historical['examples'] + new_examples}, os.path.join(args.checkpoint_dir, 'all_historical_dataset.pt'))
+
+    # Guardar backup del dataset histórico antes de sobrescribirlo
+    if base_dataset and historical:
+        backup_path = base_dataset.replace('.pt', '_backup.pt')
+        torch.save(historical, backup_path)
+        print(f"Backup del dataset histórico guardado en: {backup_path}")
+
+        # Combinar ejemplos nuevos e históricos y guardar
+        combined_examples = {'examples': examples}
+        torch.save(combined_examples, base_dataset)
+        print(f"Dataset combinado guardado en: {base_dataset}")
+
 if __name__ == "__main__":
     main()

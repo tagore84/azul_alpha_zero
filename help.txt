@@ -1,54 +1,21 @@
 source .venv/bin/activate
 
-caffeinate python3 scripts/generate_dataset_and_train_model.py \
-  --n_games 100 \
-  --simulations 200 \
-  --log_dir logs \
-  --epochs 40 \
-  --eval_interval 20 \
-  --eval_games 10 \
+caffeinate python3 scripts/generate_dataset.py \
+  --n_games 500 \
+  --simulations 250 \
   --checkpoint_dir data/checkpoint_dir \
-  --lr 2e-3 \
-  --batch_size 128 \
-  --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
-  --base_model data/checkpoint_dir/model_checkpoint.pt\
-  --max_dataset_size 100000
+  --base_model data/checkpoint_dir/model_checkpoint.pt
 
 
 caffeinate python3 scripts/tournament.py --n_games 100 --n_passes 50
 
-
-ToDo:
-  1.	Entrenamiento con aprendizaje por refuerzo y MCTS para el juego de mesa Azul:
-	  •	El agente utiliza MCTS con 200 simulaciones por movimiento para tomar decisiones durante las partidas.
-	2.	Experience Replay:
-	  •	Permite almacenar experiencias pasadas (estados, acciones, recompensas) en un búfer, y entrenar el modelo con muestras aleatorias de ese búfer.
-	  •	Se vuelve más efectiva con el tiempo, al combinar experiencias de múltiples ejecuciones, enriqueciendo el entrenamiento y evitando el sobreajuste a experiencias recientes.
-	3.	Entrenamiento iterativo vs. entrenamiento en bloque:
-	  •	Entrenar el modelo de manera iterativa, es decir, en ciclos donde se generan partidas, se entrena el modelo, y se repite el proceso, suele ser más efectivo.
-	  •	Esto permite retroalimentación continua, mejor uso de los datos, adaptación progresiva y detección temprana de problemas.
-	4.	Tamaño del dataset y número de partidas:
-	  •	Para un juego como Azul, un dataset inicial de decenas de miles de estados podría requerir alrededor de 100 a 500 partidas, mientras que un dataset más robusto (cientos de miles o millones de estados) podría requerir miles de partidas.
-	5.	Estimación del tiempo de simulación:
-	  •	Con 200 simulaciones por movimiento en un MacBook Pro, simular 5,000 partidas podría tardar alrededor de 5 días de ejecución continua.
-	6.	Importancia del enfoque iterativo:
-	•	Entrenar de forma iterativa suele ser más beneficioso que entrenar todo el modelo de una sola vez al final, ya que mejora la adaptabilidad del agente, permite ajustes graduales y optimiza el uso de los datos.
-
-
-
-LOGS:
-tensorboard --logdir logs
-
-
-MERGE REPLAY BUFFER:
-AZUL_MACHINE_ID=mac python scripts/merge_replay_buffers.py data/checkpoint_dir/replay_buffer_merged.pt \
-    data/checkpoint_dir/replay_buffer_mac.pt data/checkpoint_dir/replay_buffer_lg.pt
-CHOOSE BEST MODEL:
-AZUL_MACHINE_ID=mac python scripts/select_best_model.py \
-    data/checkpoint_latest_mac.pt \
-    data/checkpoint_latest_lg.pt \
-    data/checkpoint_best.pt
-
-MERGE ALL:
-AZUL_MACHINE_ID=mac python scripts/merge_all.py
-
+caffeinate python3 scripts/train_model.py \
+  --log_dir logs \
+  --epochs 3 \
+  --checkpoint_dir data/checkpoint_dir \
+  --lr 5e-4 \
+  --batch_size 128 \
+  --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
+  --last_dataset data/checkpoint_dir/last_dataset.pt \
+  --base_model data/checkpoint_dir/model_checkpoint.pt \
+  --max_dataset_size 300000

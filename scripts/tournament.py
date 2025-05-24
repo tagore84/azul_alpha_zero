@@ -3,7 +3,7 @@
 
 import os
 import sys
-
+import random
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from azul.utils import render_obs
@@ -42,13 +42,19 @@ def run_tournament(players, num_games, base_rating=1500, num_passes=20):
     for i, (name_a, A) in enumerate(players.items()):
         for name_b, B in list(players.items())[i+1:]:
             for _ in range(num_games):
-                print(f"Jugando {name_a} vs {name_b} - Partida {_ + 1}/{num_games}")
-                scores = play_game(A, B)
-                match_results.append((name_a, name_b, scores[0], scores[1]))
-                print(f"Resultados: {name_a} {scores[0]} - {name_b} {scores[1]}")
+                if random.random() < 0.5:
+                    current_name_a, current_name_b = name_b, name_a
+                    current_A, current_B = B, A
+                else:
+                    current_name_a, current_name_b = name_a, name_b
+                    current_A, current_B = A, B
+                print(f"Jugando {current_name_a} vs {current_name_b} - Partida {_ + 1}/{num_games}")
+                scores = play_game(current_A, current_B)
+                match_results.append((current_name_a, current_name_b, scores[0], scores[1]))
+                print(f"Resultados: {current_name_a} {scores[0]} - {current_name_b} {scores[1]}")
                 print("\n")
 
-    import random
+    
     ratings = {name: base_rating for name in players}
 
     for _ in range(num_passes):
@@ -100,11 +106,14 @@ if __name__ == "__main__":
 
     players = {
         #"Heu": HeuristicPlayer(),
-        #"Alfa200": DeepMCTSPlayer("data/model_history/model_checkpoint_200.pt", device="cpu", mcts_iters=1, cpuct=0),
-        #"Alfa300": DeepMCTSPlayer("data/model_history/model_checkpoint_300.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "Alfa40g": DeepMCTSPlayer("data/model_history/model_checkpoint_400_g.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "Alfa40m": DeepMCTSPlayer("data/model_history/model_checkpoint_400.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "Alfa4gA": DeepMCTSPlayer("data/model_history/model_checkpoint_g_50_a.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa200": DeepMCTSPlayer("data/model_history/model_checkpoint_200.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa300": DeepMCTSPlayer("data/model_history/model_checkpoint_300.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa400": DeepMCTSPlayer("data/model_history/model_checkpoint_400.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"Alfa500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"Alfa502": DeepMCTSPlayer("data/model_history/model_checkpoint_500v2.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "Alfa500": DeepMCTSPlayer("data/model_history/model_checkpoint_500v3.pt", device="cpu", mcts_iters=1, cpuct=1),
+        "Alfa600": DeepMCTSPlayer("data/model_history/model_checkpoint_600.pt", device="cpu", mcts_iters=1, cpuct=1),
+        #"Alfa4gA": DeepMCTSPlayer("data/model_history/model_checkpoint_g_50_a.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"Alfa240": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_040_mac.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"A100M": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=5, cpuct=0.1),
         #"A100R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac_100.pt", device="cpu", mcts_iters=10, cpuct=3.0),
@@ -113,7 +122,7 @@ if __name__ == "__main__":
         #"A200R": DeepMCTSPlayer("data/checkpoint_dir/checkpoint_latest_mac.pt", device="cpu", mcts_iters=10, cpuct=3.0),
         "Exp": ExpertPlayer(),
         #"Exp2": ExpertPlayer(),
-        "Rand": RandomPlayer(),
+        #"Rand": RandomPlayer(),
         #"Lillo1": LilloExpertillo(),
         #"Lillo2": LilloExpertillo(),
         #"Maxi": MaximilianTimes(5, 1, 1.2, 1.0),
