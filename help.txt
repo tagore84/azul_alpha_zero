@@ -2,9 +2,16 @@ source .venv/bin/activate
 
 caffeinate python3 scripts/generate_dataset.py \
   --n_games 500 \
-  --simulations 250 \
+  --simulations 300 \
   --checkpoint_dir data/checkpoint_dir \
   --base_model data/checkpoint_dir/model_checkpoint.pt
+
+caffeinate python3 scripts/generate_dataset.py \
+  --n_games 500 \
+  --simulations 300 \
+  --checkpoint_dir data/checkpoint_dir \
+  --base_model data/checkpoint_dir/model_checkpoint.pt \
+  --resume_training
 
 
 caffeinate python3 scripts/tournament.py --n_games 100 --n_passes 50

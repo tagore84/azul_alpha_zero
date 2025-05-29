@@ -17,7 +17,6 @@ def validate_origin(factories: List[List[int]], center: List[int], source: Tuple
     in the specified factory or in the center.
     source = ("factory", idx) or ("center", None)
     """
-    #print(f"[DEBUG] validate_origin: source={source}, color={color}, factories={factories}, center={center}")
     source_type, idx = source
     if source_type == "factory":
         return factories[idx][color] > 0

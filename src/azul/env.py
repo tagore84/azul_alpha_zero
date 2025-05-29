@@ -8,7 +8,6 @@ from typing import Tuple
 from azul.utils import print_floor, print_wall
 from .rules import validate_origin, place_on_pattern_line, transfer_to_wall, calculate_floor_penalization, calculate_final_bonus, Color
 import random  # Añade esto al principio del archivo
-from constants import SEED
 import copy  # Add this import at the top of the file if not present
 
 class AzulEnv(gym.Env):
@@ -222,9 +221,6 @@ class AzulEnv(gym.Env):
                     color = int(line[0])
                     pts = transfer_to_wall(p['wall'], line, row_idx)
                     p['score'] += pts
-                    if p == self.current_player: # ToDo remove this
-                        print_wall(p['wall'])
-                        print(f"Pts: {pts}")
                     # discard leftover tiles
                     leftover = len(line) - 1
                     self.discard[color] += leftover

@@ -90,11 +90,11 @@ class Trainer:
         """
         for epoch in range(1, epochs + 1):
             train_loss = self.train_epoch(train_loader, epoch)
-            print(f"Epoch {epoch}/{epochs} - Train Loss: {train_loss:.4f}")
+            print(f"[trainer] Epoch {epoch}/{epochs} - Train Loss: {train_loss:.4f}")
 
             if val_loader:
                 val_loss = self.evaluate(val_loader, epoch)
-                print(f"Epoch {epoch}/{epochs} - Val   Loss: {val_loss:.4f}")
+                print(f"[trainer] Epoch {epoch}/{epochs} - Val   Loss: {val_loss:.4f}")
 
             if checkpoint_dir:
                 os.makedirs(checkpoint_dir, exist_ok=True)

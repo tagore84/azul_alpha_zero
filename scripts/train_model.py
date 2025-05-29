@@ -53,7 +53,7 @@ def main():
         device = torch.device('mps')
     else:
         device = torch.device('cpu')
-    print(f"Using device: {device}")
+    print(f"[train-model] Using device: {device}")
 
     # Initialize environment and model
     env = AzulEnv(num_players=2, factories_count=5, seed=SEED)
@@ -65,7 +65,7 @@ def main():
     in_channels = total_obs_size // (5 * 5)
     spatial_size = in_channels * 5 * 5
     global_size = total_obs_size - spatial_size
-    print(f"Obs total size: {total_obs_size}, spatial_size: {spatial_size}, global_size: {global_size}, in_channels: {in_channels}")
+    print(f"[train-model] Obs total size: {total_obs_size}, spatial_size: {spatial_size}, global_size: {global_size}, in_channels: {in_channels}")
     action_size = env.action_size
 
     model = AzulNet(
@@ -76,12 +76,12 @@ def main():
     model = model.to(device)
     if base_model:
         checkpoint = torch.load(base_model, map_location=device)
-        print(f"Loaded base model: {base_model}")
+        print(f"[train-model] Loaded base model: {base_model}")
         state_dict = checkpoint.get('model_state',
                        checkpoint.get('state_dict', checkpoint))
         model.load_state_dict(state_dict)
         torch.save({'model_state': model.state_dict()}, base_model.replace('.pt', '_prev.pt'))
-    print(f"Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
+    print(f"[train-model] Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     trainer = Trainer(model, optimizer, device, log_dir=args.log_dir)
@@ -90,10 +90,10 @@ def main():
     new_examples = new_examples_data['examples']
     if not isinstance(new_examples, list):
         raise ValueError("The loaded dataset must contain a list under the 'examples' key")
-    print(f"Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
+    print(f"[train-model] Loaded last dataset: {type(new_examples)}, length: {len(new_examples)}")
     if base_dataset:
         historical = torch.load(base_dataset, weights_only=False)
-        print(f"Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
+        print(f"[train-model] Loaded base dataset: {type(historical['examples'])}, length: {len(historical['examples'])}")
         random.seed(SEED)  # Usa la misma semilla para consistencia
         if len(new_examples) >= args.max_dataset_size:
             examples = new_examples[-args.max_dataset_size:]
@@ -118,7 +118,7 @@ def main():
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
 
     # Print training/validation set sizes
-    print(f"Training with {len(train_set)} examples, validation with {len(val_set)} examples, total: {len(dataset)}")
+    print(f"[train-model] Training with {len(train_set)} examples, validation with {len(val_set)} examples, total: {len(dataset)}")
     # Train
     trainer.fit(
         train_loader=train_loader,
@@ -126,19 +126,22 @@ def main():
         epochs=args.epochs,
         checkpoint_dir=args.checkpoint_dir
     )
-    print(f"Training completed. Saving model to {os.path.join(args.checkpoint_dir, 'model_checkpoint.pt')}")
+    print(f"[train-model] Training completed. Saving model to {os.path.join(args.checkpoint_dir, 'model_checkpoint.pt')}")
     torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, 'model_checkpoint.pt'))
 
     # Guardar backup del dataset histórico antes de sobrescribirlo
     if base_dataset and historical:
         backup_path = base_dataset.replace('.pt', '_backup.pt')
         torch.save(historical, backup_path)
-        print(f"Backup del dataset histórico guardado en: {backup_path}")
+        print(f"[train-model] Backup del dataset histórico guardado en: {backup_path}")
 
         # Combinar ejemplos nuevos e históricos y guardar
         combined_examples = {'examples': examples}
         torch.save(combined_examples, base_dataset)
-        print(f"Dataset combinado guardado en: {base_dataset}")
+        print(f"[train-model] Dataset combinado guardado en: {base_dataset}")
+    else:
+        combined_examples = {'examples': examples}
+        torch.save({'examples': examples}, 'data/checkpoint_dir/all_historical_dataset.pt')
 
 if __name__ == "__main__":
     main()

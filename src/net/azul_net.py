@@ -147,7 +147,7 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
             obs, reward, done, info = env.step(action)
         
         winners = env.get_winner()
-        print(f"Game result: {winners}, info: {info}")
+        print(f"[azul-net] Game result: {winners}, info: {info}")
         if 0 in env.get_winner():
             wins_current += 1
         elif 1 in env.get_winner():
