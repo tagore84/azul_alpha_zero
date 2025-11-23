@@ -61,8 +61,9 @@ def main():
     sample_obs = env.reset()
     obs_flat = env.encode_observation(sample_obs)
     total_obs_size = obs_flat.shape[0]
-    # Determine number of spatial channels (must divide by 5*5)
-    in_channels = total_obs_size // (5 * 5)
+    # Determine number of spatial channels
+    # Spatial features: Pattern Lines + Walls for each player
+    in_channels = env.num_players * 2
     spatial_size = in_channels * 5 * 5
     global_size = total_obs_size - spatial_size
     print(f"[train-model] Obs total size: {total_obs_size}, spatial_size: {spatial_size}, global_size: {global_size}, in_channels: {in_channels}")

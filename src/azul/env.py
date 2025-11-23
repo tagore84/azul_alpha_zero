@@ -75,11 +75,12 @@ class AzulEnv(gym.Env):
         Returns the index of the player with the highest score in array.
         If there is a tie, returns the index of all winners.
         """
+        winners = []
         if self.done:
             scores = [p['score'] for p in self.players]
             max_score = max(scores)
             winners = [i for i, score in enumerate(scores) if score == max_score]
-        return winners if winners else []
+        return winners
 
     def reset(self, initial: bool = False):
         # Reset bag and discard
@@ -272,34 +273,43 @@ class AzulEnv(gym.Env):
         Encode the observation dict into a flat numpy array.
         """
         # parts: bag, discard, factories, center
-        parts = [
+        # Spatial parts: pattern lines and walls
+        spatial_parts = []
+        # players pattern_lines padded to 5x5
+        for p in obs['players']:
+            plines = np.full((5, 5), -1, dtype=int)
+            for i, line in enumerate(p['pattern_lines']):
+                plines[i, :len(line)] = line
+            spatial_parts.append(plines)
+        
+        # walls
+        for p in obs['players']:
+            spatial_parts.append(p['wall'])
+            
+        # Global parts: bag, discard, factories, center, first_player, floor_lines, scores, current_player
+        global_parts = [
             obs['bag'],
             obs['discard'],
             obs['factories'].flatten(),
             obs['center'],
             np.array([int(obs['first_player_token'])], dtype=int)
         ]
-        # players pattern_lines padded to 5x5
-        pattern = []
-        for p in obs['players']:
-            plines = np.full((5, 5), -1, dtype=int)
-            for i, line in enumerate(p['pattern_lines']):
-                plines[i, :len(line)] = line
-            pattern.append(plines)
-        parts.append(np.array(pattern).flatten())
-        # walls
-        walls = np.stack([p['wall'] for p in obs['players']])
-        parts.append(walls.flatten())
+        
         # floor_lines
         floors = np.stack([p['floor_line'] for p in obs['players']])
-        parts.append(floors.flatten())
+        global_parts.append(floors.flatten())
         # scores
         scores = np.array([p['score'] for p in obs['players']], dtype=int)
-        parts.append(scores)
+        global_parts.append(scores)
         # current player
-        parts.append(np.array([obs['current_player']], dtype=int))
-        # concatenate and return
-        return np.concatenate(parts)
+        global_parts.append(np.array([obs['current_player']], dtype=int))
+        
+        # Concatenate spatial then global
+        # Spatial: (num_players * 2, 5, 5) flattened
+        spatial_flat = np.array(spatial_parts).flatten()
+        global_flat = np.concatenate(global_parts)
+        
+        return np.concatenate([spatial_flat, global_flat])
 
     def action_to_index(self, action: Tuple[int, int, int]) -> int:
         """

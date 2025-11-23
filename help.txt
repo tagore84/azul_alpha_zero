@@ -18,11 +18,109 @@ caffeinate python3 scripts/tournament.py --n_games 100 --n_passes 50
 
 caffeinate python3 scripts/train_model.py \
   --log_dir logs \
-  --epochs 3 \
-  --checkpoint_dir data/checkpoint_dir \
+  --epochs 2 \
+  --checkpoint_dir data/checkpoint_dir_2 \
   --lr 5e-4 \
   --batch_size 128 \
-  --base_dataset data/checkpoint_dir/all_historical_dataset.pt \
-  --last_dataset data/checkpoint_dir/last_dataset.pt \
-  --base_model data/checkpoint_dir/model_checkpoint.pt \
-  --max_dataset_size 300000
+  --base_dataset data/checkpoint_dir_2/all_historical_dataset.pt \
+  --last_dataset data/checkpoint_dir_2/last_dataset.pt \
+  --base_model data/checkpoint_dir_2/model_checkpoint.pt \
+  --max_dataset_size 1000000
+
+tensorboard --logdir logs/ --port 6006
+
+
+
+gsutil -m cp \
+  "gs://zz_ape/9154482018270006851.wav" \
+  "gs://zz_ape/9154478537130006851.wav" \
+  "gs://zz_ape/f68c10ed-50ad-44ab-8c8f-5988ba4cb98a.WAV" \
+  "gs://zz_ape/9154478533310006851.wav" \
+  "gs://zz_ape/e3d4d752-7fe5-47f7-9b0c-fe623f904acf.WAV" \
+  "gs://zz_ape/c7784abd-617b-4613-a3f9-de8990567fce.WAV" \
+  "gs://zz_ape/d163a9f2-fba1-4375-bf1e-429020d44149.WAV" \
+  "gs://zz_ape/d6032f9e-9f16-4016-936f-0d0f76b98d95.WAV" \
+  "gs://zz_ape/f2c8c088-26e2-42fc-9bb0-b1e74ad4bb5b.WAV" \
+  "gs://zz_ape/9154478720850006851.wav" \
+  "gs://zz_ape/ce304d73-b006-462c-95af-2d9049e1cc08.WAV" \
+  "gs://zz_ape/e0fc68f8-ed81-4cf6-a6e3-863b941fa28b.WAV" \
+  "gs://zz_ape/ca894cf4-5143-4d53-8f0d-bba620aed173.WAV" \
+  "gs://zz_ape/fada8396-9546-4e67-9f50-ba777fb199a9.WAV" \
+  "gs://zz_ape/e1a08f09-b575-41c2-90ae-e46f867f4751.WAV" \
+  "gs://zz_ape/9154478493650006851.wav" \
+  "gs://zz_ape/9154486784930006851.wav" \
+  "gs://zz_ape/9154486764650016851.wav" \
+  "gs://zz_ape/c1f1702a-3d64-4817-99e0-1960813db967.WAV" \
+  "gs://zz_ape/f7273619-7b21-4d5a-97c4-f631e52280dc.WAV" \
+  "gs://zz_ape/9e714924-6176-45e8-a1c1-fe86ca3a4eab.WAV" \
+  "gs://zz_ape/fe6ce728-7406-4d79-b9e6-963b32ad919e.WAV" \
+  "gs://zz_ape/ffae9a0e-5a43-4658-b80a-c1f5b9c5a90f.WAV" \
+  "gs://zz_ape/c6f69255-2cec-4d6e-972a-deab222cf21e.WAV" \
+  "gs://zz_ape/e9a18429-c6af-4fa0-bccf-bc0e342bbbff.WAV" \
+  "gs://zz_ape/e2ebccb4-cee6-4b63-9f4e-6ab7dc5355b9.WAV" \
+  "gs://zz_ape/c8d0847e-8e66-42d8-a0c3-92d593038b9a.WAV" \
+  "gs://zz_ape/f3538b8f-5f03-480f-a247-a9fd8c6b1e2d.WAV" \
+  "gs://zz_ape/dfd53d4d-9f73-46de-975f-b952b2b3758e.WAV" \
+  "gs://zz_ape/ccdc6a20-9a15-45d9-8fec-bb9ad5e95277.WAV" \
+  "gs://zz_ape/c84c9291-6b5c-488e-b3eb-c1ee95b2254e.WAV" \
+  "gs://zz_ape/f1938af3-e87f-4244-891d-04c444f12dd2.WAV" \
+  "gs://zz_ape/9154486775570006851.wav" \
+  "gs://zz_ape/e9461625-2546-4e02-b003-e95fa764eacc.WAV" \
+  "gs://zz_ape/9154479435540006851.wav" \
+  "gs://zz_ape/dd797ed3-5a6e-48bc-a3c4-db8d1a28b086.WAV" \
+  "gs://zz_ape/9154480509900006851.wav" \
+  "gs://zz_ape/d17f7f8e-f60a-444e-81bd-5cccee4482da.WAV" \
+  "gs://zz_ape/9154478552680006851.wav" \
+  "gs://zz_ape/fcbb8d28-3c9a-475d-b772-ba5c645601db.WAV" \
+  "gs://zz_ape/ead60a99-cdac-4b7b-aba7-153697582e7b.WAV" \
+  "gs://zz_ape/e0b97ec3-12b1-4440-a67c-77418ec1cefa.WAV" \
+  "gs://zz_ape/e982df99-34a6-4821-96b1-5865c565e731.WAV" \
+  "gs://zz_ape/f0256079-c4be-49ee-ab1d-6e5662a3b898.WAV" \
+  "gs://zz_ape/d56e26b8-a815-412b-8d0b-c0f4ab2d3f72.WAV" \
+  "gs://zz_ape/9154478590250006851.wav" \
+  "gs://zz_ape/9154478780530006851.wav" \
+  "gs://zz_ape/fc5a65ab-739c-4057-97ed-4c22dbc8b1d8.WAV" \
+  "gs://zz_ape/c387afbf-9b03-4b03-b499-a958d8dd4816.WAV" \
+  "gs://zz_ape/9154479715260006851.wav" \
+  "gs://zz_ape/ee9e2a13-3fe9-4e04-8c5d-e23c3ce216d3.WAV" \
+  "gs://zz_ape/9154479260000006851.wav" \
+  "gs://zz_ape/dc1092a4-d999-404d-9656-af070d48a063.WAV" \
+  "gs://zz_ape/e3adc523-79c0-4c82-a541-5822be62e8c4.WAV" \
+  "gs://zz_ape/f480dd46-8013-40c2-acf2-123b5a0f51cd.WAV" \
+  "gs://zz_ape/d858b4ca-802a-4450-a4a2-ff6b572f9a6a.WAV" \
+  "gs://zz_ape/e74aab0b-6763-4f86-ba4b-337df2d85c16.WAV" \
+  "gs://zz_ape/fdaa5c00-5cdb-4eb6-9fe4-22394deab88a.WAV" \
+  "gs://zz_ape/9154480671250006851.wav" \
+  "gs://zz_ape/f58055da-8d0f-4541-a899-9f109f89287f.WAV" \
+  "gs://zz_ape/ec85c49a-2c98-4242-a2a2-8a5c47e15206.WAV" \
+  "gs://zz_ape/c78e76b5-978d-45c8-95d4-4cf550569bd8.WAV" \
+  "gs://zz_ape/fdaf5431-3459-41c7-bb39-e7ddbfa01983.WAV" \
+  "gs://zz_ape/9154478706620006851.wav" \
+  "gs://zz_ape/fb0c17d9-1492-4cad-8a8a-dd9d2a937f56.WAV" \
+  "gs://zz_ape/e30a4acd-e0bb-4423-8522-682f7429b4d3.WAV" \
+  "gs://zz_ape/f7763a30-b717-4175-99b8-707aaf0a7f03.WAV" \
+  "gs://zz_ape/f9bcc15e-2b0b-4416-9162-b344119c6ba8.WAV" \
+  "gs://zz_ape/9154486846660036851.wav" \
+  "gs://zz_ape/c860b382-068d-434a-aa04-f542e7eb1b82.WAV" \
+  "gs://zz_ape/9154479333100006851.wav" \
+  "gs://zz_ape/ed8b96c4-9935-4550-9d27-049fd2bcff31.WAV" \
+  "gs://zz_ape/c2059c5f-ff07-4a5f-913f-a23cf4e68be9.WAV" \
+  "gs://zz_ape/9b81b5ea-7f58-49a5-9db5-d090e89cacaf.WAV" \
+  "gs://zz_ape/9154480325130006851.wav" \
+  "gs://zz_ape/9154480164800006851.wav" \
+  "gs://zz_ape/9154479572450006851.wav" \
+  "gs://zz_ape/fd41651e-59bf-4383-aae0-cbcbbb4f3f49.WAV" \
+  "gs://zz_ape/dd3e180d-71a2-4174-bea8-b098d59c7f5e.WAV" \
+  "gs://zz_ape/e40d61ad-044d-4801-91de-1df2069ba212.WAV" \
+  "gs://zz_ape/eb8c26d5-8596-4142-886a-26b2bf468527.WAV" \
+  "gs://zz_ape/fabf46b6-4f5e-4bb6-a280-67e85b387dff.WAV" \
+  "gs://zz_ape/e698af17-52f3-4cb5-8ae6-40fd18a06893.WAV" \
+  "gs://zz_ape/ec348fda-2e76-4d7c-a4c1-1fbfbd44f622.WAV" \
+  "gs://zz_ape/dcfbc316-c1a2-42a1-96d1-dab554fa2cdf.WAV" \
+  "gs://zz_ape/f6050acd-4f68-49a4-98b8-ab464d2291a7.WAV" \
+  "gs://zz_ape/deff4610-b87a-4a1e-8b7c-d92010b417c3.WAV" \
+  "gs://zz_ape/e40c59b4-64b7-4377-91d9-f545c963c838.WAV" \
+  "gs://zz_ape/9154480571220006851.wav" \
+  "gs://zz_ape/d2be4c44-242c-4721-94a9-c7a3f0a345d4.WAV" \
+  "gs://zz_ape/c46f142b-9ba3-41b3-be33-e211499148b4.WAV" \
+  .

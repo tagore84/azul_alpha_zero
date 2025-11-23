@@ -53,7 +53,8 @@ class AzulNet(nn.Module):
         # Policy head
         self.policy_conv = nn.Conv2d(channels, 2, kernel_size=1)
         self.policy_bn   = nn.BatchNorm2d(2)
-        self.policy_fc   = nn.Linear(2 * 5 * 5 + global_size, action_size)
+        self.policy_fc1  = nn.Linear(2 * 5 * 5 + global_size, value_hidden)
+        self.policy_fc   = nn.Linear(value_hidden, action_size)
         # Value head
         self.value_conv = nn.Conv2d(channels, 1, kernel_size=1)
         self.value_bn   = nn.BatchNorm2d(1)
@@ -83,6 +84,7 @@ class AzulNet(nn.Module):
         p = F.relu(self.policy_bn(self.policy_conv(x)))
         p = p.view(p.size(0), -1)  # (B, 2*5*5)
         p = torch.cat([p, x_global], dim=1)
+        p = F.relu(self.policy_fc1(p))
         pi_logits = self.policy_fc(p)
         # Value head
         v = F.relu(self.value_bn(self.value_conv(x)))

@@ -20,9 +20,14 @@ class DeepMCTSPlayer(BasePlayer):
         # Infer network dimensions from checkpoint
         in_channels = state_dict['conv_in.weight'].shape[1]
         # Derive policy head sizes
+        # Derive policy head sizes
+        # We infer global_size from value_fc1 which is (1*5*5 + global_size) -> value_hidden
+        value_fc1_weight = state_dict['value_fc1.weight']
+        spatial_dim_value = 1 * 5 * 5
+        global_size = value_fc1_weight.shape[1] - spatial_dim_value
+        
+        # action_size is output of policy_fc
         policy_fc_weight = state_dict['policy_fc.weight']
-        spatial_dim = 2 * 5 * 5  # output of policy conv head
-        global_size = policy_fc_weight.shape[1] - spatial_dim
         action_size = policy_fc_weight.shape[0]
         # Build and load network
         self.net = AzulNet(in_channels, global_size, action_size)

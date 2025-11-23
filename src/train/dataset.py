@@ -72,8 +72,8 @@ class AzulDataset(Dataset):
         pi = torch.tensor(ex['pi'], dtype=torch.float32)
         v = torch.tensor(ex['v'], dtype=torch.float32)
 
-        spatial_size = 6 * 5 * 5  # 6 canales espaciales, 5x5 dimensiones
-        spatial = obs[:spatial_size].view(6, 5, 5)
+        spatial_size = 4 * 5 * 5  # 4 channels (2 players * (pattern + wall)), 5x5 dimensions
+        spatial = obs[:spatial_size].view(4, 5, 5)
         global_ = obs[spatial_size:]
 
         return {'spatial': spatial, 'global': global_, 'pi': pi, 'v': v}

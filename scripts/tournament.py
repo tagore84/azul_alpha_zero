@@ -106,14 +106,12 @@ if __name__ == "__main__":
 
     players = {
         #"Heu": HeuristicPlayer(),
-        "Alfa501": DeepMCTSPlayer("data/model_history/model_500_1.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "A1fa501": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_001.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "A5fa501": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_005.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "A10fa501": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_010.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "A15a501": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_015.pt", device="cpu", mcts_iters=1, cpuct=0),
-        "A20a501": DeepMCTSPlayer("data/checkpoint_dir/model_epoch_020.pt", device="cpu", mcts_iters=1, cpuct=0),
+        "AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
+        "AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
+        #"AZ1002": DeepMCTSPlayer("data/model_history/model_epoch_002.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"AZ1000": DeepMCTSPlayer("data/model_history/model_checkpoint_1000.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"Exp": ExpertPlayer(),
-        "Rand": RandomPlayer(),
+        #"Rand": RandomPlayer(),
         #"Lillo1": LilloExpertillo(),
         #"Maxi": MaximilianTimes(5, 1, 1.2, 1.0),
         # añade más aquí

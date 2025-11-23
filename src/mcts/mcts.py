@@ -76,8 +76,8 @@ class MCTS:
             idx = node.env.action_to_index(action)
             mask[idx] = True
         # Compute priors only over valid actions
+        logits[~mask] = -float('inf')
         exp_logits = np.exp(logits - np.max(logits))
-        exp_logits[~mask] = 0
         total = exp_logits.sum()
         if total > 0:
             priors = exp_logits / total
@@ -124,8 +124,15 @@ class MCTS:
                 self.backpropagate(path, float(value))
             else:
                 # terminal node: compute value directly
-                # assume last reward
-                value = 1.0
+                winners = leaf.env.get_winner()
+                current = leaf.env.current_player
+                if current in winners:
+                    if len(winners) > 1:
+                        value = 0.0 # Tie
+                    else:
+                        value = 1.0 # Win
+                else:
+                    value = -1.0 # Loss
                 self.backpropagate(path, value)
         
 
