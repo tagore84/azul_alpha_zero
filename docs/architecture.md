@@ -42,6 +42,7 @@ Cada bloque:
 - BatchNorm2D
 - Aplanado
 - Concatenación con `x_global`
+- Linear (→ 256) → ReLU
 - Linear → logits para cada acción posible (`action_size`)
 
 ### Rama de valor (value head)
@@ -53,10 +54,41 @@ Cada bloque:
 - Linear (→ 256) → ReLU
 - Linear → Tanh (valor final entre -1 y 1)
 
+## Diagrama (Mermaid)
+
+```mermaid
+graph TD
+    InputSpatial[Input Spatial (B, InCh, 5, 5)] --> ConvIn[Conv2D 3x3 (64) + BN + ReLU]
+    InputGlobal[Input Global (B, GlobalSize)]
+    
+    ConvIn --> ResBlock1[ResBlock 1]
+    ResBlock1 --> ResBlock2[ResBlock 2]
+    ResBlock2 --> ResBlock3[ResBlock 3]
+    ResBlock3 --> ResBlock4[ResBlock 4]
+    
+    ResBlock4 --> PolicyConv[Policy Conv 1x1 (2) + BN + ReLU]
+    ResBlock4 --> ValueConv[Value Conv 1x1 (1) + BN + ReLU]
+    
+    PolicyConv --> PolicyFlat[Flatten (50)]
+    ValueConv --> ValueFlat[Flatten (25)]
+    
+    PolicyFlat --> PolicyCat[Concat]
+    InputGlobal --> PolicyCat
+    
+    ValueFlat --> ValueCat[Concat]
+    InputGlobal --> ValueCat
+    
+    PolicyCat --> PolicyFC1[Linear (256) + ReLU]
+    PolicyFC1 --> PolicyOut[Linear (ActionSize) -> Logits]
+    
+    ValueCat --> ValueFC1[Linear (256) + ReLU]
+    ValueFC1 --> ValueFC2[Linear (1) -> Tanh -> Value]
+```
+
 ## Observaciones
 
 - La arquitectura busca un balance entre capacidad y velocidad, adecuada para ejecución en CPU (MacBook M1).
 - El diseño modular permite ajustar `num_blocks` o `channels` según necesidad.
 
 ---
-Última actualización: mayo de 2025
+Última actualización: Noviembre de 2025

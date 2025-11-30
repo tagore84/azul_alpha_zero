@@ -11,6 +11,7 @@ from players.maximilian_times import MaximilianTimes
 from players.lillo_expertillo import LilloExpertillo
 from players.random_player import RandomPlayer
 import argparse
+from players.random_plus_player import RandomPlusPlayer
 from players.deep_mcts_player import DeepMCTSPlayer 
 from players.expert_player import ExpertPlayer
 from players.heuristic_player import HeuristicPlayer
@@ -22,14 +23,37 @@ def play_game(p1, p2):
     env = AzulEnv()
     obs = env.reset()
     done = False
+    print(f"--- Nueva Partida ---")
+    print(f"Jugador 0: {p1.__class__.__name__}")
+    print(f"Jugador 1: {p2.__class__.__name__}")
+    
+    turn = 0
     while not done:
-        current = p1 if obs["current_player"] == 0 else p2
+        current_player_idx = obs["current_player"]
+        current = p1 if current_player_idx == 0 else p2
+        
+        #print(f"\nTurno {turn}: Jugador {current_player_idx} ({current.__class__.__name__})")
+        # Mostrar estado resumido
+        #print(f"  Fábricas: {obs['factories']}")
+        #print(f"  Centro: {obs['center']}")
+        #print(f"  Muros J0: \n{obs['players'][0]['wall']}")
+        #print(f"  Muros J1: \n{obs['players'][1]['wall']}")
+        #print(f"  Puntuaciones: J0={obs['players'][0]['score']}, J1={obs['players'][1]['score']}")
+
         action = current.predict(obs)
         # if predict returned a flat index, convert to action tuple
         if not isinstance(action, tuple):
             action = env.index_to_action(int(action))
+        
+        print(f"  Acción elegida: {action} (Source: {action[0]}, Color: {action[1]}, Dest: {action[2]})")
+        
         obs, _, done, _ = env.step(action)
-    return env.get_final_scores()  # devuelve lista de puntuaciones
+        turn += 1
+
+    scores = env.get_final_scores()
+    print(f"\n--- Fin de Partida ---")
+    print(f"Puntuaciones finales: J0={scores[0]}, J1={scores[1]}")
+    return scores  # devuelve lista de puntuaciones
 
 def expected_score(rating_a, rating_b):
     return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
@@ -106,12 +130,14 @@ if __name__ == "__main__":
 
     players = {
         #"Heu": HeuristicPlayer(),
-        "AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
-        "AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
+        #"AZ_Cycle01": DeepMCTSPlayer("data/checkpoints/model_cycle_1.pt", device="cpu", mcts_iters=50, cpuct=1.0),
+        #"AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
+        #"AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1002": DeepMCTSPlayer("data/model_history/model_epoch_002.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"AZ1000": DeepMCTSPlayer("data/model_history/model_checkpoint_1000.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"Exp": ExpertPlayer(),
-        #"Rand": RandomPlayer(),
+        "Rand": RandomPlayer(),
+        "Rand+": RandomPlusPlayer(),
         #"Lillo1": LilloExpertillo(),
         #"Maxi": MaximilianTimes(5, 1, 1.2, 1.0),
         # añade más aquí

@@ -7,9 +7,9 @@ import numpy as np
 class Color(IntEnum):
     BLUE = 0
     YELLOW = 1
-    RED = 2
+    ORANGE = 2
     BLACK = 3
-    ORANGE = 4
+    RED = 4
 
 def validate_origin(factories: List[List[int]], center: List[int], source: Tuple[str, int], color: Color) -> bool:
     """

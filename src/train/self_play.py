@@ -103,23 +103,7 @@ def generate_self_play_games(
     global_start = time.time()
     print(f"[Self-play] Estimated total end time will be shown after first game...", flush=True)
 
-    if device.type == 'mps':
-        print(f"[Self-play] MPS detected ({device}), running games sequentially", flush=True)
-        all_examples: List[Dict[str, Any]] = []
-        for i in range(n_games):
-            examples = _run_one_game(i+1, env, model, simulations, cpuct)
-            all_examples.extend(examples)
-            print(f"[Self-play] Completed game {i+1}/{n_games}", flush=True)
-            if True:
-                elapsed = time.time() - global_start
-                estimated_total = elapsed / (i+1) * n_games
-                estimated_end = time.localtime(global_start + estimated_total)
-                estimated_str = time.strftime('%H:%M:%S', estimated_end)
-                print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
-        print(f"[Self-play] Completed generation of {n_games} games", flush=True)
-        return all_examples
-
-    elif device.type == 'cuda':
+    if device.type == 'cuda':
         print(f"[Self-play] CUDA GPU detected ({device}), running games sequentially (with GPU reuse)", flush=True)
         all_examples: List[Dict[str, Any]] = []
         for i in range(n_games):
@@ -136,6 +120,12 @@ def generate_self_play_games(
         return all_examples
 
     else:
+        # MPS or CPU -> Parallel
+        if device.type == 'mps':
+            print(f"[Self-play] MPS detected ({device}), running games in PARALLEL", flush=True)
+        else:
+            print(f"[Self-play] CPU detected, running games in PARALLEL", flush=True)
+            
         print(f"[Self-play] Starting generation of {n_games} games", flush=True)
         n_workers = min(32, os.cpu_count() or 1)
         print(f"[Self-play] Launching {n_workers} parallel workers", flush=True)
