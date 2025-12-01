@@ -338,6 +338,13 @@ class AzulEnv(gym.Env):
     def encode_observation(self, obs: dict) -> np.ndarray:
         """
         Encode the observation dict into a flat numpy array.
+        Layout: [Spatial (pattern_lines + walls) | Factories | Global]
+        
+        Global features now include:
+        - bag (5), discard (5), first_player_token (1)
+        - floor_lines (num_players * 7), scores (num_players)
+        - round_count (1, normalized)
+        - bonuses per player: completed_rows, completed_cols, completed_colors (3 * num_players)
         """
         # parts: bag, discard, factories, center
         # Spatial parts: pattern lines and walls
@@ -377,7 +384,27 @@ class AzulEnv(gym.Env):
         # scores (rotated)
         scores = np.array([p['score'] for p in rotated_players], dtype=int)
         global_parts.append(scores)
-        # current player removed (implicit)
+        
+        # NEW: Round count (normalized by max_rounds)
+        round_normalized = np.array([obs['round_count'] / self.max_rounds], dtype=float)
+        global_parts.append(round_normalized)
+        
+        # NEW: Bonuses (completed rows, columns, colors per player)
+        for p in rotated_players:
+            wall = p['wall']
+            # Completed rows: count rows where all cells != -1
+            completed_rows = sum(1 for row in wall if all(cell != -1 for cell in row))
+            # Completed columns: count columns where all cells != -1
+            completed_cols = sum(1 for col_idx in range(5) if all(wall[row_idx][col_idx] != -1 for row_idx in range(5)))
+            # Completed colors: count colors that appear 5 times on the wall
+            color_counts = np.zeros(5, dtype=int)
+            for row in wall:
+                for cell in row:
+                    if cell != -1:
+                        color_counts[cell] += 1
+            completed_colors = sum(1 for count in color_counts if count == 5)
+            
+            global_parts.append(np.array([completed_rows, completed_cols, completed_colors], dtype=int))
         
         # Concatenate spatial then factories then global
         # Spatial: (num_players * 2, 5, 5) flattened

@@ -65,17 +65,22 @@ class AzulNet(nn.Module):
         # Flattened factory features size: (N + 1) * embed_dim
         self.factory_out_size = (factories_count + 1) * factory_embed_dim
         
+        # Shared Trunk (Fusion Layer)
+        combined_size = 2 * 5 * 5 + global_size + self.factory_out_size
+        self.fusion_fc1 = nn.Linear(combined_size, value_hidden)
+        self.fusion_fc2 = nn.Linear(value_hidden, value_hidden)
+        
         # Policy head
         self.policy_conv = nn.Conv2d(channels, 2, kernel_size=1)
         self.policy_bn   = nn.BatchNorm2d(2)
-        # Input to FC: Spatial(2*5*5) + Global(rest) + Factories(transformer_out)
-        self.policy_fc1  = nn.Linear(2 * 5 * 5 + global_size + self.factory_out_size, value_hidden)
+        # Input: shared trunk output + action_mask
+        self.policy_fc1  = nn.Linear(value_hidden + action_size, value_hidden)
         self.policy_fc   = nn.Linear(value_hidden, action_size)
         
         # Value head
         self.value_conv = nn.Conv2d(channels, 1, kernel_size=1)
         self.value_bn   = nn.BatchNorm2d(1)
-        self.value_fc1  = nn.Linear(1 * 5 * 5 + global_size + self.factory_out_size, value_hidden)
+        self.value_fc1  = nn.Linear(value_hidden, value_hidden)
         self.value_fc2  = nn.Linear(value_hidden, 1) # Linear output (no Tanh)
         
         # store sizes for predict()
@@ -87,17 +92,21 @@ class AzulNet(nn.Module):
         self,
         x_spatial: torch.Tensor,
         x_global: torch.Tensor,
-        x_factories: torch.Tensor
+        x_factories: torch.Tensor,
+        action_mask: torch.Tensor = None
     ) -> tuple:
         """
         Args:
             x_spatial: (B, in_channels, 5, 5)
             x_global:  (B, global_size) - excluding factories
             x_factories: (B, N+1, 5) - factories + center counts
+            action_mask: (B, action_size) - binary mask (1=legal, 0=illegal), optional
         Returns:
             pi_logits: (B, action_size)
             value:     (B,) unbounded (score difference)
         """
+        batch_size = x_spatial.size(0)
+        
         # Input conv + res
         x = F.relu(self.bn_in(self.conv_in(x_spatial)))
         x = self.res_blocks(x)
@@ -108,26 +117,39 @@ class AzulNet(nn.Module):
         f = self.transformer(f) # (B, N+1, 32)
         f = f.reshape(f.size(0), -1) # (B, (N+1)*32)
         
-        # Policy head
+        # Combine spatial + global + factories
         p = F.relu(self.policy_bn(self.policy_conv(x)))
         p = p.view(p.size(0), -1)  # (B, 2*5*5)
-        p = torch.cat([p, x_global, f], dim=1)
-        p = F.relu(self.policy_fc1(p))
+        v = F.relu(self.value_bn(self.value_conv(x)))
+        v = v.view(v.size(0), -1)  # (B, 1*5*5)
+        
+        combined = torch.cat([p, x_global, f], dim=1)
+        
+        # Shared Trunk (Fusion Layer)
+        shared = F.relu(self.fusion_fc1(combined))
+        shared = F.relu(self.fusion_fc2(shared))
+        
+        # Policy head with action mask injection
+        if action_mask is None:
+            # Create a dummy mask of all ones if not provided
+            action_mask = torch.ones(batch_size, self.action_size, device=x_spatial.device)
+        
+        p_input = torch.cat([shared, action_mask], dim=1)
+        p = F.relu(self.policy_fc1(p_input))
         pi_logits = self.policy_fc(p)
         
         # Value head
-        v = F.relu(self.value_bn(self.value_conv(x)))
-        v = v.view(v.size(0), -1)  # (B, 1*5*5)
-        v = torch.cat([v, x_global, f], dim=1)
-        v = F.relu(self.value_fc1(v))
-        v = self.value_fc2(v).squeeze(-1) # Linear output
-        return pi_logits, v
+        v = F.relu(self.value_fc1(shared))
+        value = self.value_fc2(v).squeeze(-1) # Linear output
+        
+        return pi_logits, value
 
-    def predict(self, obs_batch: np.ndarray):
+    def predict(self, obs_batch: np.ndarray, action_mask: np.ndarray = None):
         """
         Predict interface for MCTS:
         - obs_batch: numpy array of shape (batch, total_flat_size)
           Layout: [Spatial (C*5*5) | Factories ((N+1)*5) | Global (Rest)]
+        - action_mask: optional numpy array of shape (batch, action_size) - binary mask (1=legal, 0=illegal)
         """
         self.eval()
         batch, _ = obs_batch.shape
@@ -151,9 +173,15 @@ class AzulNet(nn.Module):
         # 3. Global (Rest)
         global_flat = obs_batch[:, spatial_size + factories_flat_size:]
         x_global = torch.from_numpy(global_flat).float().to(device)
+        
+        # 4. Action mask (optional)
+        if action_mask is not None:
+            action_mask_tensor = torch.from_numpy(action_mask).float().to(device)
+        else:
+            action_mask_tensor = None
 
         with torch.no_grad():
-            pi_logits, values = self.forward(x_spatial, x_global, x_factories)
+            pi_logits, values = self.forward(x_spatial, x_global, x_factories, action_mask_tensor)
         return pi_logits.cpu().numpy(), values.cpu().numpy()
     
 def evaluate_against_previous(current_model, previous_model, env_args, simulations, cpuct, n_games):

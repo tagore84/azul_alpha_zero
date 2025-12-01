@@ -189,7 +189,7 @@ def main():
     parser = argparse.ArgumentParser(description="Azul Zero Training Loop")
     parser.add_argument('--total_cycles', type=int, default=21, help='Number of generation-training cycles')
     parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints', help='Directory to save models')
-    parser.add_argument('--max_dataset_size', type=int, default=10000, help='Max examples in replay buffer')
+    parser.add_argument('--max_dataset_size', type=int, default=25000, help='Max examples in replay buffer')
     parser.add_argument('--resume', action='store_true', help='Resume from the latest checkpoint')
     args = parser.parse_args()
 

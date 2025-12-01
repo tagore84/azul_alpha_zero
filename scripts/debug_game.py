@@ -24,7 +24,7 @@ def log_state(env, f):
 
 def main():
     env = AzulEnv()
-    model_path = "data/checkpoints/model_cycle_1.pt"
+    model_path = "data/checkpoints/best.pt"
     p1 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
     p2 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
     players = [p1, p2]

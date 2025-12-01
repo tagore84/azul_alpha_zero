@@ -61,7 +61,7 @@ class MCTS:
     def expand(self, node: 'MCTS.Node'):
         """
         Expand the given leaf node by creating all children.
-        Use uniform prior or a policy network in future.
+        Use policy network with action mask to get priors.
         """
         obs = node.env._get_obs()
         # generate valid actions
@@ -69,30 +69,30 @@ class MCTS:
         if not valid_actions:
             # No valid actions. This should be handled by 'done' check in run(),
             # but as a safety net, we return without adding children.
-            # print(f"[DEBUG] Expand: No valid actions for node. Player: {node.player}")
             return
-        # print(f"[DEBUG] Expand: valid_actions={len(valid_actions)}")
-        # print(f"[DEBUG] Expand: valid_actions={len(valid_actions)}")
         
-        # Compute policy logits from the network and convert to priors
-        obs = node.env._get_obs()
+        # Compute policy logits from the network with action mask
         obs_flat = node.env.encode_observation(obs)
-        pi_logits, _ = self.model.predict(np.array([obs_flat]))
-        logits = pi_logits[0]
-        # Mask out invalid actions
-        mask = np.zeros_like(logits, dtype=bool)
+        
+        # Create action mask (1 for legal, 0 for illegal)
+        action_mask = np.zeros(node.env.action_size, dtype=np.float32)
         for action in valid_actions:
             idx = node.env.action_to_index(action)
-            mask[idx] = True
-        # Compute priors only over valid actions
-        logits[~mask] = -float('inf')
+            action_mask[idx] = 1.0
+        
+        # Pass mask to model
+        pi_logits, _ = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
+        logits = pi_logits[0]
+        
+        # Compute priors with softmax (logits are already masked by network)
         exp_logits = np.exp(logits - np.max(logits))
         total = exp_logits.sum()
         if total > 0:
             priors = exp_logits / total
         else:
-            # If all masked out, assign uniform over valid
-            priors = mask.astype(float) / mask.sum()
+            # Fallback to uniform over valid actions
+            priors = action_mask / action_mask.sum()
+        
         for action in valid_actions:
             # clone environment efficiently
             new_env = node.env.clone()
@@ -100,7 +100,6 @@ class MCTS:
             new_env.step(action, is_sim=True)
             idx = node.env.action_to_index(action)
             node.children[action] = MCTS.Node(new_env, parent=node, prior=priors[idx])
-        # print(f"[DEBUG] Expand: children added={len(node.children)}")
 
     def backpropagate(self, path: list, value: float):
         """
@@ -160,7 +159,15 @@ class MCTS:
                     # Evaluate leaf value with the network (no rollout)
                     obs = leaf.env._get_obs()
                     obs_flat = leaf.env.encode_observation(obs)
-                    _, value_out = self.model.predict(np.array([obs_flat]))
+                    
+                    # Create action mask for value evaluation (though value doesn't use it)
+                    valid_actions_eval = leaf.env.get_valid_actions()
+                    action_mask = np.zeros(leaf.env.action_size, dtype=np.float32)
+                    for action in valid_actions_eval:
+                        idx = leaf.env.action_to_index(action)
+                        action_mask[idx] = 1.0
+                    
+                    _, value_out = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
                     value = float(value_out)
                     # The network returns value for the current player (leaf.player).
                     self.backpropagate(path, value)
