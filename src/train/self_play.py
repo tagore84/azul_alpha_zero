@@ -24,7 +24,7 @@ def play_game(
     Returns a list of transitions: each is a dict with keys
       - 'obs': flat observation vector (np.ndarray)
       - 'pi':  policy target distribution (np.ndarray)
-      - 'v':   value target (+1/-1) for the player to move
+      - 'v':   value target (normalized score difference) for the player to move
     """
     
     start_time = time.perf_counter()
@@ -63,20 +63,25 @@ def play_game(
         move_idx += 1
     elapsed = time.perf_counter() - start_time
     print(f"[Play-game] Finished game in {move_idx} moves at {time.strftime('%H:%M:%S')}, time: {elapsed:.2f}s", flush=True)
-    # Determine game winner (highest final score)
+    # Calculate score difference
     final_obs = env._get_obs()
     scores = [p['score'] for p in final_obs['players']]
-    if scores[0] > scores[1]:
-        winner = 1
-    elif scores[1] > scores[0]:
-        winner = 2
-    else:
-        winner = 0
-
+    # Assuming 2 players
+    score_p0 = scores[0]
+    score_p1 = scores[1]
+    
+    # Normalize diff. Max reasonable diff is ~100.
+    # We want the value to be roughly in [-1, 1] for stability,
+    # but it's okay if it exceeds slightly.
+    # Value is from perspective of the player.
+    diff_0 = (score_p0 - score_p1) / 100.0
+    diff_1 = (score_p1 - score_p0) / 100.0
+    
     # Convert memory to training examples with value targets
     examples = []
     for entry in memory:
-        v = 1.0 if entry['player'] == winner else -1.0
+        # Value is from perspective of the player who moved
+        v = diff_0 if entry['player'] == 0 else diff_1
         examples.append({
             'obs': entry['obs'],
             'pi': entry['pi'],

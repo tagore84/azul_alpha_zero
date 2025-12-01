@@ -27,14 +27,15 @@ class Trainer:
         self.model.train()
         total_loss = 0.0
         for batch_idx, batch in enumerate(train_loader):
-            # Unpack batch: obs_spatial, obs_global, target_pi, target_v
-            obs_spatial = batch['spatial'].to(self.device)
-            obs_global  = batch['global'].to(self.device)
-            target_pi   = batch['pi'].to(self.device)
-            target_v    = batch['v'].to(self.device)
+            # Unpack batch: obs_spatial, obs_factories, obs_global, target_pi, target_v
+            obs_spatial   = batch['spatial'].to(self.device)
+            obs_factories = batch['factories'].to(self.device)
+            obs_global    = batch['global'].to(self.device)
+            target_pi     = batch['pi'].to(self.device)
+            target_v      = batch['v'].to(self.device)
 
             # Forward pass
-            pi_logits, value = self.model(obs_spatial, obs_global)
+            pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
 
             # Compute losses
             loss_pi = torch.nn.functional.cross_entropy(pi_logits, target_pi)
@@ -63,12 +64,13 @@ class Trainer:
         total_loss = 0.0
         with torch.no_grad():
             for batch_idx, batch in enumerate(val_loader):
-                obs_spatial = batch['spatial'].to(self.device)
-                obs_global  = batch['global'].to(self.device)
-                target_pi   = batch['pi'].to(self.device)
-                target_v    = batch['v'].to(self.device)
+                obs_spatial   = batch['spatial'].to(self.device)
+                obs_factories = batch['factories'].to(self.device)
+                obs_global    = batch['global'].to(self.device)
+                target_pi     = batch['pi'].to(self.device)
+                target_v      = batch['v'].to(self.device)
 
-                pi_logits, value = self.model(obs_spatial, obs_global)
+                pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
                 loss_pi = torch.nn.functional.cross_entropy(pi_logits, target_pi)
                 loss_v  = torch.nn.functional.mse_loss(value, target_v)
                 loss = loss_pi + loss_v

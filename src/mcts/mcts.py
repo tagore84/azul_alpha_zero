@@ -69,7 +69,9 @@ class MCTS:
         if not valid_actions:
             # No valid actions. This should be handled by 'done' check in run(),
             # but as a safety net, we return without adding children.
+            # print(f"[DEBUG] Expand: No valid actions for node. Player: {node.player}")
             return
+        # print(f"[DEBUG] Expand: valid_actions={len(valid_actions)}")
         # print(f"[DEBUG] Expand: valid_actions={len(valid_actions)}")
         
         # Compute policy logits from the network and convert to priors
@@ -142,6 +144,9 @@ class MCTS:
             # print(f"[DEBUG] Sim {sim}: done={done}, leaf children={len(leaf.children)}")
             if not done:
                 self.expand(leaf)
+            else:
+                # print(f"[DEBUG] Sim {sim}: Node is done. env.done={leaf.env.done}")
+                pass
                 if not leaf.children:
                      # If expand failed to add children (e.g. no valid actions despite not done?), treat as terminal
                      # This prevents the loop from trying to simulate from a dead node
@@ -162,15 +167,18 @@ class MCTS:
             
             if done:
                 # terminal node: compute value directly
-                winners = leaf.env.get_winner()
-                # Value is from perspective of leaf.player
-                if leaf.player in winners:
-                    if len(winners) > 1:
-                        value = 0.0 # Tie
-                    else:
-                        value = 1.0 # Win
+                scores = leaf.env.get_final_scores()
+                # Assuming 2 players
+                p0_score = scores[0]
+                p1_score = scores[1]
+                
+                # Value from perspective of leaf.player
+                # Normalize by 100.0
+                if leaf.player == 0:
+                    value = (p0_score - p1_score) / 100.0
                 else:
-                    value = -1.0 # Loss
+                    value = (p1_score - p0_score) / 100.0
+                
                 self.backpropagate(path, value)
         
 
@@ -184,7 +192,7 @@ class MCTS:
         valid_actions = self.root.env.get_valid_actions()
         candidates = [(a, n) for a, n in self.root.children.items() if a in valid_actions]
         if not candidates:
-            print(f"[WARN] No valid children in MCTS. Root children: {len(self.root.children)}. Valid actions: {len(valid_actions)}")
+            # Fallback to random if no MCTS children available
             return random.choice(valid_actions)
         action, node = max(candidates, key=lambda item: item[1].visits)
         return action

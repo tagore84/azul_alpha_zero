@@ -24,11 +24,20 @@ def get_curriculum_params(cycle):
     """
     Returns training parameters based on the current cycle.
     Curriculum:
-    - Cycles 1-5: Fast learning (Rules & Basic Tactics)
-    - Cycles 6-15: Strategic learning
-    - Cycles 16+: Refinement
+    - Cycles 1: Check if everything is ok
+    - Cycles 2-6: Fast learning (Rules & Basic Tactics)
+    - Cycles 7-16: Strategic learning
+    - Cycles 17+: Refinement
     """
-    if cycle <= 5:
+    if cycle <= 1:
+        return {
+            'n_games': 10,
+            'simulations': 25,
+            'epochs': 5,
+            'lr': 1e-3,
+            'cpuct': 1.0
+        }
+    elif cycle <= 6:
         return {
             'n_games': 50,
             'simulations': 25,
@@ -36,7 +45,7 @@ def get_curriculum_params(cycle):
             'lr': 1e-3,
             'cpuct': 1.0
         }
-    elif cycle <= 15:
+    elif cycle <= 16:
         return {
             'n_games': 100,
             'simulations': 50,
@@ -70,11 +79,10 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
         draws = 0
         losses = 0
         
-        # Use a fresh env for validation
-        env = AzulEnv()
-        
         print(f"[Validation] vs {opponent_name}: Playing {n_games} games...")
         for i in range(n_games):
+            # Use a fresh env for validation
+            env = AzulEnv()
             obs = env.reset(initial=True)
             done = False
             
@@ -109,6 +117,17 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
                         action = opponent_player.predict(obs)
                         if not isinstance(action, tuple):
                             action = env.index_to_action(int(action))
+                        
+                        # Validate action to prevent crashes
+                        valid_actions = env.get_valid_actions()
+                        if action not in valid_actions:
+                            # print(f"[Validation] WARNING: Opponent {opponent_name} generated illegal action {action}. Picking random valid.")
+                            import random
+                            if valid_actions:
+                                action = random.choice(valid_actions)
+                            else:
+                                # Should be handled by done check, but just in case
+                                break
                 
                 obs, _, done, _ = env.step(action)
             
@@ -136,9 +155,9 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
         win_rate = wins / n_games
         print(f"[Validation] vs {opponent_name}: Wins={wins}, Losses={losses}, Draws={draws} (WR: {win_rate:.2f})")
         return win_rate
-    if cycle <= 5:
+    if cycle <= 6:
         wr_rival = play_validation_match("Random", random_player, n_games=5)
-    elif cycle <= 15:
+    elif cycle <= 16:
         wr_rival = play_validation_match("RandomPlus", random_plus_player, n_games=5)
     else:
         wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=5)
@@ -168,7 +187,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
 
 def main():
     parser = argparse.ArgumentParser(description="Azul Zero Training Loop")
-    parser.add_argument('--total_cycles', type=int, default=20, help='Number of generation-training cycles')
+    parser.add_argument('--total_cycles', type=int, default=21, help='Number of generation-training cycles')
     parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints', help='Directory to save models')
     parser.add_argument('--max_dataset_size', type=int, default=10000, help='Max examples in replay buffer')
     parser.add_argument('--resume', action='store_true', help='Resume from the latest checkpoint')
@@ -189,13 +208,25 @@ def main():
     env = AzulEnv(num_players=2)
     obs_flat = env.encode_observation(env.reset())
     total_obs_size = obs_flat.shape[0]
-    in_channels = env.num_players * 2
-    spatial_size = in_channels * 5 * 5
-    global_size = total_obs_size - spatial_size
+    in_channels = env.num_players * 2 # 4
+    spatial_size = in_channels * 5 * 5 # 100
+    
+    # Factories size: (N + 1) * 5
+    factories_size = (env.N + 1) * 5 # 30
+    
+    # Global size = total - spatial - factories
+    global_size = total_obs_size - spatial_size - factories_size
     action_size = env.action_size
 
+    print(f"[Loop] Shapes: Spatial={spatial_size}, Factories={factories_size}, Global={global_size}, Total={total_obs_size}")
+
     # Initialize Model
-    model = AzulNet(in_channels, global_size, action_size).to(device)
+    model = AzulNet(
+        in_channels=in_channels,
+        global_size=global_size,
+        action_size=action_size,
+        factories_count=env.N
+    ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     
     # Replay Buffer
@@ -204,32 +235,36 @@ def main():
     start_cycle = 1
     
     if args.resume:
-        # Find latest checkpoint
+        print("[Loop] Resuming from latest checkpoint...")
         checkpoints = [f for f in os.listdir(args.checkpoint_dir) if f.startswith('model_cycle_') and f.endswith('.pt')]
-        if checkpoints:
-            # Extract cycle numbers
-            cycles = []
-            for cp in checkpoints:
-                try:
-                    c = int(cp.split('_')[2].split('.')[0])
-                    cycles.append(c)
-                except (IndexError, ValueError):
-                    pass
+        
+        cycles = []
+        for f in checkpoints:
+            try:
+                # model_cycle_X.pt
+                c_str = f.replace('model_cycle_', '').replace('.pt', '')
+                cycles.append(int(c_str))
+            except ValueError:
+                pass
+        
+        if cycles:
+            last_cycle = max(cycles)
+            ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{last_cycle}.pt")
+            print(f"[Loop] Loading checkpoint: {ckpt_path}")
             
-            if cycles:
-                latest_cycle = max(cycles)
-                ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{latest_cycle}.pt")
-                print(f"[Loop] Resuming from checkpoint: {ckpt_path}")
-                
+            try:
                 checkpoint = torch.load(ckpt_path, map_location=device)
                 model.load_state_dict(checkpoint['model_state'])
                 optimizer.load_state_dict(checkpoint['optimizer_state'])
-                start_cycle = checkpoint['cycle'] + 1
+                start_cycle = last_cycle + 1
                 print(f"[Loop] Resumed. Next cycle: {start_cycle}")
-            else:
-                print("[Loop] No valid checkpoints found to resume from. Starting from scratch.")
+            except Exception as e:
+                print(f"[Loop] Failed to load checkpoint: {e}")
+                print("[Loop] Starting from Cycle 1.")
         else:
-            print("[Loop] No checkpoints found to resume from. Starting from scratch.")
+            print("[Loop] No checkpoints found. Starting from Cycle 1.")
+    else:
+        print("[Loop] Starting from scratch (Cycle 1).")
 
     for cycle in range(start_cycle, args.total_cycles + 1):
         params = get_curriculum_params(cycle)
@@ -249,9 +284,12 @@ def main():
         )
         
         # Add to buffer
-        replay_buffer.extend(new_examples)
-        if len(replay_buffer) > args.max_dataset_size:
-            replay_buffer = replay_buffer[-args.max_dataset_size:]
+        if not new_examples:
+            print("[Loop] WARNING: No examples generated (all games failed?). Skipping buffer update.")
+        else:
+            replay_buffer.extend(new_examples)
+            if len(replay_buffer) > args.max_dataset_size:
+                replay_buffer = replay_buffer[-args.max_dataset_size:]
         print(f"[Loop] Buffer size: {len(replay_buffer)}")
         
         # 2. Training

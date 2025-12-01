@@ -17,25 +17,39 @@ class DeepMCTSPlayer(BasePlayer):
         # Load checkpoint and extract model state
         checkpoint = torch.load(model_path, map_location=self.device)
         state_dict = checkpoint.get('model_state', checkpoint)
+        
         # Infer network dimensions from checkpoint
         in_channels = state_dict['conv_in.weight'].shape[1]
-        # Derive policy head sizes
-        # Derive policy head sizes
-        # We infer global_size from value_fc1 which is (1*5*5 + global_size) -> value_hidden
-        value_fc1_weight = state_dict['value_fc1.weight']
-        spatial_dim_value = 1 * 5 * 5
-        global_size = value_fc1_weight.shape[1] - spatial_dim_value
         
-        # action_size is output of policy_fc
-        policy_fc_weight = state_dict['policy_fc.weight']
-        action_size = policy_fc_weight.shape[0]
+        # For Phase 2 architecture:
+        # policy_fc1.weight has shape [256, spatial_flat + factories_flat + global_size]
+        # value_fc1.weight has shape [256, spatial_flat + factories_flat + global_size]
+        # spatial_flat = 2 * 5 * 5 = 50 (policy conv outputs 2 channels)
+        # spatial_flat = 1 * 5 * 5 = 25 (value conv outputs 1 channel)
+        # factories_flat = (N + 1) * embed_dim, where N=5, we need to infer embed_dim
+        
+        # For now, use a simpler approach: initialize env to get correct sizes
+        env = AzulEnv()
+        obs_flat = env.encode_observation(env.reset(initial=True))
+        total_obs_size = obs_flat.shape[0]
+        spatial_size = env.num_players * 2 * 5 * 5
+        factories_size = (env.N + 1) * 5
+        global_size = total_obs_size - spatial_size - factories_size
+        action_size = env.action_size
+        
         # Build and load network
-        self.net = AzulNet(in_channels, global_size, action_size)
+        self.net = AzulNet(
+            in_channels=in_channels,
+            global_size=global_size,
+            action_size=action_size,
+            factories_count=env.N
+        )
         self.net.load_state_dict(state_dict)
         self.net.to(self.device)
         self.net.eval()
+        
         # Prepare prototype environment for MCTS
-        self.prototype_env = AzulEnv()
+        self.prototype_env = env
         # Initialize MCTS searcher
         self.mcts = MCTS(self.prototype_env,
                          self.net,

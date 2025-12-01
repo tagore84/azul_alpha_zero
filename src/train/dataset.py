@@ -50,30 +50,18 @@ class AzulDataset(Dataset):
     
     def __getitem__(self, idx):
         ex = self.examples[idx]
-        obs = ex['obs']
-        pi = ex['pi']
-        v = ex['v']
-
-        if self.augment_factories:
-            obs, pi = augment_factory_permutation(obs, pi)
-
-        obs = torch.tensor(obs, dtype=torch.float32)
-        pi = torch.tensor(pi, dtype=torch.float32)
-        v = torch.tensor(v, dtype=torch.float32)
-
-        spatial_size = 6 * 5 * 5
-        spatial = obs[:spatial_size].view(6, 5, 5)
-        global_ = obs[spatial_size:]
-
-        return {'spatial': spatial, 'global': global_, 'pi': pi, 'v': v}
-    def __getitem__(self, idx):
-        ex = self.examples[idx]
         obs = torch.tensor(ex['obs'], dtype=torch.float32)
         pi = torch.tensor(ex['pi'], dtype=torch.float32)
         v = torch.tensor(ex['v'], dtype=torch.float32)
 
-        spatial_size = 4 * 5 * 5  # 4 channels (2 players * (pattern + wall)), 5x5 dimensions
+        # Layout: [Spatial (100) | Factories (30) | Global (Rest)]
+        # Spatial: 4 channels * 5 * 5 = 100
+        spatial_size = 4 * 5 * 5
+        # Factories: (5 factories + 1 center) * 5 colors = 30
+        factories_size = (5 + 1) * 5
+        
         spatial = obs[:spatial_size].view(4, 5, 5)
-        global_ = obs[spatial_size:]
+        factories = obs[spatial_size : spatial_size + factories_size].view(6, 5)
+        global_ = obs[spatial_size + factories_size:]
 
-        return {'spatial': spatial, 'global': global_, 'pi': pi, 'v': v}
+        return {'spatial': spatial, 'factories': factories, 'global': global_, 'pi': pi, 'v': v}

@@ -106,6 +106,7 @@ class AzulEnv(gym.Env):
         self.first_player_next_round = -1
         self.current_player = 0
         self.round_count = 1
+        self.done = False  # Reset done flag
         self._refill_factories()
 
         return self._get_obs()
@@ -357,12 +358,16 @@ class AzulEnv(gym.Env):
         for p in rotated_players:
             spatial_parts.append(p['wall'])
             
-        # Global parts: bag, discard, factories, center, first_player, floor_lines, scores
+        # Factories parts: factories (N*5), center (5)
+        factories_parts = [
+            obs['factories'].flatten(),
+            obs['center']
+        ]
+        
+        # Global parts: bag, discard, first_player, floor_lines, scores
         global_parts = [
             obs['bag'],
             obs['discard'],
-            obs['factories'].flatten(),
-            obs['center'],
             np.array([int(obs['first_player_token'])], dtype=int)
         ]
         
@@ -374,12 +379,13 @@ class AzulEnv(gym.Env):
         global_parts.append(scores)
         # current player removed (implicit)
         
-        # Concatenate spatial then global
+        # Concatenate spatial then factories then global
         # Spatial: (num_players * 2, 5, 5) flattened
         spatial_flat = np.array(spatial_parts).flatten()
+        factories_flat = np.concatenate(factories_parts)
         global_flat = np.concatenate(global_parts)
         
-        return np.concatenate([spatial_flat, global_flat])
+        return np.concatenate([spatial_flat, factories_flat, global_flat])
 
     def action_to_index(self, action: Tuple[int, int, int]) -> int:
         """

@@ -1,94 +1,100 @@
 
+# Arquitectura del modelo AzulNet (Fase 2)
 
-# Arquitectura del modelo AzulNet
-
-Este documento describe la arquitectura de la red neuronal utilizada en el proyecto Azul Zero.
+Este documento describe la arquitectura de la red neuronal utilizada en el proyecto Azul Zero, actualizada para la Fase 2 (Noviembre 2025).
 
 ## Esquema general
 
-La arquitectura sigue el patrón de AlphaZero, dividida en tres bloques principales:
+La arquitectura sigue el patrón de AlphaZero pero con adaptaciones específicas para Azul, dividida en tres bloques de entrada y dos cabezas de salida:
 
-- Entrada dual: `x_spatial` (tablero y estado estructurado) y `x_global` (estado global)
-- Bloques residuales convolucionales
-- Cabezas separadas para política (policy head) y valor (value head)
+- **Entrada Triple**:
+    - `x_spatial`: Tablero y estado estructurado (CNN).
+    - `x_factories`: Estado de las fábricas (Transformer).
+    - `x_global`: Estado global y conteos (MLP).
+- **Bloques residuales convolucionales** para la parte espacial.
+- **Transformer Encoder** para procesar las fábricas.
+- **Cabezas separadas** para política (policy head) y valor (value head).
 
 ![Arquitectura AzulNet](./azul_net_architecture.png)
 
 ## Detalle por capas
 
-### Entrada
+### Entradas
 
-- `x_spatial`: tensor de dimensión `(batch_size, in_channels, 5, 5)`
-- `x_global`: vector de dimensión `(batch_size, global_size)`
+1.  **`x_spatial`**: Tensor `(batch, in_channels, 5, 5)`. Contiene tableros, muros y líneas de patrón.
+2.  **`x_factories`**: Tensor `(batch, N_factories + 1, 5)`. Contiene el conteo de colores en cada fábrica y el centro.
+3.  **`x_global`**: Vector `(batch, global_size)`. Contiene bolsa, descartes, puntuaciones, etc.
 
-### Convolución inicial
+### Procesamiento de Fábricas (Nuevo en Fase 2)
 
-- Conv2D: canales de entrada → 64, kernel 3x3, padding=1
-- BatchNorm2D
-- ReLU
+- **Embedding**: Proyección lineal de 5 colores a `embed_dim` (32).
+- **Transformer Encoder**: 2 capas de atención para capturar relaciones entre fábricas.
+- **Salida**: Vector aplanado de dimensión `(N+1) * embed_dim`.
 
-### Bloques residuales (4 por defecto)
+### Tronco Espacial (Backbone)
 
-Cada bloque:
-- Conv2D 64→64, kernel 3x3, padding=1
-- BatchNorm2D → ReLU
-- Conv2D 64→64, kernel 3x3, padding=1
-- BatchNorm2D
-- Suma residual + ReLU
+- **Conv Inicial**: 64 canales, kernel 3x3.
+- **Bloques Residuales**: 4 bloques estándar (Conv3x3 -> BN -> ReLU -> Conv3x3 -> BN -> Add -> ReLU).
 
-### Rama de política (policy head)
+### Rama de Política (Policy Head)
 
-- Conv2D 64→2, kernel 1x1
-- BatchNorm2D
-- Aplanado
-- Concatenación con `x_global`
-- Linear (→ 256) → ReLU
-- Linear → logits para cada acción posible (`action_size`)
+- **Conv2D**: 64→2 canales, kernel 1x1.
+- **Concatenación**: Salida espacial aplanada + Salida de fábricas + `x_global`.
+- **MLP**:
+    - Linear (→ 256) + ReLU
+    - Linear (→ `action_size`)
+- **Salida**: Logits para cada acción posible.
 
-### Rama de valor (value head)
+### Rama de Valor (Value Head)
 
-- Conv2D 64→1, kernel 1x1
-- BatchNorm2D
-- Aplanado
-- Concatenación con `x_global`
-- Linear (→ 256) → ReLU
-- Linear → Tanh (valor final entre -1 y 1)
+- **Conv2D**: 64→1 canal, kernel 1x1.
+- **Concatenación**: Salida espacial aplanada + Salida de fábricas + `x_global`.
+- **MLP**:
+    - Linear (→ 256) + ReLU
+    - Linear (→ 1)
+- **Salida**: **Valor Lineal** (sin activación Tanh). Representa la diferencia de puntos normalizada.
 
 ## Diagrama (Mermaid)
 
 ```mermaid
 graph TD
-    InputSpatial[Input Spatial (B, InCh, 5, 5)] --> ConvIn[Conv2D 3x3 (64) + BN + ReLU]
-    InputGlobal[Input Global (B, GlobalSize)]
-    
-    ConvIn --> ResBlock1[ResBlock 1]
-    ResBlock1 --> ResBlock2[ResBlock 2]
-    ResBlock2 --> ResBlock3[ResBlock 3]
-    ResBlock3 --> ResBlock4[ResBlock 4]
-    
-    ResBlock4 --> PolicyConv[Policy Conv 1x1 (2) + BN + ReLU]
-    ResBlock4 --> ValueConv[Value Conv 1x1 (1) + BN + ReLU]
-    
-    PolicyConv --> PolicyFlat[Flatten (50)]
-    ValueConv --> ValueFlat[Flatten (25)]
-    
-    PolicyFlat --> PolicyCat[Concat]
-    InputGlobal --> PolicyCat
-    
-    ValueFlat --> ValueCat[Concat]
-    InputGlobal --> ValueCat
-    
-    PolicyCat --> PolicyFC1[Linear (256) + ReLU]
-    PolicyFC1 --> PolicyOut[Linear (ActionSize) -> Logits]
-    
-    ValueCat --> ValueFC1[Linear (256) + ReLU]
-    ValueFC1 --> ValueFC2[Linear (1) -> Tanh -> Value]
+    subgraph Inputs
+        InputSpatial[Spatial (B, 4, 5, 5)]
+        InputFactories[Factories (B, 6, 5)]
+        InputGlobal[Global (B, 27)]
+    end
+
+    subgraph Spatial Processing
+        InputSpatial --> ConvIn[Conv2D 3x3 (64)]
+        ConvIn --> ResBlocks[4x ResBlocks]
+        ResBlocks --> PolicyConv[Policy Conv 1x1 (2)]
+        ResBlocks --> ValueConv[Value Conv 1x1 (1)]
+        PolicyConv --> FlatSpatialP[Flatten]
+        ValueConv --> FlatSpatialV[Flatten]
+    end
+
+    subgraph Factory Processing
+        InputFactories --> Embed[Linear Embed (32)]
+        Embed --> Transformer[Transformer Encoder (2 layers)]
+        Transformer --> FlatFactories[Flatten]
+    end
+
+    subgraph Heads
+        FlatSpatialP & FlatFactories & InputGlobal --> ConcatP[Concat]
+        ConcatP --> PolicyFC1[Linear (256) + ReLU]
+        PolicyFC1 --> PolicyOut[Linear -> Logits]
+
+        FlatSpatialV & FlatFactories & InputGlobal --> ConcatV[Concat]
+        ConcatV --> ValueFC1[Linear (256) + ReLU]
+        ValueFC1 --> ValueOut[Linear -> Score Diff]
+    end
 ```
 
-## Observaciones
+## Cambios respecto a Fase 1
 
-- La arquitectura busca un balance entre capacidad y velocidad, adecuada para ejecución en CPU (MacBook M1).
-- El diseño modular permite ajustar `num_blocks` o `channels` según necesidad.
+1.  **Value Head Lineal**: Se eliminó `Tanh` para predecir diferencias de puntuación en lugar de probabilidad de victoria binaria.
+2.  **Transformer de Fábricas**: Se introdujo atención para procesar las fábricas en lugar de aplanarlas en el vector global.
+3.  **Input Estructurado**: Se separaron las entradas en el `forward` de la red.
 
 ---
-Última actualización: Noviembre de 2025
+Última actualización: Noviembre de 2025 (Fase 2)

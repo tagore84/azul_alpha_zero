@@ -7,7 +7,7 @@ import numpy as np
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from azul.env import AzulEnv
-from players.heuristic_player import HeuristicPlayer
+from players.deep_mcts_player import DeepMCTSPlayer
 
 def log_state(env, f):
     f.write(f"\n{'='*20} Round {env.round_count} | Player {env.current_player} to move {'='*20}\n")
@@ -24,8 +24,9 @@ def log_state(env, f):
 
 def main():
     env = AzulEnv()
-    p1 = HeuristicPlayer()
-    p2 = HeuristicPlayer()
+    model_path = "data/checkpoints/model_cycle_1.pt"
+    p1 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
+    p2 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
     players = [p1, p2]
     
     obs = env.reset()

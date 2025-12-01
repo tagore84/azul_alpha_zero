@@ -1,56 +1,171 @@
-# Mejoras Futuras para Azul AlphaZero
+✅ 1. Valoración general: Arquitectura muy sólida y apropiada para Azul
 
-Este documento recopila propuestas de optimización y mejora para la arquitectura y el entrenamiento de AzulNet, basadas en el análisis crítico de la implementación actual (Noviembre 2025).
+Tu arquitectura de Fase 2 es mucho más cercana a AlphaZero para juegos con estructura mixta, donde hay:
+	•	componentes espaciales (muro, líneas de patrón),
+	•	componentes vectoriales (bolsa, descartes, puntuaciones),
+	•	componentes set-like (fábricas y centro, que no tienen orden fijo),
+	•	y un espacio de acción “semi-estructurado”.
 
-Estas mejoras están pensadas para una "Fase 2" una vez que la implementación base (AlphaZero estándar) sea estable.
+Tener tres flujos separados:
+	•	CNN → muro + patrones
+	•	Transformer → fábricas
+	•	MLP → global
 
-## 1. Optimización del Value Head (Prioridad Alta)
+y luego fundirlos antes de las cabezas de Policy y Value…
 
-### Problema Actual
-Actualmente, el *Value Head* utiliza una activación `Tanh` que produce un valor en el rango `[-1, 1]`. El entrenamiento utiliza el resultado de la partida (Ganar=1, Perder=-1, Empate=0) como target.
-En Azul, ganar por 1 punto es muy diferente a ganar por 50 puntos. La señal binaria pierde mucha información sobre la calidad de la victoria.
+…es exactamente lo que haría un equipo serio de DeepMind / FAIR para un juego como Azul.
 
-### Propuesta
-Cambiar el objetivo de predicción a **Diferencia de Puntos Normalizada**.
+⸻
 
-*   **Arquitectura**: Eliminar `Tanh` final o usar una activación lineal.
-*   **Target**: `(Puntuación_Propia - Puntuación_Rival) / Factor_Normalización`.
-    *   *Factor_Normalización* podría ser 100 (máxima diferencia razonable).
-*   **Beneficio**: El modelo aprenderá a maximizar su ventaja y minimizar la del rival, no solo a "ganar por la mínima", lo que lleva a un juego más robusto.
+🟪 2. El Transformer para las fábricas es una mejora enorme
 
-## 2. Representación del Estado Global (Prioridad Media)
+Esto corrige uno de los problemas fundamentales de la Fase 1:
 
-### Problema Actual
-La información de las fábricas (`factories`) se aplana (`flatten`) en el vector global. Esto destruye la estructura "local" de cada fábrica (qué fichas están juntas en la misma fábrica).
+❌ Antes
 
-### Propuesta
-Representar las fábricas y el centro como tensores estructurados o usar embeddings.
+Aplanabas fábricas → perdías:
+	•	relaciones entre fábricas,
+	•	posibilidad de comparar “qué colores quedan en otras fábricas”,
+	•	estructura de set de fichas.
 
-*   **Opción A (Tensor)**: Añadir un input `x_factories` de dimensión `(Batch, N_Fabricas, N_Colores)` o similar, y procesarlo con capas densas específicas antes de concatenarlo al global.
-*   **Opción B (Embeddings)**: Usar embeddings para representar el contenido de cada fábrica.
-*   **Beneficio**: La red podrá entender mejor relaciones como "si cojo rojo de la fábrica 1, dejo las azules para el rival", que es difícil de ver en un vector plano.
+✔ Ahora
 
-## 3. Arquitectura con Atención / Transformers (Prioridad Media-Baja)
+El self-attention es perfecto porque:
+	•	no asume orden fijo,
+	•	cada fábrica “mira a las otras”,
+	•	el centro puede considerarse una fábrica adicional,
+	•	el modelo capta sin problemas:
+	•	fábricas con el mismo color,
+	•	si un color está concentrado en una fábrica,
+	•	qué fuentes son más peligrosas para el oponente.
 
-### Problema Actual
-La red usa CNNs (convoluciones) que son excelentes para relaciones espaciales (tablero 5x5), pero mediocres para relacionar entidades disjuntas (fábricas, bolsa, rival). La concatenación del vector global es una solución simple pero limitada.
+Esto ayudará MUCHO al aprendizaje emergente de:
+	•	timing de coger del centro,
+	•	cuándo evitar regalarle un color al oponente,
+	•	cuándo forzar penalizaciones.
 
-### Propuesta
-Introducir un pequeño módulo de **Self-Attention** (Transformer Encoder) para la parte no espacial.
+Gran acierto.
 
-*   **Implementación**: Tratar cada fábrica, el centro, y el estado propio/rival como "tokens" que interactúan entre sí mediante atención.
-*   **Beneficio**: Capturar dependencias complejas de largo alcance y lógica combinatoria entre fábricas y tablero.
+⸻
 
-## 4. Features Globales Explícitas (Prioridad Baja)
+🟦 3. El Value Head lineal es correcto (y necesario) en Azul
 
-### Problema Actual
-El vector global contiene conteos crudos.
+Tu documento lo dice claramente:
 
-### Propuesta
-Añadir features derivadas explícitas que ayuden a la red:
-*   Probabilidad de aparición de cada color (basado en bolsa + descartes).
-*   Diferencia de puntos actual.
-*   Número de fichas necesarias para completar columnas/filas específicas.
+Score Difference – Linear Activation, no Tanh.
 
----
-**Nota**: Antes de abordar estas mejoras, es crucial validar que el modelo base (Ciclo 1-3) es capaz de jugar partidas legales y terminar correctamente.
+Esto es 100% correcto porque:
+	•	El rango de puntos en Azul no es fijo entre –1 y 1.
+	•	El score difference puede ser:
+	•	perfectamente +10,
+	•	+25,
+	•	o –15.
+	•	El valor NO es probabilístico.
+
+Esto hace que tu loss sea efectivamente una regresión, no clasificación.
+
+Es exactamente lo que se necesita en Azul.
+
+⸻
+
+🟩 4. Separar Spatial y Factory Features antes de fusionar es excelente
+
+Combinar todo demasiado pronto habría mezclado ruido heterogéneo.
+
+Con tu diseño:
+	•	CNN aprende patrones espaciales internos del tablero.
+	•	Transformer aprende a interpretar las fuentes de fichas.
+	•	Global vector contextualiza la partida.
+
+Luego:
+concat → MLP → policy/value
+Esto es limpio, modular y escalable.
+
+⸻
+
+⚠️ 5. Puntos débiles o riesgos que detecto
+
+🔸 Riesgo 1 — El modelo no entiende bien los actions masks si no los integras explícitamente
+
+Tu arquitectura no menciona (ni en el diagrama ni en el md) si:
+
+❓ ¿El modelo recibe el action mask como entrada a la Policy Head?
+
+Si NO lo hace, entonces:
+	•	El MCTS puede enmascarar acciones ilegales después,
+	•	pero la red pierde eficiencia aprendiéndolo,
+	•	y le añades MUCHÍSIMO ruido a la policy.
+
+Recomendación:
+Añade el action mask como un input adicional concatenado en la policy head.
+
+⸻
+
+🔸 Riesgo 2 — El Global Input probablemente es demasiado pequeño
+
+En el md aparece:
+InputGlobal (27 features)
+Pero Azul tiene bastante más estado global útil:
+	•	turno actual,
+	•	ronda actual,
+	•	quién tiene el token,
+	•	cuántos colores quedan en la bolsa,
+	•	cuántas fichas en descarte,
+	•	si algún color está cerca de agotarse,
+	•	posibles bonificaciones finales (filas, columnas, colores completos),
+	•	estado del oponente más resumido.
+
+Mi impresión:
+27 features se te quedan cortos.
+
+Recomiendo subir a 50–80, con embeddings dedicados.
+
+⸻
+
+🔸 Riesgo 3 — El spatial input de tamaño fijo 5×5 no incluye el pattern lines state completo
+
+Depende de cómo lo codifiques, pero:
+	•	Pattern lines no tienen forma 5×5.
+	•	Pueden tener estados parciales, conteos, overflow al suelo.
+
+Si tu encoder espacial solo mira al muro 5×5:
+
+→ estás dejando fuera la mitad del juego
+
+Pero si el spatial input incluye:
+	•	muro 5×5,
+	•	patrón 5×5 (con pad),
+	•	suelo (codificado como fila adicional),
+
+entonces perfecto.
+
+Confírmame qué incluidos realmente como “spatial input”.
+
+⸻
+
+🔸 Riesgo 4 — La value head recibe simplemente concat(flat)
+
+Esto funciona, pero puede limitar la interacción entre:
+	•	features espaciales,
+	•	features de fábricas,
+	•	features globales.
+
+Una “fusion layer” adicional (2–3 MLP layers antes de ramificar a Policy/Value) ayuda MUCHO.
+
+⸻
+
+🔸 Riesgo 5 — No hay skip-connections entre ramas
+
+Puede que la política dependa mucho del estado global, y el valor de patrones espaciales. Recomiendo añadir un shared trunk:
+concat(all features) → MLP shared → split
+Esto reduce overfitting de la policy head.
+
+⸻
+
+⭐ RECOMENDACIONES CONCRETAS
+	1.	Añadir Action Mask a la Policy Head
+	2.	Aumentar el Global Vector a ~64 features
+	3.	Confirmar que Pattern Lines están en el Spatial Input
+	4.	Añadir “Feature Fusion MLP” antes de las cabezas
+	5.	Añadir skip-connection del global vector al value head
+	6.	Normalizar inputs (especialmente factories y global)
