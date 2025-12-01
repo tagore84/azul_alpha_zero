@@ -20,6 +20,34 @@ from players.random_plus_player import RandomPlusPlayer
 from mcts.mcts import MCTS
 import copy
 
+class TrainingLogger:
+    def __init__(self, log_dir):
+        self.log_dir = log_dir
+        os.makedirs(log_dir, exist_ok=True)
+        self.log_file = os.path.join(log_dir, "training.log")
+        self.monitor_file = os.path.join(log_dir, "training_monitor.log")
+        self.buffer = []
+        
+        # Initialize log file
+        with open(self.log_file, "a") as f:
+            f.write(f"\n{'='*20}\n[{datetime.now()}] Training Session Started\n{'='*20}\n")
+
+    def log(self, msg):
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        formatted_msg = f"[{timestamp}] {msg}"
+        print(formatted_msg) # Print to console
+        self.buffer.append(formatted_msg)
+        
+        # Append to main log immediately
+        with open(self.log_file, "a") as f:
+            f.write(formatted_msg + "\n")
+
+    def dump(self):
+        # Dump entire buffer to monitor file for easy reading
+        with open(self.monitor_file, "w") as f:
+            f.write("\n".join(self.buffer))
+
+
 def get_curriculum_params(cycle):
     """
     Returns training parameters based on the current cycle.
@@ -62,11 +90,13 @@ def get_curriculum_params(cycle):
             'cpuct': 1.5
         }
 
-def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
+def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, logger=None):
     """
     Run validation matches against Heuristic and Previous Model.
     """
-    print(f"\n[Validation] Starting validation for Cycle {cycle}...")
+    msg = f"Starting validation for Cycle {cycle}..."
+    if logger: logger.log(msg)
+    else: print(f"\n[Validation] {msg}")
     
     # Setup players
     random_player = RandomPlayer()
@@ -79,7 +109,10 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
         draws = 0
         losses = 0
         
-        print(f"[Validation] vs {opponent_name}: Playing {n_games} games...")
+        msg = f"vs {opponent_name}: Playing {n_games} games..."
+        if logger: logger.log(msg)
+        else: print(f"[Validation] {msg}")
+
         for i in range(n_games):
             # Use a fresh env for validation
             env = AzulEnv()
@@ -150,11 +183,15 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
                 draws += 1
                 result_str = "DRAW"
             
-            print(f"[Validation] Game {i+1}/{n_games}: {result_str} (Model: {my_score}, Opponent: {opp_score})")
+            # Optional: Log every game result? Maybe too verbose for main log.
+            # logger.log(f"Game {i+1}/{n_games}: {result_str} ({my_score}-{opp_score})")
         
         win_rate = wins / n_games
-        print(f"[Validation] vs {opponent_name}: Wins={wins}, Losses={losses}, Draws={draws} (WR: {win_rate:.2f})")
+        msg = f"vs {opponent_name}: Wins={wins}, Losses={losses}, Draws={draws} (WR: {win_rate:.2f})"
+        if logger: logger.log(msg)
+        else: print(f"[Validation] {msg}")
         return win_rate
+
     if cycle <= 6:
         wr_rival = play_validation_match("Random", random_player, n_games=5)
     elif cycle <= 16:
@@ -176,13 +213,17 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle):
             
             wr_previous = play_validation_match("PreviousCycle", prev_model, n_games=10)
         except Exception as e:
-            print(f"[Validation] Could not load previous model: {e}")
+            msg = f"Could not load previous model: {e}"
+            if logger: logger.log(msg)
+            else: print(f"[Validation] {msg}")
     else:
-        print("[Validation] No previous model found. Skipping vs Previous.")
+        msg = "No previous model found. Skipping vs Previous."
+        if logger: logger.log(msg)
+        else: print(f"[Validation] {msg}")
 
     # Log to file/tensorboard if needed (trainer writer is not passed here easily, but we can print)
-    with open(os.path.join(log_dir, "validation_results.txt"), "a") as f:
-        f.write(f"Cycle {cycle}: vs Rival WR={wr_rival:.2f}, vs Previous WR={wr_previous:.2f}\n")
+    # logger handles file writing now.
+    pass
 
 
 def main():
@@ -195,6 +236,9 @@ def main():
 
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     
+    # Initialize Logger
+    logger = TrainingLogger("logs")
+    
     # Setup device
     if torch.cuda.is_available():
         device = torch.device('cuda')
@@ -202,7 +246,7 @@ def main():
         device = torch.device('mps')
     else:
         device = torch.device('cpu')
-    print(f"[Loop] Using device: {device}")
+    logger.log(f"[Loop] Using device: {device}")
 
     # Initialize Environment to get shapes
     env = AzulEnv(num_players=2)
@@ -218,7 +262,7 @@ def main():
     global_size = total_obs_size - spatial_size - factories_size
     action_size = env.action_size
 
-    print(f"[Loop] Shapes: Spatial={spatial_size}, Factories={factories_size}, Global={global_size}, Total={total_obs_size}")
+    logger.log(f"[Loop] Shapes: Spatial={spatial_size}, Factories={factories_size}, Global={global_size}, Total={total_obs_size}")
 
     # Initialize Model
     model = AzulNet(
@@ -235,7 +279,7 @@ def main():
     start_cycle = 1
     
     if args.resume:
-        print("[Loop] Resuming from latest checkpoint...")
+        logger.log("[Loop] Resuming from latest checkpoint...")
         checkpoints = [f for f in os.listdir(args.checkpoint_dir) if f.startswith('model_cycle_') and f.endswith('.pt')]
         
         cycles = []
@@ -250,29 +294,29 @@ def main():
         if cycles:
             last_cycle = max(cycles)
             ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{last_cycle}.pt")
-            print(f"[Loop] Loading checkpoint: {ckpt_path}")
+            logger.log(f"[Loop] Loading checkpoint: {ckpt_path}")
             
             try:
                 checkpoint = torch.load(ckpt_path, map_location=device)
                 model.load_state_dict(checkpoint['model_state'])
                 optimizer.load_state_dict(checkpoint['optimizer_state'])
                 start_cycle = last_cycle + 1
-                print(f"[Loop] Resumed. Next cycle: {start_cycle}")
+                logger.log(f"[Loop] Resumed. Next cycle: {start_cycle}")
             except Exception as e:
-                print(f"[Loop] Failed to load checkpoint: {e}")
-                print("[Loop] Starting from Cycle 1.")
+                logger.log(f"[Loop] Failed to load checkpoint: {e}")
+                logger.log("[Loop] Starting from Cycle 1.")
         else:
-            print("[Loop] No checkpoints found. Starting from Cycle 1.")
+            logger.log("[Loop] No checkpoints found. Starting from Cycle 1.")
     else:
-        print("[Loop] Starting from scratch (Cycle 1).")
+        logger.log("[Loop] Starting from scratch (Cycle 1).")
 
     for cycle in range(start_cycle, args.total_cycles + 1):
         params = get_curriculum_params(cycle)
-        print(f"\n=== Cycle {cycle}/{args.total_cycles} ===")
-        print(f"Params: {params}")
+        logger.log(f"\n=== Cycle {cycle}/{args.total_cycles} ===")
+        logger.log(f"Params: {params}")
         
         # 1. Self-Play Generation
-        print(f"[Loop] Generating {params['n_games']} games (Sims: {params['simulations']})...")
+        logger.log(f"[Loop] Generating {params['n_games']} games (Sims: {params['simulations']})...")
         model.eval()
         new_examples = generate_self_play_games(
             verbose=False,
@@ -285,15 +329,16 @@ def main():
         
         # Add to buffer
         if not new_examples:
-            print("[Loop] WARNING: No examples generated (all games failed?). Skipping buffer update.")
+            logger.log("[Loop] WARNING: No examples generated (all games failed?). Skipping buffer update.")
         else:
             replay_buffer.extend(new_examples)
             if len(replay_buffer) > args.max_dataset_size:
                 replay_buffer = replay_buffer[-args.max_dataset_size:]
-        print(f"[Loop] Buffer size: {len(replay_buffer)}")
+        logger.log(f"[Loop] Buffer size: {len(replay_buffer)}")
+        logger.dump() # Dump after self-play
         
         # 2. Training
-        print(f"[Loop] Training for {params['epochs']} epochs...")
+        logger.log(f"[Loop] Training for {params['epochs']} epochs...")
         dataset = AzulDataset(replay_buffer, augment_factories=True)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=True)
         
@@ -302,7 +347,12 @@ def main():
             param_group['lr'] = params['lr']
             
         trainer = Trainer(model, optimizer, device, log_dir=f'logs/cycle_{cycle}')
-        trainer.fit(dataloader, epochs=params['epochs'])
+        history = trainer.fit(dataloader, epochs=params['epochs'])
+        
+        # Log training summary
+        avg_train_loss = sum(history['train_loss']) / len(history['train_loss']) if history['train_loss'] else 0
+        logger.log(f"[Loop] Training Finished. Avg Train Loss: {avg_train_loss:.4f}")
+        logger.dump() # Dump after training
         
         # 3. Checkpoint
         ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{cycle}.pt")
@@ -312,7 +362,7 @@ def main():
             'optimizer_state': optimizer.state_dict(),
             'params': params
         }, ckpt_path)
-        print(f"[Loop] Saved checkpoint to {ckpt_path}")
+        logger.log(f"[Loop] Saved checkpoint to {ckpt_path}")
         
         # Save latest as 'best.pt' for easy access
         torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, "best.pt"))
@@ -322,7 +372,7 @@ def main():
         if cycle > 1:
             prev_model_path = os.path.join(args.checkpoint_dir, f"model_cycle_{cycle-1}.pt")
         
-        validate_cycle(model, prev_model_path, device, f'logs/cycle_{cycle}', cycle)
-
+        validate_cycle(model, prev_model_path, device, f'logs/cycle_{cycle}', cycle, logger=logger)
+        logger.dump() # Dump after validation
 if __name__ == "__main__":
     main()

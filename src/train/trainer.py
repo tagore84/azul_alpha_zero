@@ -89,16 +89,25 @@ class Trainer:
         """
         Run the full training loop.
         Saves checkpoints to checkpoint_dir if provided.
+        Returns a dictionary with training history.
         """
+        history = {'train_loss': [], 'val_loss': []}
+        
         for epoch in range(1, epochs + 1):
             train_loss = self.train_epoch(train_loader, epoch)
             print(f"[trainer] Epoch {epoch}/{epochs} - Train Loss: {train_loss:.4f}")
+            history['train_loss'].append(train_loss)
 
             if val_loader:
                 val_loss = self.evaluate(val_loader, epoch)
                 print(f"[trainer] Epoch {epoch}/{epochs} - Val   Loss: {val_loss:.4f}")
+                history['val_loss'].append(val_loss)
+            else:
+                history['val_loss'].append(None)
 
             if checkpoint_dir:
                 os.makedirs(checkpoint_dir, exist_ok=True)
                 checkpoint_path = os.path.join(checkpoint_dir, f"model_epoch_{epoch:03}.pt")
                 torch.save({'model_state': self.model.state_dict()}, checkpoint_path)
+        
+        return history
