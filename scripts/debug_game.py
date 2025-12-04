@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 from azul.env import AzulEnv
 from players.deep_mcts_player import DeepMCTSPlayer
+from players.heuristic_player import HeuristicPlayer
 
 def log_state(env, f):
     f.write(f"\n{'='*20} Round {env.round_count} | Player {env.current_player} to move {'='*20}\n")
@@ -25,14 +26,14 @@ def log_state(env, f):
 def main():
     env = AzulEnv()
     model_path = "data/checkpoints/best.pt"
-    p1 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
-    p2 = DeepMCTSPlayer(model_path, device='mps', mcts_iters=50, cpuct=1.0)
+    p1 = HeuristicPlayer()
+    p2 = HeuristicPlayer()
     players = [p1, p2]
     
     obs = env.reset()
     done = False
     
-    log_file = "debug_game_log.txt"
+    log_file = "logs/debug_game_verification.txt"
     print(f"Running debug game... Logging to {log_file}")
     
     with open(log_file, "w") as f:

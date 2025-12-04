@@ -274,7 +274,7 @@ class AzulEnv(gym.Env):
                     # discard leftover tiles
                     leftover = len(line) - 1
                     self.discard[color] += leftover
-                    p['pattern_lines'][row_idx] = np.full(len(line), -1, dtype=int)
+                    p['pattern_lines'][row_idx][:] = -1
             # floor line penalties
             pen = calculate_floor_penalization(p['floor_line'])
             p['score'] += pen
@@ -282,7 +282,13 @@ class AzulEnv(gym.Env):
                 if tile >= 0 and tile < 5: # 0-4 are colors
                     self.discard[int(tile)] += 1
                 # tile 5 is the first player token, doesn't go to discard
-            p['floor_line'] = np.full(self.L_floor, -1, dtype=int)
+            
+            # Fix Bug 1: Explicitly remove token 5 to prevent persistence issues
+            # We do this AFTER penalties (so it counts) but BEFORE resetting the array
+            # just in case there are reference issues.
+            p['floor_line'][p['floor_line'] == 5] = -1
+            
+            p['floor_line'][:] = -1
             
 
         # Check game end (any full wall row) OR max rounds reached
@@ -344,7 +350,11 @@ class AzulEnv(gym.Env):
         - bag (5), discard (5), first_player_token (1)
         - floor_lines (num_players * 7), scores (num_players)
         - round_count (1, normalized)
+        - bag (5), discard (5), first_player_token (1)
+        - floor_lines (num_players * 7), scores (num_players)
+        - round_count (1, normalized)
         - bonuses per player: completed_rows, completed_cols, completed_colors (3 * num_players)
+        - remaining_tiles (5) [NEW]
         """
         # parts: bag, discard, factories, center
         # Spatial parts: pattern lines and walls
@@ -405,6 +415,13 @@ class AzulEnv(gym.Env):
             completed_colors = sum(1 for count in color_counts if count == 5)
             
             global_parts.append(np.array([completed_rows, completed_cols, completed_colors], dtype=int))
+        
+        # NEW: Remaining tiles (Bag + Discard + Factories + Center)
+        # We need to sum up all visible tiles in factories and center
+        visible_factories = obs['factories'].sum(axis=0) # Sum across factories for each color
+        visible_center = obs['center']
+        remaining = obs['bag'] + obs['discard'] + visible_factories + visible_center
+        global_parts.append(remaining)
         
         # Concatenate spatial then factories then global
         # Spatial: (num_players * 2, 5, 5) flattened
@@ -490,6 +507,18 @@ class AzulEnv(gym.Env):
                         wall_row = self.players[self.current_player]['wall'][dest]
                         if color in wall_row:
                             continue  # ya está ese color en la fila del muro
+                        
+                        # Fix Bug 3: Check if pattern line has a different color
+                        pattern_line = self.players[self.current_player]['pattern_lines'][dest]
+                        # If line is not empty (has -1s but first element is not -1)
+                        # In this implementation, we fill from left? No, we fill indices.
+                        # But place_on_pattern_line checks `any(slot != -1 and slot != color ...)`
+                        # Here we just need to check if there is ANY slot with a different color.
+                        # Since a line can only hold ONE color (plus empty slots), we can just check the first non-empty slot?
+                        # Or just check if any slot is != -1 and != color.
+                        if any(slot != -1 and slot != color for slot in pattern_line):
+                            continue
+
                     valid_actions.append((source_idx, color, dest))
         return valid_actions
     

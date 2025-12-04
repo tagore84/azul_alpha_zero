@@ -30,7 +30,7 @@ class TrainingLogger:
         
         # Initialize log file
         with open(self.log_file, "a") as f:
-            f.write(f"\n{'='*20}\n[{datetime.now()}] Training Session Started\n{'='*20}\n")
+            f.write(f"\n{'='*20}\n[{datetime.now()}] Training Session Started (V5 - Scaling)\n{'='*20}\n")
 
     def log(self, msg):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -51,47 +51,41 @@ class TrainingLogger:
 def get_curriculum_params(cycle):
     """
     Returns training parameters based on the current cycle.
-    Curriculum:
-    - Cycles 1: Check if everything is ok
-    - Cycles 2-6: Fast learning (Rules & Basic Tactics)
-    - Cycles 7-16: Strategic learning
-    - Cycles 17+: Refinement
+    Curriculum (Phase 5.0 - Scaling):
+    - Cycles 1-5: Warmup (100 sims, 200 games)
+    - Cycles 6-20: Scaling (200 sims, 500 games)
+    - Cycles 21+: High Quality (400 sims, 1000 games)
     """
     # Default parameters
     params = {
-        'n_games': 50,
-        'simulations': 50,  # Doubled from 25
-        'epochs': 5,
+        'n_games': 500,
+        'simulations': 200,
+        'epochs': 10,
         'lr': 1e-3,
-        'cpuct': 1.0,
-        'temp_threshold': 30,  # Number of moves with temp=1.0
+        'cpuct': 1.2,
+        'temp_threshold': 0,  # Deprecated in favor of dynamic temp in self_play
         'noise_alpha': 0.3,    # Dirichlet noise alpha
         'noise_eps': 0.25      # Dirichlet noise epsilon
     }
     
-    if cycle <= 1:
-        # Initial check: very few games
-        params['n_games'] = 10
-        params['simulations'] = 30 
-        params['epochs'] = 5
+    if cycle <= 5:
+        # Warmup
+        params['n_games'] = 200
+        params['simulations'] = 100
+        params['epochs'] = 10
         params['lr'] = 1e-3
-    elif cycle <= 6:
-        # Early learning: fast cycles, fewer sims
-        params['n_games'] = 50
-        params['simulations'] = 30  # Doubled from 25
-        params['epochs'] = 5
-        params['lr'] = 1e-3
-    elif cycle <= 16:
-        # Mid learning: more stability
-        params['n_games'] = 100
-        params['simulations'] = 75  # Doubled from 50
+        params['cpuct'] = 1.0
+    elif cycle <= 20:
+        # Scaling
+        params['n_games'] = 500
+        params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 5e-4
         params['cpuct'] = 1.2
     else:
-        # Late learning: high quality search
-        params['n_games'] = 200
-        params['simulations'] = 150  # Doubled from 100
+        # High Quality / Refinement
+        params['n_games'] = 1000
+        params['simulations'] = 400
         params['epochs'] = 10
         params['lr'] = 1e-4
         params['cpuct'] = 1.5
@@ -128,12 +122,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
             done = False
             
             # Randomize starting player
-            # But we want to track current_model performance.
-            # Let's play 50% games as P0 and 50% as P1 if n_games is even.
-            # For simplicity, let's just alternate or random.
             # Let's stick to: current_model is P0 for half, P1 for half.
-            
-            # Actually, let's just use the loop index. Even: Model=P0, Odd: Model=P1
             model_is_p0 = (i % 2 == 0)
             
             while not done:
@@ -142,17 +131,17 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
                 if (model_is_p0 and current_idx == 0) or (not model_is_p0 and current_idx == 1):
                     # Current Model's turn
                     # Use MCTS with low simulations for speed, or same as training?
-                    # Let's use 25 sims for validation to be quick but decent.
-                    mcts = MCTS(env, current_model, simulations=25, cpuct=1.0)
+                    # Let's use 50 sims for validation in V5 (more robust than 25)
+                    mcts = MCTS(env, current_model, simulations=50, cpuct=1.0)
                     mcts.run()
-                    action = mcts.select_action()
+                    action = mcts.select_action(temperature=0.0) # Greedy validation
                 else:
                     # Opponent's turn
                     if opponent_name == "PreviousCycle":
                          # Previous model also needs MCTS
-                         mcts_prev = MCTS(env, opponent_player, simulations=25, cpuct=1.0)
+                         mcts_prev = MCTS(env, opponent_player, simulations=50, cpuct=1.0)
                          mcts_prev.run()
-                         action = mcts_prev.select_action()
+                         action = mcts_prev.select_action(temperature=0.0)
                     else:
                         # Heuristic/Random
                         action = opponent_player.predict(obs)
@@ -162,12 +151,10 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
                         # Validate action to prevent crashes
                         valid_actions = env.get_valid_actions()
                         if action not in valid_actions:
-                            # print(f"[Validation] WARNING: Opponent {opponent_name} generated illegal action {action}. Picking random valid.")
                             import random
                             if valid_actions:
                                 action = random.choice(valid_actions)
                             else:
-                                # Should be handled by done check, but just in case
                                 break
                 
                 obs, _, done, _ = env.step(action)
@@ -201,12 +188,10 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
         else: print(f"[Validation] {msg}")
         return win_rate
 
-    if cycle <= 6:
-        wr_rival = play_validation_match("Random", random_player, n_games=5)
-    elif cycle <= 16:
-        wr_rival = play_validation_match("RandomPlus", random_plus_player, n_games=5)
+    if cycle <= 5:
+        wr_rival = play_validation_match("RandomPlus", random_plus_player, n_games=10)
     else:
-        wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=5)
+        wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=20)
     
     # 2. vs Previous Model (if exists)
     wr_previous = 0.0
@@ -230,23 +215,21 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
         if logger: logger.log(msg)
         else: print(f"[Validation] {msg}")
 
-    # Log to file/tensorboard if needed (trainer writer is not passed here easily, but we can print)
-    # logger handles file writing now.
     pass
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Azul Zero Training Loop")
-    parser.add_argument('--total_cycles', type=int, default=21, help='Number of generation-training cycles')
-    parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints', help='Directory to save models')
-    parser.add_argument('--max_dataset_size', type=int, default=25000, help='Max examples in replay buffer')
+    parser = argparse.ArgumentParser(description="Azul Zero Training Loop (V5 - Scaling)")
+    parser.add_argument('--total_cycles', type=int, default=50, help='Number of generation-training cycles')
+    parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints_v5', help='Directory to save models')
+    parser.add_argument('--max_dataset_size', type=int, default=200000, help='Max examples in replay buffer')
     parser.add_argument('--resume', action='store_true', help='Resume from the latest checkpoint')
     args = parser.parse_args()
 
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     
     # Initialize Logger
-    logger = TrainingLogger("logs")
+    logger = TrainingLogger("logs_v5")
     
     # Setup device
     if torch.cuda.is_available():
@@ -364,7 +347,7 @@ def main():
         for param_group in optimizer.param_groups:
             param_group['lr'] = params['lr']
             
-        trainer = Trainer(model, optimizer, device, log_dir=f'logs/cycle_{cycle}')
+        trainer = Trainer(model, optimizer, device, log_dir=f'{logger.log_dir}/cycle_{cycle}')
         history = trainer.fit(dataloader, epochs=params['epochs'])
         
         # Log training summary with detailed breakdown
@@ -392,7 +375,7 @@ def main():
         if cycle > 1:
             prev_model_path = os.path.join(args.checkpoint_dir, f"model_cycle_{cycle-1}.pt")
         
-        validate_cycle(model, prev_model_path, device, f'logs/cycle_{cycle}', cycle, logger=logger)
+        validate_cycle(model, prev_model_path, device, f'{logger.log_dir}/cycle_{cycle}', cycle, logger=logger)
         logger.dump() # Dump after validation
 if __name__ == "__main__":
     main()

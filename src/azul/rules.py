@@ -87,7 +87,7 @@ def transfer_to_wall(wall: List[List[int]], pattern_line: List[int], row: int) -
         r += 1
 
     if v_count > 0:
-        score += (v_count + 1)
+        score += v_count + 1
     return score
 
 def calculate_floor_penalization(floor_line: List[int]) -> int:

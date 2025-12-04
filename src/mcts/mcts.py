@@ -93,13 +93,27 @@ class MCTS:
             # Fallback to uniform over valid actions
             priors = action_mask / action_mask.sum()
         
+        # Extract priors for valid actions and renormalize
+        valid_priors = []
         for action in valid_actions:
+            idx = node.env.action_to_index(action)
+            valid_priors.append(priors[idx])
+            
+        valid_priors = np.array(valid_priors)
+        total_valid_prior = valid_priors.sum()
+        
+        if total_valid_prior > 0:
+            valid_priors /= total_valid_prior
+        else:
+            # Fallback if network predicts 0 prob for all valid moves
+            valid_priors = np.ones(len(valid_actions)) / len(valid_actions)
+        
+        for i, action in enumerate(valid_actions):
             # clone environment efficiently
             new_env = node.env.clone()
             # apply action
             new_env.step(action, is_sim=True)
-            idx = node.env.action_to_index(action)
-            node.children[action] = MCTS.Node(new_env, parent=node, prior=priors[idx])
+            node.children[action] = MCTS.Node(new_env, parent=node, prior=valid_priors[i])
 
     def backpropagate(self, path: list, value: float):
         """
@@ -136,106 +150,151 @@ class MCTS:
         # print(f"[DEBUG] MCTS Run: simulations={self.simulations}")
         for sim in range(self.simulations):
             leaf, path = self.select()
-            # If terminal state, get value
+            # Check if terminal state
             obs = leaf.env._get_obs()
-            # check game over
             done = leaf.env.done or any(all(cell != -1 for cell in row) for p in leaf.env.players for row in p['wall'])
-            # print(f"[DEBUG] Sim {sim}: done={done}, leaf children={len(leaf.children)}")
-            if not done:
-                self.expand(leaf)
-            else:
-                # print(f"[DEBUG] Sim {sim}: Node is done. env.done={leaf.env.done}")
-                pass
-                if not leaf.children:
-                     # If expand failed to add children (e.g. no valid actions despite not done?), treat as terminal
-                     # This prevents the loop from trying to simulate from a dead node
-                     # But we need a value.
-                     # Let's just break and treat as loss/tie?
-                     # Or better, expand() should have raised or handled it.
-                     # If we are here, valid_actions was empty.
-                     # This means it IS done effectively.
-                     done = True
-                else:
-                    # Evaluate leaf value with the network (no rollout)
-                    obs = leaf.env._get_obs()
-                    obs_flat = leaf.env.encode_observation(obs)
-                    
-                    # Create action mask for value evaluation (though value doesn't use it)
-                    valid_actions_eval = leaf.env.get_valid_actions()
-                    action_mask = np.zeros(leaf.env.action_size, dtype=np.float32)
-                    for action in valid_actions_eval:
-                        idx = leaf.env.action_to_index(action)
-                        action_mask[idx] = 1.0
-                    
-                    _, value_out = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
-                    value = float(value_out)
-                    # The network returns value for the current player (leaf.player).
-                    self.backpropagate(path, value)
             
-            if done:
-                # terminal node: compute value directly
+            if not done:
+                # Non-terminal: expand and evaluate with network
+                self.expand(leaf)
+                
+                # Evaluate leaf value with the network
+                obs_flat = leaf.env.encode_observation(obs)
+                
+                # Create action mask for value evaluation
+                valid_actions_eval = leaf.env.get_valid_actions()
+                action_mask = np.zeros(leaf.env.action_size, dtype=np.float32)
+                for action in valid_actions_eval:
+                    idx = leaf.env.action_to_index(action)
+                    action_mask[idx] = 1.0
+                
+                _, value_out = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
+                value = float(value_out)
+                # Network returns value for current player (leaf.player)
+                self.backpropagate(path, value)
+            else:
+                # Terminal: compute exact game value
                 scores = leaf.env.get_final_scores()
-                # Assuming 2 players
-                p0_score = scores[0]
-                p1_score = scores[1]
+                p0_score, p1_score = scores[0], scores[1]
                 
                 # Value from perspective of leaf.player
-                # Normalize by 100.0
-                if leaf.player == 0:
-                    value = (p0_score - p1_score) / 100.0
+                # Win/Loss: +1/-1/0
+                if p0_score > p1_score:
+                    value = 1.0 if leaf.player == 0 else -1.0
+                elif p1_score > p0_score:
+                    value = 1.0 if leaf.player == 1 else -1.0
                 else:
-                    value = (p1_score - p0_score) / 100.0
+                    value = 0.0
                 
                 self.backpropagate(path, value)
         
 
-    def select_action(self) -> Tuple[int, int, int]:
+    def add_root_noise(self, alpha: float = 0.3, epsilon: float = 0.25):
         """
-        After running simulations, pick the most visited child action, but ensure it's still valid in the current env.
+        Add Dirichlet noise to the root node's priors to encourage exploration.
+        P(s, a) = (1 - epsilon) * P(s, a) + epsilon * Dirichlet(alpha)
         """
         if not self.root.children:
-            # print("[DEBUG] No children in root, calling run()")
-            self.run()
-        valid_actions = self.root.env.get_valid_actions()
-        candidates = [(a, n) for a, n in self.root.children.items() if a in valid_actions]
-        if not candidates:
-            # Fallback to random if no MCTS children available
-            return random.choice(valid_actions)
-        action, node = max(candidates, key=lambda item: item[1].visits)
-        return action
-
-    def advance(self, env: AzulEnv):
-        """
-        Advance the root of the tree to the child corresponding to the new state.
-        This reuses the subtree.
-        """
-        # We can't easily match 'env' to a child because env is the RESULT state.
-        # But we know the action that was taken in the external loop?
-        # Actually, self_play.py calls advance(env).
-        # We need to find which child matches 'env'.
-        # Since 'env' is a clone, we can't compare objects.
-        # But we can assume the external loop calls advance after taking an action.
-        # Ideally, advance should take the action, not the env.
-        
-        # For now, let's just reset. To implement reuse properly, we need to change the signature
-        # or find the child that matches.
-        # Let's change the signature in a future step if needed, but for now, 
-        # let's try to match based on observation or just reset if too complex.
-        
-        # Actually, let's just reset for safety in this iteration, 
-        # but the plan said "Reuse MCTS tree".
-        # To reuse, we need the action.
-        # Let's modify self_play.py to pass the action to advance?
-        # Or we can just search for a child whose state matches 'env'.
-        
-        # Simple matching:
-        # found = None
-        # for action, child in self.root.children.items():
-        #     # This is expensive to compare full states.
-        #     pass
+            self.expand(self.root)
             
-        # Let's stick to reset for now to be safe, as the plan didn't explicitly detail the signature change.
-        # Wait, the plan said: "mcts.advance(env) should keep the subtree."
-        # I will implement a "best effort" reuse if I can, but without the action it's hard.
-        # Let's just reset.
-        self.root = MCTS.Node(env.clone(), parent=None, prior=1.0)
+        children = self.root.children
+        if not children:
+            return
+            
+        actions = list(children.keys())
+        noise = np.random.dirichlet([alpha] * len(actions))
+        
+        for i, action in enumerate(actions):
+            node = children[action]
+            node.prior = (1 - epsilon) * node.prior + epsilon * noise[i]
+
+    def select_action(self, temperature: float = 1.0) -> Tuple[int, int, int]:
+        """
+        After running simulations, pick a child action based on visit counts and temperature.
+        - If temperature == 0: Greedy selection (max visits).
+        - If temperature > 0: Sample proportional to visits^(1/temp).
+        """
+        if not self.root.children:
+            self.run()
+            
+        valid_actions = self.root.env.get_valid_actions()
+        # Filter children that are valid actions (should be all, but safety check)
+        candidates = [(a, n) for a, n in self.root.children.items() if a in valid_actions]
+        
+        if not candidates:
+            return random.choice(valid_actions)
+            
+        if temperature == 0:
+            # Greedy selection
+            action, node = max(candidates, key=lambda item: item[1].visits)
+            return action
+        else:
+            # Stochastic selection
+            visits = np.array([n.visits for a, n in candidates], dtype=np.float64)
+            
+            # Raise to temperature power
+            # Avoid overflow if temp is small (though here we expect temp=1.0)
+            try:
+                visits = visits ** (1.0 / temperature)
+            except OverflowError:
+                # If overflow, treat max element as 1 and others as 0 (greedy-like)
+                max_idx = np.argmax(visits)
+                visits = np.zeros_like(visits)
+                visits[max_idx] = 1.0
+            
+            # Check for infinities
+            if np.isinf(visits).any():
+                visits = np.where(np.isinf(visits), 1.0, 0.0)
+            
+            visit_sum = visits.sum()
+            
+            if visit_sum <= 0:
+                # Fallback to uniform if no visits (should not happen if sims > 0)
+                probs = np.ones_like(visits) / len(visits)
+            else:
+                probs = visits / visit_sum
+            
+            # Clip and re-normalize to ensure strict sum to 1.0 for np.random.choice
+            probs = np.clip(probs, 1e-10, 1.0)
+            probs /= probs.sum()
+            
+            # Sample index
+            try:
+                idx = np.random.choice(len(candidates), p=probs)
+            except ValueError as e:
+                # Last resort fallback
+                print(f"[MCTS] Warning: Probability error in select_action: {e}. Probs: {probs}", flush=True)
+                idx = np.argmax(probs)
+                
+            return candidates[idx][0]
+
+    def advance(self, action: Tuple[int, int, int], env: AzulEnv):
+        """
+        Advance the root to the child corresponding to the action taken.
+        Reuses the subtree if the action was explored.
+        
+        Args:
+            action: The action that was taken (source_idx, color, dest)
+            env: The new environment state after the action
+        """
+        if action in self.root.children:
+            # Reuse subtree: promote the child node to new root
+            new_root = self.root.children[action]
+            
+            # Detach from parent (critical for garbage collection of old tree)
+            new_root.parent = None
+            
+            # CRITICAL: Update the root's env to match the actual game state
+            # The child's env was created during expand() with is_sim=True
+            # We need to replace it with the real env to keep them synchronized
+            new_root.env = env.clone()
+            
+            # Set as new root
+            self.root = new_root
+            
+            # The subtree is preserved with all visit counts, values, and children!
+        else:
+            # Fallback: action not in tree (shouldn't happen normally)
+            # This could occur if select_action() returned a fallback random action
+            # Create fresh root from the new state
+            self.root = MCTS.Node(env.clone(), parent=None, prior=1.0)

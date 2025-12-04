@@ -59,6 +59,9 @@ class AzulNet(nn.Module):
         # Factory Transformer
         # Input: (Batch, N+1, 5) -> Embed -> (Batch, N+1, 32)
         self.factory_embedding = nn.Linear(5, factory_embed_dim)
+        # Learnable positional encoding to distinguish Center from Factories
+        self.factory_pos_embedding = nn.Parameter(torch.randn(1, factories_count + 1, factory_embed_dim) * 0.02)
+        
         encoder_layer = nn.TransformerEncoderLayer(d_model=factory_embed_dim, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
         
@@ -67,14 +70,16 @@ class AzulNet(nn.Module):
         
         # Shared Trunk (Fusion Layer)
         combined_size = 2 * 5 * 5 + global_size + self.factory_out_size
+        self.layer_norm = nn.LayerNorm(combined_size)
         self.fusion_fc1 = nn.Linear(combined_size, value_hidden)
         self.fusion_fc2 = nn.Linear(value_hidden, value_hidden)
         
         # Policy head
         self.policy_conv = nn.Conv2d(channels, 2, kernel_size=1)
         self.policy_bn   = nn.BatchNorm2d(2)
-        # Input: shared trunk output + action_mask
-        self.policy_fc1  = nn.Linear(value_hidden + action_size, value_hidden)
+        self.policy_bn   = nn.BatchNorm2d(2)
+        # Input: shared trunk output (no action_mask concatenation)
+        self.policy_fc1  = nn.Linear(value_hidden, value_hidden)
         self.policy_fc   = nn.Linear(value_hidden, action_size)
         
         # Value head
@@ -114,6 +119,7 @@ class AzulNet(nn.Module):
         # Process factories with Transformer
         # x_factories: (B, N+1, 5)
         f = F.relu(self.factory_embedding(x_factories)) # (B, N+1, 32)
+        f = f + self.factory_pos_embedding # Add position info (broadcasting over batch)
         f = self.transformer(f) # (B, N+1, 32)
         f = f.reshape(f.size(0), -1) # (B, (N+1)*32)
         
@@ -125,22 +131,26 @@ class AzulNet(nn.Module):
         
         combined = torch.cat([p, x_global, f], dim=1)
         
+        # Normalize combined features
+        combined = self.layer_norm(combined)
+        
         # Shared Trunk (Fusion Layer)
         shared = F.relu(self.fusion_fc1(combined))
         shared = F.relu(self.fusion_fc2(shared))
         
-        # Policy head with action mask injection
-        if action_mask is None:
-            # Create a dummy mask of all ones if not provided
-            action_mask = torch.ones(batch_size, self.action_size, device=x_spatial.device)
-        
-        p_input = torch.cat([shared, action_mask], dim=1)
-        p = F.relu(self.policy_fc1(p_input))
+        # Policy head
+        p = F.relu(self.policy_fc1(shared))
         pi_logits = self.policy_fc(p)
+        
+        # Additive Action Masking
+        if action_mask is not None:
+            # mask is 1 for legal, 0 for illegal
+            # (mask - 1) * 1e9 -> 0 for legal, -1e9 for illegal
+            pi_logits = pi_logits + (action_mask - 1.0) * 1e9
         
         # Value head
         v = F.relu(self.value_fc1(shared))
-        value = self.value_fc2(v).squeeze(-1) # Linear output
+        value = torch.tanh(self.value_fc2(v)).squeeze(-1) # Tanh output [-1, 1]
         
         return pi_logits, value
 

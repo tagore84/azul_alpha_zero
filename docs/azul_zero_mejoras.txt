@@ -1,0 +1,181 @@
+AZUL ZERO - DOCUMENTO DE MEJORAS PROPUESTAS
+=============================================
+
+Este documento recopila todas las mejoras propuestas tras analizar 
+la arquitectura y la documentación del proyecto Azul Zero.
+
+------------------------------------------------------------
+1. MEJORAS EN LA ARQUITECTURA DEL MODELO
+------------------------------------------------------------
+
+1.1 Claridad entre diagrama y descripción
+-----------------------------------------
+Existe una inconsistencia conceptual entre:
+- El diagrama Mermaid.
+- La descripción textual de la arquitectura.
+
+Se propone:
+- Actualizar el diagrama para reflejar exactamente la arquitectura actual.
+- O actualizar la arquitectura para incluir realmente PolicyConv y ValueConv.
+
+
+1.2 Mejora del Action Mask
+--------------------------
+El Action Mask está siendo concatenado a las features, pero:
+- Esto no garantiza que las acciones ilegales queden bloqueadas.
+- MCTS podría asignar probabilidad a acciones ilegales por errores numéricos.
+
+Propuesta:
+- Aplicar la máscara multiplicativamente sobre logits:
+  logits = logits + (mask * -1e9)
+
+
+1.3 Value Head sin saturación
+------------------------------
+El Value Head usa tanh, lo que provoca saturación cerca de ±1.
+
+Propuesta:
+- Eliminar tanh y usar valor lineal.
+- Normalizar targets a [-1, 1].
+- Mantener MSE o usar SmoothL1.
+
+
+1.4 Positional Encoding para fábricas y centro
+----------------------------------------------
+El Transformer recibe fábricas y centro como entradas idénticas, sin indicar:
+- qué posición corresponde al centro,
+- ni el ID de cada fábrica.
+
+Propuesta:
+- Añadir positional encoding:
+  factory_positions = [0,1,2,3,...,N, 99 (center)]
+
+
+1.5 Normalización tras concatenación de features
+------------------------------------------------
+La arquitectura concatena:
+- Spatial
+- Factories
+- Global
+
+Sin LayerNorm, las escalas internas pueden desestabilizar el entrenamiento.
+
+Propuesta:
+- Añadir LayerNorm(concat_features) antes del MLP trunk.
+
+
+------------------------------------------------------------
+2. MEJORAS EN MCTS Y ENTRENAMIENTO
+------------------------------------------------------------
+
+2.1 Temperature Threshold dinámico
+----------------------------------
+Actualmente es fijo (30 movimientos). Pero Azul tiene rondas con estructura compleja.
+
+Propuesta:
+- Cambiar threshold según ronda:
+  if move < 10 * round_number:
+      T = 1
+  else:
+      T = 0
+
+
+2.2 Early Resignation
+----------------------
+Las partidas con puntuaciones muy negativas podrían terminar antes.
+
+Propuesta:
+- Si value < -0.95 varios turnos → resign.
+
+
+2.3 Añadir información de "remaining tiles"
+--------------------------------------------
+Actualmente se usa:
+- bolsa (bag)
+- descarte (discard)
+- fábricas
+- centro
+
+Pero no se incluye el total de fichas disponibles por color.
+
+Propuesta:
+remaining[color] = bag[c] + discard[c] + factories[c] + center[c]
+
+
+------------------------------------------------------------
+3. MEJORAS EN LA DOCUMENTACIÓN
+------------------------------------------------------------
+
+3.1 Especificar Shapes exactos
+------------------------------
+El documento no enumera los tamaños finales del input:
+- spatial_flatten
+- factories_flatten
+- global_size
+- trunk_input_dim
+
+Propuesta:
+- Añadir tabla de shapes para reproducibilidad.
+
+
+3.2 Documentación de augmentations
+----------------------------------
+Actualmente no se detalla:
+- qué simetrías se aplican,
+- si se permutan colores,
+- si se permutan fábricas,
+- si se hace flip del tablero.
+
+Propuesta:
+- Documentar completamente cada tipo de augmentación.
+
+
+3.3 Documentación de valores especiales (-1, 5)
+-----------------------------------------------
+El documento no explica:
+- -1 significa “casilla vacía”
+- 5 representa “ficha de primer jugador”
+
+Propuesta:
+- Añadir tabla de codificación de estado.
+
+
+------------------------------------------------------------
+4. MEJORAS EN LA LÓGICA DEL JUEGO
+------------------------------------------------------------
+
+4.1 Canal espacial para posiciones válidas en el muro
+------------------------------------------------------
+El color válido por columna es fijo en Azul, pero el modelo no lo recibe explícitamente.
+
+Propuesta:
+- Añadir canal indicando la posición esperada del color en cada fila.
+
+
+4.2 Indicar colores completados
+--------------------------------
+La estrategia depende de si un color ya está completado por un jugador.
+
+Propuesta:
+completed_colors[player][color] = {0,1}
+
+
+------------------------------------------------------------
+5. RESUMEN DE PRIORIDADES
+------------------------------------------------------------
+
+CRÍTICAS:
+- Máscara multiplicativa en logits.
+- Positional encoding para fábricas.
+- LayerNorm tras concatenación.
+- Value head sin tanh.
+- Añadir remaining tiles.
+
+OPTIMIZACIONES:
+- Early resignation.
+- Temperature dinámico.
+- Mejor documentación.
+- Features adicionales del muro.
+
+
+FIN DEL DOCUMENTO
