@@ -225,39 +225,31 @@ def generate_self_play_games(
         return all_examples, aggregate
 
     else:
-        # MPS or CPU -> Parallel
+        # MPS or CPU -> Sequential execution
+        # CRITICAL FIX: ThreadPoolExecutor with shared model causes race conditions on BatchNorm
+        # running_mean/running_var, corrupting the model. Run sequentially for safety.
         if device.type == 'mps':
-            print(f"[Self-play] MPS detected ({device}), running games in PARALLEL", flush=True)
-        else:
-            print(f"[Self-play] CPU detected, running games in PARALLEL", flush=True)
-            
-        print(f"[Self-play] Starting generation of {n_games} games", flush=True)
-        n_workers = min(32, os.cpu_count() or 1)
-        print(f"[Self-play] Launching {n_workers} parallel workers", flush=True)
+            print(f"[Self-play] MPS detected ({device}), moving model to CPU for execution", flush=True)
+            model = model.to('cpu')
+        
+        print(f"[Self-play] Running {n_games} games SEQUENTIALLY (thread-safe)", flush=True)
         all_examples = []
-        with ThreadPoolExecutor(max_workers=n_workers) as executor:
-            futures = {executor.submit(_run_one_game, i+1, env, model, simulations, cpuct,
-                                      temperature_threshold, noise_alpha, noise_epsilon): i+1 for i in range(n_games)}
-            completed_games = 0
-            for future in as_completed(futures):
-                idx = futures[future]
-                try:
-                    examples, stats = future.result()
-                    all_examples.extend(examples)
-                    all_stats['avg_visits'].append(stats['avg_visits'])
-                    all_stats['avg_entropy'].append(stats['avg_entropy'])
-                    all_stats['reuse_rate'].append(stats['reuse_rate'])
-                    all_stats['move_count'].append(stats['move_count'])
-                    completed_games += 1
-                    print(f"[Self-play] Completed game {idx}/{n_games}", flush=True)
-                    if completed_games == 1:
-                        elapsed = time.time() - global_start
-                        estimated_total = elapsed / completed_games * n_games
-                        estimated_end = time.localtime(global_start + estimated_total)
-                        estimated_str = time.strftime('%H:%M:%S', estimated_end)
-                        print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
-                except Exception as e:
-                    print(f"[Self-play] Game {idx} failed with error: {e}", flush=True)
+        for i in range(n_games):
+            examples, stats = _run_one_game(i+1, env, model, simulations, cpuct, 
+                                          temperature_threshold, noise_alpha, noise_epsilon)
+            all_examples.extend(examples)
+            all_stats['avg_visits'].append(stats['avg_visits'])
+            all_stats['avg_entropy'].append(stats['avg_entropy'])
+            all_stats['reuse_rate'].append(stats['reuse_rate'])
+            all_stats['move_count'].append(stats['move_count'])
+            
+            if i == 0:
+                elapsed = time.time() - global_start
+                estimated_total = elapsed * n_games
+                estimated_end = time.localtime(global_start + estimated_total)
+                estimated_str = time.strftime('%H:%M:%S', estimated_end)
+                print(f"[Self-play] Estimated completion time: {estimated_str}", flush=True)
+        
         print(f"[Self-play] Completed generation of {n_games} games", flush=True)
         
         # Calculate aggregate statistics

@@ -42,11 +42,17 @@ class Trainer:
             pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
 
             # Compute losses
-            # Policy loss: KL divergence between MCTS policy (target) and network policy
+            # Policy loss: Cross-entropy between MCTS policy (target) and network policy
+            # Using cross-entropy with soft targets (more stable than KL divergence)
             log_pi = torch.nn.functional.log_softmax(pi_logits, dim=1)
-            l_pi = torch.nn.functional.kl_div(log_pi, target_pi, reduction='batchmean')
+            l_pi = -(target_pi * log_pi).sum(dim=1).mean()  # Cross-entropy with soft targets
             l_v  = torch.nn.functional.mse_loss(value, target_v)
             loss = l_pi + l_v
+
+            # NaN Detection: Skip batch if NaN detected to prevent model corruption
+            if torch.isnan(loss) or torch.isinf(loss):
+                print(f"[trainer] WARNING: NaN/Inf loss detected in batch {batch_idx}, skipping...", flush=True)
+                continue
 
             # Backward and optimize
             self.optimizer.zero_grad()
@@ -92,7 +98,7 @@ class Trainer:
 
                 pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
                 log_pi = torch.nn.functional.log_softmax(pi_logits, dim=1)
-                loss_pi = torch.nn.functional.kl_div(log_pi, target_pi, reduction='batchmean')
+                loss_pi = -(target_pi * log_pi).sum(dim=1).mean()  # Cross-entropy with soft targets
                 loss_v  = torch.nn.functional.mse_loss(value, target_v)
                 loss = loss_pi + loss_v
 

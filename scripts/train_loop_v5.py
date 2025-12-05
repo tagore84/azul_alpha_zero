@@ -291,9 +291,30 @@ def main():
             try:
                 checkpoint = torch.load(ckpt_path, map_location=device)
                 model.load_state_dict(checkpoint['model_state'])
-                optimizer.load_state_dict(checkpoint['optimizer_state'])
-                start_cycle = last_cycle + 1
-                logger.log(f"[Loop] Resumed. Next cycle: {start_cycle}")
+                
+                # Validate loaded model for NaN corruption
+                has_nan = False
+                for name, param in model.named_parameters():
+                    if torch.isnan(param).any() or torch.isinf(param).any():
+                        has_nan = True
+                        break
+                
+                if has_nan:
+                    logger.log(f"[Loop] WARNING: Checkpoint {ckpt_path} is corrupted with NaN/Inf!")
+                    logger.log("[Loop] Reinitializing model from scratch...")
+                    model = AzulNet(
+                        in_channels=in_channels,
+                        global_size=global_size,
+                        action_size=action_size,
+                        factories_count=env.N
+                    ).to(device)
+                    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+                    start_cycle = 1
+                    replay_buffer = []  # Clear buffer too since it was generated with corrupted model
+                else:
+                    optimizer.load_state_dict(checkpoint['optimizer_state'])
+                    start_cycle = last_cycle + 1
+                    logger.log(f"[Loop] Resumed. Next cycle: {start_cycle}")
             except Exception as e:
                 logger.log(f"[Loop] Failed to load checkpoint: {e}")
                 logger.log("[Loop] Starting from Cycle 1.")
@@ -321,6 +342,12 @@ def main():
             noise_alpha=params['noise_alpha'],
             noise_epsilon=params['noise_eps']
         )
+        
+        # Move model back to original device if needed (MPS parallel play moves to CPU)
+        current_device = next(model.parameters()).device
+        if current_device != device:
+            logger.log(f"[Loop] Moving model back to {device} for training...")
+            model = model.to(device)
         
         # Log MCTS statistics
         logger.log(f"[Loop] MCTS Stats: avg_visits={mcts_stats['avg_visits']:.1f}, "
