@@ -1,0 +1,46 @@
+# Plan de Acción para Mejorar el Entrenamiento de AzulZero
+# Ordenado por Prioridad
+
+1. Reducir el número máximo de rondas
+   - Establecer max_rounds = 6 o 7.
+   - Evita que el modelo aprenda a "sobrevivir" sin puntuar.
+   - Obliga a completar filas y cerrar partidas.
+
+2. Ajustar temp_threshold para permitir exploración al inicio
+   - temp_threshold = 8.
+   - Evita políticas degeneradas y repetitivas.
+   - Mejora la diversidad del dataset.
+
+3. Incrementar cpuct para mayor exploración en MCTS
+   - cpuct = 2.0.
+   - Con 200 simulaciones, permite ver líneas alternativas útiles.
+
+4. Ajustar la recompensa para darle más peso al cierre efectivo
+   - Mayor recompensa a completar filas, columnas y sets.
+   - Penalizar fuertemente no completar filas durante muchas rondas.
+
+5. Reforzar la penalización por llegar a la ronda máxima
+   - Mantener o aumentar la penalización actual.
+   - Refuerza terminar antes la partida.
+
+6. Reintroducir ruido en los primeros movimientos del self-play
+   - noise_eps = 0.35
+   - alpha = 0.3
+   - Solo en movimientos iniciales.
+   - Evita colapso de políticas repetitivas.
+
+7. Evaluar subir simulaciones si el tiempo lo permite
+   - simulations = 300 recomendado.
+   - Permite MCTS más profundo sin coste excesivo.
+
+8. Revisar posibles ventajas injustas del heurístico
+   - Comprobar si el heurístico accede a lógicas explícitas no disponibles para la red.
+   - Asegurar que la comparación es justa.
+
+9. Monitorizar si la red empieza a completar filas y forzar finales
+   - Debe observarse en ciclos 9–12.
+   - Si no ocurre, revisar recompensas y training loop.
+
+10. Mantener dataset grande y diverso
+   - Conservar partidas recientes.
+   - Podar partidas que terminen siempre por ronda máxima.

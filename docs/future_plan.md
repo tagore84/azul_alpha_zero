@@ -1,37 +1,57 @@
-# Plan de Futuro - Azul Zero
+# Plan de Implementación para Recuperación del Entrenamiento (AzulZero)
 
-Este documento detalla el plan de acción para las próximas iteraciones del proyecto, enfocándose en el escalado y refinamiento tras completar todas las mejoras arquitectónicas críticas (Fases 3.5, 4.0, 4.1 y 4.2).
+## Diagnóstico
+El análisis del `training.log` y el código actual revela los siguientes problemas críticos:
+1. **Estancamiento en Max Rounds**: La mayoría de las partidas terminan por alcanzar `max_rounds` (8) con puntuaciones muy negativas. El modelo está "sobreviviendo" en lugar de jugar.
+2. **Exploración Nula**: En `scripts/train_loop_v5.py`, el parámetro `temp_threshold` está establecido a `0`, y en `src/train/self_play.py`, esto fuerza `temperature=0.0` (greedy) para *todos* los movimientos. Esto impide que el modelo explore nuevas estrategias, resultando en un colapso de la política.
+3. **Recompensas Insuficientes**: La señal de recompensa actual (diferencia de puntos) es demasiado dispersa y tardía, y con penalizaciones fuertes por `max_rounds`, el modelo quizás prefiere no hacer nada (si eso fuera posible) o entra en bucles.
 
-## 1. Fase 5.0: Escalado de Entrenamiento (Prioridad Alta)
+## Cambios Propuestos
 
-Con una arquitectura robusta y libre de bugs, el objetivo ahora es maximizar la calidad del aprendizaje mediante el escalado de recursos.
+### 1. Configuración del Entrenamiento (`scripts/train_loop_v5.py`)
+Ajustar los hiperparámetros del curriculum (Ciclos 6-20) según las recomendaciones del experto y las mejores prácticas.
 
-### 1.1 Aumento de Simulaciones MCTS
-- **Actual:** 30/75/150 simulaciones.
-- **Objetivo:** Aumentar a 100/200/400 para mejorar la calidad de los targets ($\pi$).
-- **Impacto:** Targets más fuertes reducen el ruido y aceleran la convergencia a un juego óptimo.
+- **`max_rounds`**: Reducir de 8 a **6**. Esto fuerza partidas más dinámicas y evita el "grindeo" de puntos negativos.
+- **`temp_threshold`**: Aumentar a **15 movimientos** (o seguir recomendación de 8, pero 15 asegura apertura variada). *Nota: Se requiere cambio en `self_play.py`*.
+- **`cpuct`**: Aumentar de 1.2 a **2.0** para fomentar mayor exploración en el MCTS.
+- **`noise_eps`**: Aumentar de 0.25 a **0.35** para mayor ruido en la raíz.
 
-### 1.2 Aumento de Volumen de Juegos
-- **Actual:** 50-200 juegos por ciclo.
-- **Objetivo:** Aumentar a 500-1000 juegos por ciclo.
-- **Impacto:** Mayor diversidad de estados en el Replay Buffer, reduciendo el sobreajuste.
+```python
+# En get_curriculum_params (Ciclos 6-20)
+params['max_rounds'] = 6  # Debe pasarse al main y al Env
+params['cpuct'] = 2.0
+params['temp_threshold'] = 15 # Exploración primeros 15 movimientos
+params['noise_eps'] = 0.35
+```
 
-## 2. Mejoras Pendientes / A Evaluar (Prioridad Baja)
+### 2. Lógica de Self-Play (`src/train/self_play.py`)
+Corregir la lógica de temperatura para que respete `temp_threshold` como un contador de movimientos, en lugar de la lógica actual basada en rondas que se anulaba con 0.
 
-Mejoras que podrían aportar valor marginal o requieren experimentación cuidadosa.
+```python
+# Reemplazar lógica de temperatura en play_game
+if move_idx < temperature_threshold:
+    temp = 1.0
+else:
+    temp = 0.0
+```
 
-### 2.1 Value Head Lineal (Sin Tanh)
-- **Análisis:** AlphaZero usa Tanh para rango [-1, 1]. Cambiar a lineal podría ayudar con gradientes pero requiere cambiar targets y loss. **Decisión:** Mantener Tanh por ahora.
+### 3. Recompensas y Lógica de Juego (`src/azul/env.py`)
+Incentivar explícitamente la finalización de filas para guiar al modelo hacia condiciones de victoria válidas.
 
-### 2.2 Early Resignation
-- **Análisis:** Útil para ahorrar cómputo en self-play, pero riesgo de sesgar datos si no se calibra bien. **Decisión:** Posponer hasta tener un modelo muy fuerte.
+- **Bonus por Completar Fila**: En `_end_round` o `step`, añadir una recompensa auxiliar al completar una fila.
+- **Implementación**: Detectar cambio en filas completadas en `_end_round` y sumar `+10` (o valor escalado) a la recompensa inmediata.
 
-### 2.3 Features Explícitas de Muro
-- **Análisis:** Indicar qué color va en cada casilla del muro. La red CNN debería aprender esto trivialmente. **Decisión:** Baja prioridad.
+```python
+# En _end_round, calcular filas nuevas completadas y añadir a reward
+# reward += new_completed_rows * 10
+```
 
----
+## Plan de Verificación
 
-## Roadmap Sugerido
+### Pruebas Manuales
+1. **Verificar Configuración**: Ejecutar un script de prueba que instancie `AzulEnv` y `generate_self_play_games` con los nuevos parámetros y verifique (mediante logs) que la temperatura cambia después de N movimientos.
+2. **Entrenamiento Corto**: Ejecutar 1 ciclo de entrenamiento (reducido: 10 partidas, 1 época) para asegurar que no hay crash por NaNs o errores de lógica.
 
-1.  **Fase 5.0 (Próxima):** Iniciar entrenamiento a gran escala con la nueva arquitectura.
-2.  **Fase 5.1:** Monitoreo y ajuste de hiperparámetros (LR, weight decay).
+### Ejecución
+1. Aplicar cambios.
+2. Reiniciar el entrenamiento (o continuar desde el último checkpoint válido si es posible, aunque dado el colapso, se recomienda reiniciar el ciclo o curriculum).

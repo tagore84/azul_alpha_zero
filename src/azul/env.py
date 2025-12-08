@@ -13,7 +13,7 @@ import copy  # Add this import at the top of the file if not present
 class AzulEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 15):
+    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 8):
         super().__init__()
         if seed is not None:
             np.random.seed(seed)
@@ -140,54 +140,12 @@ class AzulEnv(gym.Env):
                 raise ValueError(f"Invalid action: center has no tiles of color {color}")
             self.center[color] = 0
             if self.first_player_token:
-                # penalty token
+                # penalty token handling
                 fl = p['floor_line']
-                free = np.where(fl == 0)[0] # 0 is empty? No, -1 is empty.
-                # Wait, let's check init. floor_line is -1.
-                # But in step: free = np.where(fl == 0)[0] ??
-                # Let's check line 141 in original: free = np.where(fl == 0)[0]
-                # That looks like a BUG in original code if -1 is empty.
-                # Let's check view_file output again.
-                # Line 38: 'floor_line': np.full(self.L_floor, -1, dtype=int),
-                # Line 141: free = np.where(fl == 0)[0]
-                # This seems wrong if 0 is BLUE.
-                # Ah, wait. In place_on_pattern_line, empty is -1.
-                # In floor line, is -1 empty?
-                # Line 155: idxs = np.where(fl == -1)[0] -> This confirms -1 is empty.
-                # So line 141 `free = np.where(fl == 0)[0]` is definitely a BUG.
-                # It checks for color 0 (BLUE) instead of empty (-1).
-                # I should fix this too.
-                
+                # Find first empty slot (-1)
                 idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
-                    fl[idxs[0]] = -1 # Wait, penalty token is not a color?
-                    # Usually represented as a special value or just -1 penalty?
-                    # The rule says: "The first player to take tiles from the center... takes the -1 penalty token".
-                    # In this implementation, does it store the token in the floor line?
-                    # Line 143: fl[free[0]] = -1.
-                    # If -1 is empty, then setting it to -1 does nothing.
-                    # This implementation seems to rely on `calculate_floor_penalization` which just counts filled slots?
-                    # Let's check `calculate_floor_penalization`.
-                    # Line 102: for idx, tile in enumerate(floor_line): if tile != -1: score += penalties[idx]
-                    # So if we put -1, it's counted as empty.
-                    # So the first player token is NOT being penalized in the original code!
-                    # We need a value for the token. Maybe -2? Or just any non-negative value?
-                    # But colors are 0..4.
-                    # Let's use a special value, e.g., 5 (since colors are 0-4).
-                    # Or maybe the implementation intended to use a specific color?
-                    # Actually, let's look at how it was.
-                    # `fl[free[0]] = -1` -> This effectively does nothing if it was already -1.
-                    # So the penalty was missing.
-                    
-                    # Fix: Use a special value for the first player token. Let's say 5 (Color.RED + 1).
-                    pass
-                
-                # Let's fix the bug:
-                # 1. Find first empty slot.
-                # 2. Place a "token" there.
-                idxs = np.where(fl == -1)[0]
-                if idxs.size > 0:
-                    fl[idxs[0]] = 5 # Representing the -1 token
+                    fl[idxs[0]] = 5 # Representing the -1 penalty token (distinct from colors 0-4)
                 
                 self.first_player_token = False
                 self.first_player_next_round = self.current_player
@@ -204,6 +162,9 @@ class AzulEnv(gym.Env):
                 idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
                     fl[idxs[0]] = color
+                else:
+                    # Fix Bug 4: Overflow goes to discard if floor is full
+                    self.discard[color] += 1
         else:
             # all to floor
             fl = p['floor_line']
@@ -211,6 +172,9 @@ class AzulEnv(gym.Env):
                 idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
                     fl[idxs[0]] = color
+                else:
+                    # Fix Bug 4: Overflow goes to discard if floor is full
+                    self.discard[color] += 1
 
         # Check round end
         done = False
@@ -220,7 +184,16 @@ class AzulEnv(gym.Env):
         if self._is_round_over():
             done = self._end_round()
             self.done = done
-            reward = (p['score'] - before_score) - 0.5 * (self.players[opponent]['score'] - opponent_score_before)
+            if done:
+                if self.termination_reason == "max_rounds":
+                    # Fix Bug 1: Do NOT modify real score. Only penalize reward.
+                    # p['score'] -= 25 (REMOVED)
+                    reward = -25
+                else:
+                    # Fix Bug 2: Reward = Delta Self - Delta Oppt (Full difference)
+                    delta_self = p['score'] - before_score
+                    delta_opp = self.players[opponent]['score'] - opponent_score_before
+                    reward = delta_self - delta_opp
         else:
             # Next player turn
             self.current_player = opponent
@@ -275,6 +248,12 @@ class AzulEnv(gym.Env):
                     leftover = len(line) - 1
                     self.discard[color] += leftover
                     p['pattern_lines'][row_idx][:] = -1
+                    
+                    # Bonus por completar fila (Plan de Recuperación)
+                    # Si al transferir la fila se completa en el muro, dar +10 puntos
+                    if all(p['wall'][row_idx] != -1):
+                        p['score'] += 10
+
             # floor line penalties
             pen = calculate_floor_penalization(p['floor_line'])
             p['score'] += pen
@@ -293,9 +272,13 @@ class AzulEnv(gym.Env):
 
         # Check game end (any full wall row) OR max rounds reached
         game_over = any(all(cell != -1 for cell in row) for p in self.players for row in p['wall'])
+
+        # NEW: Track termination reason
+        self.termination_reason = "normal_end"
         
         if self.round_count >= self.max_rounds:
             game_over = True
+            self.termination_reason = "max_rounds"
 
         if game_over:
             # Apply final bonuses to each player
@@ -439,8 +422,11 @@ class AzulEnv(gym.Env):
         return source_idx * (self.C * 6) + color * 6 + dest
 
     def clone(self) -> 'AzulEnv':
-        new = AzulEnv.__new__(AzulEnv)  # crea instancia sin llamar a __init__
-        gym.Env.__init__(new)  # inicializa parte base sin resetear
+        # Optimized clone without deepcopy for speed
+        new = AzulEnv.__new__(AzulEnv)
+        gym.Env.__init__(new)
+        
+        # Copy scalars
         new.num_players = self.num_players
         new.C = self.C
         new.N = self.N
@@ -448,20 +434,31 @@ class AzulEnv(gym.Env):
         new.action_space = self.action_space
         new.observation_space = self.observation_space
         new.action_size = self.action_size
-
         new.max_rounds = self.max_rounds
-
-        # Copia de estado del juego
+        new.round_count = self.round_count
+        new.done = self.done
+        new.first_player_token = self.first_player_token
+        new.first_player_next_round = self.first_player_next_round
+        new.current_player = self.current_player
+        new.termination_reason = getattr(self, 'termination_reason', 'normal_end')
+        
+        # Copy numpy arrays (fast)
         new.bag = self.bag.copy()
         new.discard = self.discard.copy()
         new.factories = self.factories.copy()
         new.center = self.center.copy()
-        new.first_player_token = self.first_player_token
-        new.first_player_next_round = self.first_player_next_round
-        new.current_player = self.current_player
-        new.players = copy.deepcopy(self.players)
-        new.round_count = self.round_count
-        new.done = self.done
+        
+        # Manually copy players list of dicts
+        # This is much faster than deepcopying the whole list
+        new.players = []
+        for p in self.players:
+            new_p = {
+                'pattern_lines': [line.copy() for line in p['pattern_lines']],
+                'wall': p['wall'].copy(),
+                'floor_line': p['floor_line'].copy(),
+                'score': p['score']
+            }
+            new.players.append(new_p)
 
         return new
 

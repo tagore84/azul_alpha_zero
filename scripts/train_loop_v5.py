@@ -70,7 +70,7 @@ def get_curriculum_params(cycle):
     
     if cycle <= 5:
         # Warmup
-        params['n_games'] = 200
+        params['n_games'] = 100
         params['simulations'] = 100
         params['epochs'] = 10
         params['lr'] = 1e-3
@@ -81,7 +81,10 @@ def get_curriculum_params(cycle):
         params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 5e-4
-        params['cpuct'] = 1.2
+        params['max_rounds'] = 6
+        params['cpuct'] = 2.0
+        params['temp_threshold'] = 15
+        params['noise_eps'] = 0.35
     else:
         # High Quality / Refinement
         params['n_games'] = 1000
@@ -241,7 +244,7 @@ def main():
     logger.log(f"[Loop] Using device: {device}")
 
     # Initialize Environment to get shapes
-    env = AzulEnv(num_players=2)
+    env = AzulEnv(num_players=2, max_rounds=8)
     obs_flat = env.encode_observation(env.reset())
     total_obs_size = obs_flat.shape[0]
     in_channels = env.num_players * 2 # 4
@@ -284,40 +287,54 @@ def main():
                 pass
         
         if cycles:
-            last_cycle = max(cycles)
-            ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{last_cycle}.pt")
-            logger.log(f"[Loop] Loading checkpoint: {ckpt_path}")
+            # Sort cycles descending
+            cycles.sort(reverse=True)
             
-            try:
-                checkpoint = torch.load(ckpt_path, map_location=device)
-                model.load_state_dict(checkpoint['model_state'])
+            loaded_cycle = None
+            
+            for c in cycles:
+                ckpt_path = os.path.join(args.checkpoint_dir, f"model_cycle_{c}.pt")
+                logger.log(f"[Loop] Checking checkpoint: {ckpt_path}")
                 
-                # Validate loaded model for NaN corruption
-                has_nan = False
-                for name, param in model.named_parameters():
-                    if torch.isnan(param).any() or torch.isinf(param).any():
-                        has_nan = True
+                try:
+                    checkpoint = torch.load(ckpt_path, map_location=device)
+                    
+                    # Temporarily load state dict to check for NaNs
+                    # Ensure current model matches architecture (it should)
+                    model.load_state_dict(checkpoint['model_state'])
+                    
+                    # Validate loaded model for NaN corruption
+                    has_nan = False
+                    for name, param in model.named_parameters():
+                        if torch.isnan(param).any() or torch.isinf(param).any():
+                            has_nan = True
+                            break
+                    
+                    if has_nan:
+                        logger.log(f"[Loop] WARNING: Checkpoint {ckpt_path} is corrupted with NaN/Inf! Trying previous...")
+                        continue # Try next cycle
+                    else:
+                        # Found a good one
+                        optimizer.load_state_dict(checkpoint['optimizer_state'])
+                        start_cycle = c + 1
+                        logger.log(f"[Loop] Resumed from Cycle {c}. Next cycle: {start_cycle}")
+                        loaded_cycle = c
                         break
-                
-                if has_nan:
-                    logger.log(f"[Loop] WARNING: Checkpoint {ckpt_path} is corrupted with NaN/Inf!")
-                    logger.log("[Loop] Reinitializing model from scratch...")
-                    model = AzulNet(
+                        
+                except Exception as e:
+                    logger.log(f"[Loop] Failed to load checkpoint {ckpt_path}: {e}")
+            
+            if loaded_cycle is None:
+                 logger.log("[Loop] All checkpoints corrupted or failed. Reinitializing model from scratch...")
+                 model = AzulNet(
                         in_channels=in_channels,
                         global_size=global_size,
                         action_size=action_size,
                         factories_count=env.N
                     ).to(device)
-                    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-                    start_cycle = 1
-                    replay_buffer = []  # Clear buffer too since it was generated with corrupted model
-                else:
-                    optimizer.load_state_dict(checkpoint['optimizer_state'])
-                    start_cycle = last_cycle + 1
-                    logger.log(f"[Loop] Resumed. Next cycle: {start_cycle}")
-            except Exception as e:
-                logger.log(f"[Loop] Failed to load checkpoint: {e}")
-                logger.log("[Loop] Starting from Cycle 1.")
+                 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+                 start_cycle = 1
+                 replay_buffer = []
         else:
             logger.log("[Loop] No checkpoints found. Starting from Cycle 1.")
     else:
@@ -327,6 +344,11 @@ def main():
         params = get_curriculum_params(cycle)
         logger.log(f"\n=== Cycle {cycle}/{args.total_cycles} ===")
         logger.log(f"Params: {params}")
+        
+        # Update max_rounds in env based on params
+        if 'max_rounds' in params:
+            env.max_rounds = params['max_rounds']
+            logger.log(f"[Loop] Updated env.max_rounds to {env.max_rounds}")
         
         # 1. Self-Play Generation
         logger.log(f"[Loop] Generating {params['n_games']} games (Sims: {params['simulations']})...")
@@ -340,7 +362,8 @@ def main():
             cpuct=params['cpuct'],
             temperature_threshold=params['temp_threshold'],
             noise_alpha=params['noise_alpha'],
-            noise_epsilon=params['noise_eps']
+            noise_epsilon=params['noise_eps'],
+            game_logger=logger
         )
         
         # Move model back to original device if needed (MPS parallel play moves to CPU)

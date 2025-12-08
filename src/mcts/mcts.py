@@ -58,18 +58,19 @@ class MCTS:
             path.append(node)
         return node, path
 
-    def expand(self, node: 'MCTS.Node'):
+    def expand(self, node: 'MCTS.Node') -> float:
         """
         Expand the given leaf node by creating all children.
         Use policy network with action mask to get priors.
+        Returns the value of the node from the network perspective.
         """
         obs = node.env._get_obs()
         # generate valid actions
         valid_actions = node.env.get_valid_actions()
         if not valid_actions:
             # No valid actions. This should be handled by 'done' check in run(),
-            # but as a safety net, we return without adding children.
-            return
+            # but as a safety net, we return 0 value (neutral)
+            return 0.0
         
         # Compute policy logits from the network with action mask
         obs_flat = node.env.encode_observation(obs)
@@ -80,9 +81,10 @@ class MCTS:
             idx = node.env.action_to_index(action)
             action_mask[idx] = 1.0
         
-        # Pass mask to model
-        pi_logits, _ = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
+        # Pass mask to model - Single inference for Policy AND Value
+        pi_logits, values = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
         logits = pi_logits[0]
+        value = float(values[0])
         
         # Compute priors with softmax (logits are already masked by network)
         exp_logits = np.exp(logits - np.max(logits))
@@ -114,6 +116,8 @@ class MCTS:
             # apply action
             new_env.step(action, is_sim=True)
             node.children[action] = MCTS.Node(new_env, parent=node, prior=valid_priors[i])
+            
+        return value
 
     def backpropagate(self, path: list, value: float):
         """
@@ -155,21 +159,9 @@ class MCTS:
             done = leaf.env.done or any(all(cell != -1 for cell in row) for p in leaf.env.players for row in p['wall'])
             
             if not done:
-                # Non-terminal: expand and evaluate with network
-                self.expand(leaf)
+                # Non-terminal: expand and evaluate with network simultaneously
+                value = self.expand(leaf)
                 
-                # Evaluate leaf value with the network
-                obs_flat = leaf.env.encode_observation(obs)
-                
-                # Create action mask for value evaluation
-                valid_actions_eval = leaf.env.get_valid_actions()
-                action_mask = np.zeros(leaf.env.action_size, dtype=np.float32)
-                for action in valid_actions_eval:
-                    idx = leaf.env.action_to_index(action)
-                    action_mask[idx] = 1.0
-                
-                _, value_out = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
-                value = float(value_out)
                 # Network returns value for current player (leaf.player)
                 self.backpropagate(path, value)
             else:
@@ -177,14 +169,22 @@ class MCTS:
                 scores = leaf.env.get_final_scores()
                 p0_score, p1_score = scores[0], scores[1]
                 
-                # Value from perspective of leaf.player
-                # Win/Loss: +1/-1/0
-                if p0_score > p1_score:
-                    value = 1.0 if leaf.player == 0 else -1.0
-                elif p1_score > p0_score:
-                    value = 1.0 if leaf.player == 1 else -1.0
+                # Check for max_rounds termination
+                termination_reason = getattr(leaf.env, 'termination_reason', 'normal_end')
+                
+                if termination_reason == 'max_rounds':
+                    # Fix: Penalize both players significantly to avoid this state
+                    # Value is from perspective of leaf.player. If it's bad for everyone, it's -1.0
+                    value = -1.0
                 else:
-                    value = 0.0
+                    # Value from perspective of leaf.player
+                    # Win/Loss: +1/-1/0
+                    if p0_score > p1_score:
+                        value = 1.0 if leaf.player == 0 else -1.0
+                    elif p1_score > p0_score:
+                        value = 1.0 if leaf.player == 1 else -1.0
+                    else:
+                        value = 0.0
                 
                 self.backpropagate(path, value)
         

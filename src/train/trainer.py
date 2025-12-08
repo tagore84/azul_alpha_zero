@@ -58,7 +58,18 @@ class Trainer:
             self.optimizer.zero_grad()
             loss.backward()
             
-            # Gradient Clipping
+            # Check for NaN/Inf in gradients
+            has_nan_grad = False
+            for param in self.model.parameters():
+                if param.grad is not None:
+                    if torch.isnan(param.grad).any() or torch.isinf(param.grad).any():
+                        has_nan_grad = True
+                        break
+            
+            if has_nan_grad:
+                print(f"[trainer] WARNING: NaN/Inf gradients detected in batch {batch_idx}, skipping step...", flush=True)
+                self.optimizer.zero_grad()
+                continue
             if max_grad_norm > 0:
                 torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 
