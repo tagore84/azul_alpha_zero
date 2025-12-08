@@ -131,16 +131,10 @@ def play_game(
     
     # Win/Loss Value Target
     # +1 for Win, -1 for Loss, 0 for Draw
-    # Win/Loss Value Target
-    # +1 for Win, -1 for Loss, 0 for Draw
-    # Fix for Cycle 2 regression: If game ended due to max_rounds, BOTH players lose.
-    termination_reason = getattr(env, 'termination_reason', 'normal_end')
+    # Standard Zero-Sum: If max_rounds is reached, we judge by points.
+    # Previously, assigning -1 to both players broke MCTS assumptions (V_opp != -V_self).
     
-    if termination_reason == 'max_rounds':
-        # Penalize degenerate games where agents just fill the floor line
-        diff_0 = -1.0
-        diff_1 = -1.0
-    elif score_p0 > score_p1:
+    if score_p0 > score_p1:
         diff_0 = 1.0
         diff_1 = -1.0
     elif score_p0 < score_p1:
@@ -149,6 +143,7 @@ def play_game(
     else:
         diff_0 = 0.0
         diff_1 = 0.0
+
     
     # Helper to calculate penalty (duplicate logic from rules to avoid importing rules here if possible, or just use simple logic)
     # Actually env object doesn't have it exposed publically in my previous memory? 

@@ -172,19 +172,15 @@ class MCTS:
                 # Check for max_rounds termination
                 termination_reason = getattr(leaf.env, 'termination_reason', 'normal_end')
                 
-                if termination_reason == 'max_rounds':
-                    # Fix: Penalize both players significantly to avoid this state
-                    # Value is from perspective of leaf.player. If it's bad for everyone, it's -1.0
-                    value = -1.0
+                
+                # Standard Zero-Sum Logic:
+                # Even if max_rounds reached, use score difference.
+                if p0_score > p1_score:
+                    value = 1.0 if leaf.player == 0 else -1.0
+                elif p1_score > p0_score:
+                    value = 1.0 if leaf.player == 1 else -1.0
                 else:
-                    # Value from perspective of leaf.player
-                    # Win/Loss: +1/-1/0
-                    if p0_score > p1_score:
-                        value = 1.0 if leaf.player == 0 else -1.0
-                    elif p1_score > p0_score:
-                        value = 1.0 if leaf.player == 1 else -1.0
-                    else:
-                        value = 0.0
+                    value = 0.0
                 
                 self.backpropagate(path, value)
         

@@ -9,3 +9,14 @@
 === Cycle 1/50 ===
 [2025-12-08 10:21:15] Params: {'n_games': 100, 'simulations': 100, 'epochs': 10, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 0, 'noise_alpha': 0.3, 'noise_eps': 0.25}
 [2025-12-08 10:21:15] [Loop] Generating 100 games (Sims: 100)...
+
+====================
+[2025-12-08 10:33:47.486025] Training Session Started (V5 - Scaling)
+====================
+[2025-12-08 10:33:47] [Loop] Using device: mps
+[2025-12-08 10:33:47] [Loop] Shapes: Spatial=100, Factories=30, Global=39, Total=169
+[2025-12-08 10:33:48] [Loop] Starting from scratch (Cycle 1).
+[2025-12-08 10:33:48] 
+=== Cycle 1/50 ===
+[2025-12-08 10:33:48] Params: {'n_games': 100, 'simulations': 100, 'epochs': 10, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 0, 'noise_alpha': 0.3, 'noise_eps': 0.25}
+[2025-12-08 10:33:48] [Loop] Generating 100 games (Sims: 100)...
