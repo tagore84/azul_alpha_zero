@@ -1105,20 +1105,6 @@
 [2025-12-09 11:05:00] vs PreviousCycle: Wins=3, Losses=5, Draws=2 (WR: 0.30)
 [2025-12-09 11:05:00] 
 === Cycle 11/50 ===
-[2025-12-09 11:05:00] Params: {'n_games': 500, 'simulations': 200, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.35, 'max_rounds': 6}
-[2025-12-09 11:05:00] [Loop] Updated env.max_rounds to 6
-[2025-12-09 11:05:00] [Loop] Generating 500 games (Sims: 200)...
-
-====================
-[2025-12-09 11:10:01.092053] Training Session Started (V5 - Scaling)
-====================
-[2025-12-09 11:10:01] [Loop] Using device: mps
-[2025-12-09 11:10:01] [Loop] Shapes: Spatial=100, Factories=30, Global=39, Total=169
-[2025-12-09 11:10:02] [Loop] Resuming from latest checkpoint...
-[2025-12-09 11:10:02] [Loop] Checking checkpoint: data/checkpoints_v5/model_cycle_10.pt
-[2025-12-09 11:10:02] [Loop] Resumed from Cycle 10. Next cycle: 11
-[2025-12-09 11:10:02] 
-=== Cycle 11/50 ===
 [2025-12-09 11:10:02] Params: {'n_games': 500, 'simulations': 200, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.35, 'max_rounds': 8}
 [2025-12-09 11:10:02] [Loop] Updated env.max_rounds to 8
 [2025-12-09 11:10:02] [Loop] Generating 500 games (Sims: 200)...
@@ -1654,16 +1640,3 @@
 [2025-12-09 14:38:15] Game 10/10: WIN (-116--131)
 [2025-12-09 14:38:15] vs PreviousCycle: Wins=5, Losses=5, Draws=0 (WR: 0.50)
 [2025-12-09 14:38:15] 
-====================
-[2025-12-09 14:50:47.153804] Training Session Started (V5 - Scaling)
-====================
-[2025-12-09 14:50:47] [Loop] Using device: mps
-[2025-12-09 14:50:47] [Loop] Shapes: Spatial=100, Factories=30, Global=39, Total=169
-[2025-12-09 14:50:48] [Loop] Resuming from latest checkpoint...
-[2025-12-09 14:50:48] [Loop] Checking checkpoint: data/checkpoints_v5/model_cycle_11.pt
-[2025-12-09 14:50:48] [Loop] Resumed from Cycle 11. Next cycle: 12
-[2025-12-09 14:50:48] 
-=== Cycle 12/50 ===
-[2025-12-09 14:50:48] Params: {'n_games': 500, 'simulations': 200, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.35, 'max_rounds': 8}
-[2025-12-09 14:50:48] [Loop] Updated env.max_rounds to 8
-[2025-12-09 14:50:48] [Loop] Generating 500 games (Sims: 200)...

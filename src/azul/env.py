@@ -13,7 +13,7 @@ import copy  # Add this import at the top of the file if not present
 class AzulEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 8):
+    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 10):
         super().__init__()
         if seed is not None:
             np.random.seed(seed)

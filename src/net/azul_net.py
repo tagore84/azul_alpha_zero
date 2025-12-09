@@ -212,7 +212,7 @@ def evaluate_against_previous(current_model, previous_model, env_args, simulatio
                 action = env.index_to_action(model.predict_without_mcts(obs))
             else:
                 mcts = MCTS(
-                    env.__class__(num_players=env.num_players, factories_count=env.N),
+                    env.__class__(num_players=env.num_players, factories_count=env.N, max_rounds=env.max_rounds),
                     model, simulations=simulations, cpuct=cpuct
                 )
                 mcts.root.env.__dict__ = copy.copy(env.__dict__)

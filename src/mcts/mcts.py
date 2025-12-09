@@ -175,10 +175,14 @@ class MCTS:
                 
                 # Standard Zero-Sum Logic:
                 # Even if max_rounds reached, use score difference.
+                # Progressive Discount: 0.99 ^ ((max(0, round - 5)) ** 2)
+                excess_rounds = max(0, leaf.env.round_count - 5)
+                discount = 0.99 ** (excess_rounds ** 2)
+                
                 if p0_score > p1_score:
-                    value = 1.0 if leaf.player == 0 else -1.0
+                    value = (1.0 if leaf.player == 0 else -1.0) * discount
                 elif p1_score > p0_score:
-                    value = 1.0 if leaf.player == 1 else -1.0
+                    value = (1.0 if leaf.player == 1 else -1.0) * discount
                 else:
                     value = 0.0
                 

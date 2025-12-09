@@ -28,6 +28,7 @@ class Trainer:
         total_loss = 0.0
         loss_pi = 0.0
         loss_v = 0.0
+        processed_batches = 0
         
         for batch_idx, batch in enumerate(train_loader):
             # Unpack batch: obs_spatial, obs_factories, obs_global, target_pi, target_v
@@ -78,6 +79,7 @@ class Trainer:
             total_loss += loss.item()
             loss_pi += l_pi.item() # Accumulate for logging
             loss_v += l_v.item()
+            processed_batches += 1
 
             if self.writer:
                 global_step = epoch * len(train_loader) + batch_idx
@@ -87,9 +89,18 @@ class Trainer:
                 if l_v.item() > 0:
                     self.writer.add_scalar('train/loss_ratio', l_pi.item() / l_v.item(), global_step)
 
-        avg_loss = total_loss / len(train_loader)
-        avg_pi = loss_pi / len(train_loader)
-        avg_v = loss_v / len(train_loader)
+        if processed_batches == 0:
+            print(f"[trainer] CRITICAL: All batches in epoch {epoch} were skipped due to NaN/Inf!", flush=True)
+            return {'total': float('nan'), 'policy': float('nan'), 'value': float('nan')}
+
+        avg_loss = total_loss / processed_batches
+        avg_pi = loss_pi / processed_batches
+        avg_v = loss_v / processed_batches
+        
+        skipped = len(train_loader) - processed_batches
+        if skipped > 0:
+             print(f"[trainer] Epoch {epoch} Warning: Skipped {skipped}/{len(train_loader)} batches due to NaN/Inf.", flush=True)
+             
         return {'total': avg_loss, 'policy': avg_pi, 'value': avg_v}
 
     def evaluate(self, val_loader: torch.utils.data.DataLoader, epoch: int):

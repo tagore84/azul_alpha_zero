@@ -63,25 +63,36 @@ def get_curriculum_params(cycle):
         'epochs': 10,
         'lr': 1e-3,
         'cpuct': 1.2,
-        'temp_threshold': 0,  # Deprecated in favor of dynamic temp in self_play
+        'temp_threshold': 15,  # Enable temperature for first 15 moves
         'noise_alpha': 0.3,    # Dirichlet noise alpha
         'noise_eps': 0.25      # Dirichlet noise epsilon
     }
     
     if cycle <= 5:
+        # Checking
+        params['n_games'] = 50
+        params['simulations'] = 50
+        params['epochs'] = 5
+        params['lr'] = 1e-3
+        params['cpuct'] = 1.0
+        params['temp_threshold'] = 15
+        params['max_rounds'] = 8
+    elif cycle <= 10:
         # Warmup
         params['n_games'] = 100
         params['simulations'] = 100
         params['epochs'] = 10
         params['lr'] = 1e-3
+        params['max_rounds'] = 8
+        params['temp_threshold'] = 15
         params['cpuct'] = 1.0
-    elif cycle <= 20:
+    elif cycle <= 25:
         # Scaling
         params['n_games'] = 500
         params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 5e-4
-        params['max_rounds'] = 6
+        params['max_rounds'] = 8
         params['cpuct'] = 2.0
         params['temp_threshold'] = 15
         params['noise_eps'] = 0.35
@@ -89,6 +100,7 @@ def get_curriculum_params(cycle):
         # High Quality / Refinement
         params['n_games'] = 1000
         params['simulations'] = 400
+        params['max_rounds'] = 8
         params['epochs'] = 10
         params['lr'] = 1e-4
         params['cpuct'] = 1.5
@@ -191,10 +203,12 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
         else: print(f"[Validation] {msg}")
         return win_rate
 
-    if cycle <= 5:
+    if cycle <= 10:
+        wr_rival = play_validation_match("Random", random_player, n_games=10)
+    elif cycle <= 25:
         wr_rival = play_validation_match("RandomPlus", random_plus_player, n_games=10)
     else:
-        wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=20)
+        wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=10)
     
     # 2. vs Previous Model (if exists)
     wr_previous = 0.0
@@ -208,7 +222,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
             prev_model.load_state_dict(prev_checkpoint['model_state'])
             prev_model.eval()
             
-            wr_previous = play_validation_match("PreviousCycle", prev_model, n_games=20)
+            wr_previous = play_validation_match("PreviousCycle", prev_model, n_games=10)
         except Exception as e:
             msg = f"Could not load previous model: {e}"
             if logger: logger.log(msg)

@@ -33,7 +33,7 @@ def main():
     obs = env.reset()
     done = False
     
-    log_file = "logs/debug_game_verification.txt"
+    log_file = "logs_v5/debug_game_verification.txt"
     print(f"Running debug game... Logging to {log_file}")
     
     with open(log_file, "w") as f:

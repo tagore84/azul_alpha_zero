@@ -55,8 +55,8 @@ def play_game(
 
     while not done:
         # Add Dirichlet noise to root for exploration
-        if move_idx == 0:  # Only add noise at the start of the search for this move
-             mcts.add_root_noise(alpha=noise_alpha, epsilon=noise_epsilon)
+        # Add Dirichlet noise to root for exploration
+        mcts.add_root_noise(alpha=noise_alpha, epsilon=noise_epsilon)
         
         # Run MCTS to populate visit counts
         mcts.run()
@@ -131,15 +131,30 @@ def play_game(
     
     # Win/Loss Value Target
     # +1 for Win, -1 for Loss, 0 for Draw
-    # Standard Zero-Sum: If max_rounds is reached, we judge by points.
-    # Previously, assigning -1 to both players broke MCTS assumptions (V_opp != -V_self).
     
-    if score_p0 > score_p1:
-        diff_0 = 1.0
-        diff_1 = -1.0
-    elif score_p0 < score_p1:
+    # Standard Zero-Sum Logic: If max_rounds is reached, we judge by points.
+    # Progressive Discount:
+    # Rounds 1-5: No discount (1.0). Efficient win.
+    # Rounds > 5: Quadratic decay to penalize extension.
+    # discount = 0.99 ^ ((max(0, current_round - 5)) ** 2)
+    
+    excess_rounds = max(0, current_round - 5)
+    discount = 0.99 ** (excess_rounds ** 2)
+    
+    # CRITICAL FIX: If game ended due to max_rounds, penalize BOTH players.
+    # This prevents the agent from learning to prolong the game to win by a small margin with terrible scores.
+    termination_reason = getattr(env, 'termination_reason', 'normal_end')
+    
+    if termination_reason == "max_rounds":
+        # Both players receive a loss
         diff_0 = -1.0
-        diff_1 = 1.0
+        diff_1 = -1.0
+    elif score_p0 > score_p1:
+        diff_0 = 1.0 * discount
+        diff_1 = -1.0 * discount
+    elif score_p0 < score_p1:
+        diff_0 = -1.0 * discount
+        diff_1 = 1.0 * discount
     else:
         diff_0 = 0.0
         diff_1 = 0.0
