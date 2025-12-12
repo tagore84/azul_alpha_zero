@@ -1,7 +1,7 @@
 # src/azul/env.py
 
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 import numpy as np
 from typing import Tuple
 
@@ -13,7 +13,7 @@ import copy  # Add this import at the top of the file if not present
 class AzulEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 10):
+    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 15):
         super().__init__()
         if seed is not None:
             np.random.seed(seed)
@@ -21,8 +21,9 @@ class AzulEnv(gym.Env):
         self.num_players = num_players
         self.C: int = len(Color)
         self.N: int = factories_count
+        self.max_rounds: int = max_rounds
         self.L_floor: int = 7
-        self.max_rounds = max_rounds
+        self.L_floor: int = 7
 
         # Game state
         self.bag: np.ndarray = np.full(self.C, 20, dtype=int)
@@ -69,7 +70,8 @@ class AzulEnv(gym.Env):
         })
 
         # Initialize game
-        self.reset()
+        self.round_accumulated_score = [0] * self.num_players
+        self.reset(initial=True) # Ensure initial reset sets everything
         self.done = False
 
     def get_winner(self):
@@ -88,6 +90,9 @@ class AzulEnv(gym.Env):
         # Reset bag and discard
         self.bag[:] = 20
         self.discard[:] = 0
+        
+        # Reset accumulated score logic
+        self.round_accumulated_score = [0] * self.num_players
 
         # Reset player states
         for p in self.players:
@@ -119,6 +124,9 @@ class AzulEnv(gym.Env):
         p = self.players[self.current_player]
         
         before_score = p['score']
+        
+        # Helper to calculate current penalty BEFORE applying move
+        current_penalty = calculate_floor_penalization(p['floor_line'])
 
         # Handle source removal
         if source_idx < self.N:
@@ -149,13 +157,42 @@ class AzulEnv(gym.Env):
                 
                 self.first_player_token = False
                 self.first_player_next_round = self.current_player
+                
+                # Check 1st token being first logic for overflow? No, just placement
 
         # Place tiles
+        speculative_points = 0
+        
         if dest < 5:
+            # Check if line was already full (shouldn't be, valid_actions prevents it)
+            # But we check if it BECOMES full
+            was_full = all(slot != -1 for slot in p['pattern_lines'][dest])
+            
             new_line, overflow = place_on_pattern_line(p['pattern_lines'][dest], color, count)
             p['pattern_lines'][dest] = new_line
             # Explicitly write back to main data structure in case of view/copy issues
             self.players[self.current_player]['pattern_lines'][dest] = new_line
+            
+            # Speculative Wall Points & Bonuses
+            is_full = all(slot != -1 for slot in new_line)
+            if is_full and not was_full:
+                # Calculate what points we WOULD get
+                # We use a clone of the wall to not affect game state
+                temp_wall = p['wall'].copy()
+                
+                # 1. Placement Points
+                points = transfer_to_wall(temp_wall, new_line.tolist(), dest)
+                speculative_points += points
+                
+                # 2. Speculative Bonuses (Row/Col/Color)
+                # Calculate bonus BEFORE this placement (should be based on real wall)
+                current_bonus = calculate_final_bonus(p['wall'])
+                # Calculate bonus AFTER this placement (on temp wall)
+                new_bonus = calculate_final_bonus(temp_wall)
+                bonus_delta = new_bonus - current_bonus
+                
+                speculative_points += bonus_delta
+            
             # overflow to floor
             fl = p['floor_line']
             for _ in range(overflow):
@@ -176,6 +213,15 @@ class AzulEnv(gym.Env):
                     # Fix Bug 4: Overflow goes to discard if floor is full
                     self.discard[color] += 1
 
+        # Calculate new penalty
+        new_penalty = calculate_floor_penalization(p['floor_line'])
+        penalty_delta = new_penalty - current_penalty
+        
+        # Apply speculative updates
+        total_delta = penalty_delta + speculative_points
+        p['score'] += total_delta
+        self.round_accumulated_score[self.current_player] += total_delta
+
         # Check round end
         done = False
         reward = 0
@@ -185,15 +231,10 @@ class AzulEnv(gym.Env):
             done = self._end_round()
             self.done = done
             if done:
-                if self.termination_reason == "max_rounds":
-                    # Fix Bug 1: Do NOT modify real score. Only penalize reward.
-                    # p['score'] -= 25 (REMOVED)
-                    reward = -25
-                else:
-                    # Fix Bug 2: Reward = Delta Self - Delta Oppt (Full difference)
-                    delta_self = p['score'] - before_score
-                    delta_opp = self.players[opponent]['score'] - opponent_score_before
-                    reward = delta_self - delta_opp
+                 # Reward = Delta Self - Delta Oppt (Full difference)
+                 delta_self = p['score'] - before_score
+                 delta_opp = self.players[opponent]['score'] - opponent_score_before
+                 reward = delta_self - delta_opp
         else:
             # Next player turn
             self.current_player = opponent
@@ -236,6 +277,13 @@ class AzulEnv(gym.Env):
         return True
 
     def _end_round(self) -> bool:
+        # 1. Revert Speculative Scoring
+        for i, p in enumerate(self.players):
+            p['score'] -= self.round_accumulated_score[i]
+        
+        # Reset accumulator for safety (though next round resets it too, good practice)
+        self.round_accumulated_score = [0] * self.num_players
+
         # Score placement and penalties
         for p in self.players:
             # pattern lines -> wall
@@ -249,11 +297,6 @@ class AzulEnv(gym.Env):
                     self.discard[color] += leftover
                     p['pattern_lines'][row_idx][:] = -1
                     
-                    # Bonus por completar fila (Plan de Recuperación)
-                    # Si al transferir la fila se completa en el muro, dar +10 puntos
-                    if all(p['wall'][row_idx] != -1):
-                        p['score'] += 10
-
             # floor line penalties
             pen = calculate_floor_penalization(p['floor_line'])
             p['score'] += pen
@@ -272,13 +315,16 @@ class AzulEnv(gym.Env):
 
         # Check game end (any full wall row) OR max rounds reached
         game_over = any(all(cell != -1 for cell in row) for p in self.players for row in p['wall'])
+        max_rounds_reached = self.round_count >= self.max_rounds
 
         # NEW: Track termination reason
-        self.termination_reason = "normal_end"
-        
-        if self.round_count >= self.max_rounds:
+        if game_over:
+            self.termination_reason = "normal_end"
+        elif max_rounds_reached:
             game_over = True
-            self.termination_reason = "max_rounds"
+            self.termination_reason = "max_rounds_reached"
+        else:
+            self.termination_reason = "normal_end"
 
         if game_over:
             # Apply final bonuses to each player
@@ -378,9 +424,7 @@ class AzulEnv(gym.Env):
         scores = np.array([p['score'] for p in rotated_players], dtype=int)
         global_parts.append(scores)
         
-        # NEW: Round count (normalized by max_rounds)
-        round_normalized = np.array([obs['round_count'] / self.max_rounds], dtype=float)
-        global_parts.append(round_normalized)
+
         
         # NEW: Bonuses (completed rows, columns, colors per player)
         for p in rotated_players:
@@ -430,17 +474,19 @@ class AzulEnv(gym.Env):
         new.num_players = self.num_players
         new.C = self.C
         new.N = self.N
+        new.max_rounds = self.max_rounds
         new.L_floor = self.L_floor
         new.action_space = self.action_space
         new.observation_space = self.observation_space
         new.action_size = self.action_size
-        new.max_rounds = self.max_rounds
+
         new.round_count = self.round_count
         new.done = self.done
         new.first_player_token = self.first_player_token
         new.first_player_next_round = self.first_player_next_round
         new.current_player = self.current_player
         new.termination_reason = getattr(self, 'termination_reason', 'normal_end')
+        new.round_accumulated_score = self.round_accumulated_score[:]
         
         # Copy numpy arrays (fast)
         new.bag = self.bag.copy()
@@ -519,11 +565,23 @@ class AzulEnv(gym.Env):
                     valid_actions.append((source_idx, color, dest))
         return valid_actions
     
+    def get_action_mask(self) -> np.ndarray:
+        """
+        Returns a binary mask of valid actions (1=legal, 0=illegal).
+        """
+        mask = np.zeros(self.action_size, dtype=np.float32)
+        valid_actions = self.get_valid_actions()
+        for action in valid_actions:
+            idx = self.action_to_index(action)
+            mask[idx] = 1.0
+        return mask
+
     def get_debug_wall_value(self, player_idx:int) -> int:
         """
         Recorre el muro del jugador sumando 1 si la celda es distinta de -1 y 0 en caso contrario.
         Devuelve el valor total.
         """
+
         wall = self.players[player_idx]['wall']
         total = 0
         for row in wall:

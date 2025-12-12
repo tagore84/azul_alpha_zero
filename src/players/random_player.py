@@ -41,9 +41,9 @@ class RandomPlayer(BasePlayer):
                     if dest < C:
                         # destino es fila de patrón dest (0–4)
                         line = obs["players"][current]["pattern_lines"][dest]
-                        # legal si hay al menos una plaza libre (0) y ningún otro color distinto
-                        has_space = any(tile == 0 for tile in line)
-                        same_color_ok = all(tile in (0, color) for tile in line)
+                        # legal si hay al menos una plaza libre (-1) y ningún otro color distinto
+                        has_space = any(tile == -1 for tile in line)
+                        same_color_ok = all(tile in (-1, color) for tile in line)
                         if has_space and same_color_ok:
                             legal_actions.append(index)
                     else:

@@ -37,11 +37,13 @@ class MCTS:
         env: an AzulEnv instance to clone for rollouts.
         simulations: number of MCTS simulations per move.
         cpuct: exploration constant.
+        single_player_mode: if True, backpropagates values without flipping signs (assumes general sum / cooperative environment logic or own-score concern only).
         """
         self.root = MCTS.Node(env.clone(), parent=None, prior=1.0)
         self.model = model
         self.simulations = simulations
         self.cpuct = cpuct
+        self.single_player_mode = False # Default to False (Zero-Sum)
 
     def select(self) -> Tuple['MCTS.Node', list]:
         """
@@ -51,12 +53,26 @@ class MCTS:
         node = self.root
         path = [node]
         # Traverse until we find a leaf
+        # Traverse until we find a leaf
         while node.children:
-            # pick child with highest UCB score
-            action, node = max(node.children.items(),
-                               key=lambda item: item[1].ucb_score(self.cpuct))
+            # Check if Single Player Mode AND Opponent Turn
+            if self.single_player_mode and node.player != self.root.player:
+                # Opponent Node -> Treated as Random Environment Transition
+                # Do NOT use UCB. Pick randomly based on priors (or uniform if no priors/visits)
+                # We simply follow the visit distribution if available, or uniform if not?
+                # Actually, environment nodes should just be sampled.
+                # Let's pick a random child.
+                # Since we don't store "Environment Children" differently, we just pick from keys.
+                action = random.choice(list(node.children.keys()))
+                node = node.children[action]
+            else:
+                # Standard UCB (Agent Turn or Standard MCTS)
+                action, node = max(node.children.items(),
+                                   key=lambda item: item[1].ucb_score(self.cpuct))
             path.append(node)
         return node, path
+
+
 
     def expand(self, node: 'MCTS.Node') -> float:
         """
@@ -64,6 +80,56 @@ class MCTS:
         Use policy network with action mask to get priors.
         Returns the value of the node from the network perspective.
         """
+        # --- SINGLE PLAYER MODE: OPPONENT SKIP LOGIC ---
+        if self.single_player_mode and node.player != self.root.player:
+             # We are expanding an Opponent Node (Environment Node).
+             # We do NOT generally want to evaluate this node with the network 
+             # because the network predicts 'Opponent Score' (Value relative to current player).
+             # We want 'Agent Score'.
+             # Strategy:
+             # 1. Generate all children (Environment transitions).
+             # 2. Pick ONE random child to simulate "Reaction".
+             # 3. Recursively expand THAT child (Agent Node).
+             # 4. Return the value from that Agent Node.
+             # Note: This means we only add ONE path deep from an opponent leaf. 
+             # Future visits might expand siblings? No, `expand` is only called once per leaf.
+             # So we must create all children but only evaluate one?
+             # Yes.
+             
+             # 1. Generate children (Uniform priors for environment)
+            valid_actions = node.env.get_valid_actions()
+            if not valid_actions:
+                return 0.0 # Terminal? Should be caught in run()
+
+            uniform_prior = 1.0 / len(valid_actions)
+            for action in valid_actions:
+                 new_env = node.env.clone()
+                 new_env.step(action, is_sim=True)
+                 node.children[action] = MCTS.Node(new_env, parent=node, prior=uniform_prior)
+            
+            # 2. Pick Random Child
+            random_action = random.choice(valid_actions)
+            random_child = node.children[random_action]
+            
+            # 3. Recurse (Expand the Agent Node)
+            # Check if terminal
+            obs = random_child.env._get_obs()
+            done = random_child.env.done # env.step updates done
+            # Check implicit done (wall complete)
+            if not done: 
+                 done = any(all(cell != -1 for cell in row) for p in random_child.env.players for row in p['wall'])
+            
+            if done:
+                # Terminal state reached after opponent move
+                scores = random_child.env.get_final_scores()
+                # Value = Normalized Agent Score
+                agent_idx = self.root.player
+                agent_score = scores[agent_idx]
+                return np.clip(agent_score / 100.0, -1.0, 1.0)
+            else:
+                return self.expand(random_child) 
+
+        # --- STANDARD AGENT EXPANSION ---
         obs = node.env._get_obs()
         # generate valid actions
         valid_actions = node.env.get_valid_actions()
@@ -137,12 +203,20 @@ class MCTS:
             node.visits += 1
             # If the node's player is the same as the leaf player, they want to MAXIMIZE this value.
             # If different, they want to MINIMIZE it (so we add negative value).
-            # Note: This assumes zero-sum +1/-1 values.
-            
-            if node.player == leaf_player:
+            if self.single_player_mode:
+                # Single Player / Optimization Mode:
+                # We assume 'value' is the absolute score/utility for the Agent (root player).
+                # All nodes maximize this value (or we are optimistic/cooperative).
+                # We do NOT flip signs.
                 node.value_sum += value
             else:
-                node.value_sum -= value
+                # Standard Zero-Sum Mode:
+                # If the node's player is the same as the leaf player, they want to MAXIMIZE this value.
+                # If different, they want to MINIMIZE it (so we add negative value).
+                if node.player == leaf_player:
+                    node.value_sum += value
+                else:
+                    node.value_sum -= value
 
     def run(self, root_env: Optional[AzulEnv] = None):
         """
@@ -172,19 +246,28 @@ class MCTS:
                 # Check for max_rounds termination
                 termination_reason = getattr(leaf.env, 'termination_reason', 'normal_end')
                 
-                
-                # Standard Zero-Sum Logic:
-                # Even if max_rounds reached, use score difference.
-                # Progressive Discount: 0.99 ^ ((max(0, round - 5)) ** 2)
-                excess_rounds = max(0, leaf.env.round_count - 5)
-                discount = 0.99 ** (excess_rounds ** 2)
-                
-                if p0_score > p1_score:
-                    value = (1.0 if leaf.player == 0 else -1.0) * discount
-                elif p1_score > p0_score:
-                    value = (1.0 if leaf.player == 1 else -1.0) * discount
+                if self.single_player_mode:
+                     # Single Player / Optimization Mode:
+                     # Value is the normalized score of the Agent (root.player)
+                     # regardless of who the 'leaf.player' is (backpropagate will handle perspective)
+                     # Wait, backpropagate assumes 'value' is for 'leaf.player'?
+                     # Let's check backpropagate: 
+                     # "if node.player == leaf_player: node.value_sum += value"
+                     # So if we pass AgentScore, and leaf_player is Agent, it adds.
+                     # If leaf_player is Opponent, it subtracts? NO.
+                     # In single_player_mode backpropagate: "node.value_sum += value" (ALWAYS ADDS)
+                     # So we just need to pass the Agent's Score as 'value'.
+                     agent_idx = self.root.player
+                     agent_score = scores[agent_idx]
+                     value = np.clip(agent_score / 300.0, -1.0, 1.0)
                 else:
-                    value = 0.0
+                    # Standard Zero-Sum Logic:
+                    if p0_score > p1_score:
+                        value = (1.0 if leaf.player == 0 else -1.0)
+                    elif p1_score > p0_score:
+                        value = (1.0 if leaf.player == 1 else -1.0)
+                    else:
+                        value = 0.0
                 
                 self.backpropagate(path, value)
         

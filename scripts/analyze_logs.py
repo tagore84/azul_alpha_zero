@@ -4,6 +4,13 @@ from collections import defaultdict
 
 LOG_FILE = "logs_v5/training_monitor.log"
 
+def calc_stats(scores):
+    if not scores:
+        return 0, 0
+    mean_val = statistics.mean(scores)
+    stdev_val = statistics.stdev(scores) if len(scores) > 1 else 0
+    return mean_val, stdev_val
+
 def parse_logs():
     stats = defaultdict(lambda: {
         "train_games": 0,
@@ -108,9 +115,9 @@ def parse_logs():
     output_lines = []
     # Header
     # Cycle | MaxRounds | AvgSc(Tr) | AvgSc(Riv) | WR(Riv) | WR(Prev) | Val Loss
-    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'Avg Sc (Tr)':<12} | {'Avg Sc (Riv)':<12} | {'WR (Riv)':<8} | {'WR (Prev)':<8} | {'Val Loss':<8}"
+    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'Avg Sc (Tr) (Std)':<18} | {'Avg Sc (Riv) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8} | {'Val Loss':<8}"
     output_lines.append(header)
-    output_lines.append("-" * 90)
+    output_lines.append("-" * 110)
     
     for cycle in sorted(stats.keys()):
         d = stats[cycle]
@@ -121,11 +128,14 @@ def parse_logs():
         mr_pct = (mr_count / n_train * 100) if n_train > 0 else 0
         
         all_train_scores = d["train_scores_p0"] + d["train_scores_p1"]
-        avg_train_score = statistics.mean(all_train_scores) if all_train_scores else 0
+        avg_train, std_train = calc_stats(all_train_scores)
+        train_str = f"{avg_train:.1f} ({std_train:.1f})"
         
         # Validation Stats: Rival
         all_riv_scores = d["val_rival_scores_p0"] + d["val_rival_scores_p1"]
-        avg_riv_score = statistics.mean(all_riv_scores) if all_riv_scores else 0
+        avg_riv, std_riv = calc_stats(all_riv_scores)
+        riv_str = f"{avg_riv:.1f} ({std_riv:.1f})"
+
         n_riv = d["val_rival_games"]
         riv_wr = (d["val_rival_wins"] / n_riv * 100) if n_riv > 0 else 0
         
@@ -135,7 +145,7 @@ def parse_logs():
         
         val_loss_str = f"{d['train_loss_value']:.4f}" if d['train_loss_value'] is not None else "N/A"
         
-        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {avg_train_score:<12.2f} | {avg_riv_score:<12.2f} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%  | {val_loss_str:<8}"
+        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {train_str:<18} | {riv_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%  | {val_loss_str:<8}"
         output_lines.append(line_str)
 
     # Print to console

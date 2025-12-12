@@ -8,16 +8,23 @@ class Trainer:
     Handles the training loop, logging, and checkpointing.
     """
     def __init__(self, model: torch.nn.Module, optimizer: torch.optim.Optimizer,
-                 device: torch.device, log_dir: str = None):
+                 device: torch.device, log_dir: str = None, logger=None):
         self.model = model.to(device)
         self.optimizer = optimizer
         self.device = device
+        self.logger = logger
         # Set up TensorBoard writer if log_dir is provided
         if log_dir:
             os.makedirs(log_dir, exist_ok=True)
             self.writer = SummaryWriter(log_dir)
         else:
             self.writer = None
+
+    def log(self, msg: str):
+        if self.logger:
+            self.logger(msg)
+        else:
+            print(msg, flush=True)
 
     def train_epoch(self, train_loader: torch.utils.data.DataLoader, epoch: int, max_grad_norm: float = 1.0):
         """
@@ -37,10 +44,12 @@ class Trainer:
             obs_global    = batch['global'].to(self.device)
             target_pi     = batch['pi'].to(self.device)
             target_v      = batch['v'].to(self.device).float()
+            action_mask   = batch['mask'].to(self.device)
 
             # Forward pass
-            # We don't have action_mask in the dataset yet, so we pass None (model will use ones)
-            pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
+            # Pass action_mask to model to prevent NaN logits for illegal actions
+            pi_logits, value = self.model(obs_spatial, obs_global, obs_factories, action_mask=action_mask)
+
 
             # Compute losses
             # Policy loss: Cross-entropy between MCTS policy (target) and network policy
@@ -52,7 +61,7 @@ class Trainer:
 
             # NaN Detection: Skip batch if NaN detected to prevent model corruption
             if torch.isnan(loss) or torch.isinf(loss):
-                print(f"[trainer] WARNING: NaN/Inf loss detected in batch {batch_idx}, skipping...", flush=True)
+                self.log(f"[trainer] WARNING: NaN/Inf loss detected in batch {batch_idx}, skipping...")
                 continue
 
             # Backward and optimize
@@ -68,8 +77,27 @@ class Trainer:
                         break
             
             if has_nan_grad:
-                print(f"[trainer] WARNING: NaN/Inf gradients detected in batch {batch_idx}, skipping step...", flush=True)
+                self.log(f"[trainer] WARNING: NaN/Inf gradients detected in batch {batch_idx}, skipping step...")
+                for name, param in self.model.named_parameters():
+                    if param.grad is not None and (torch.isnan(param.grad).any() or torch.isinf(param.grad).any()):
+                        self.log(f"[trainer] PARAM {name} has NaN/Inf grad!")
+                        self.log(f"[trainer] PARAM {name} stats: min={param.data.min()}, max={param.data.max()}, mean={param.data.mean()}")
+
                 self.optimizer.zero_grad()
+                
+                # DEBUG: Check for Mask/Target Mismatch
+                self.log(f"[trainer] DEBUG: Batch {batch_idx} - Checking for Mask/Target Mismatch...")
+                # Check if any illegal action (mask=0) has non-zero target probability
+                # We look at the first few examples in the batch
+                for i in range(min(3, len(target_pi))):
+                    illegal_indices = (action_mask[i] == 0).nonzero(as_tuple=True)[0]
+                    if len(illegal_indices) > 0:
+                        illegal_probs = target_pi[i][illegal_indices]
+                        if (illegal_probs > 1e-6).any():
+                            self.log(f"[trainer] CRITICAL MISMATCH in Example {i}!")
+                            self.log(f"[trainer] Illegal indices with >0 prob: {illegal_indices[illegal_probs > 1e-6]}")
+                            self.log(f"[trainer] Probs: {illegal_probs[illegal_probs > 1e-6]}")
+                            self.log(f"[trainer] Mask: {action_mask[i]}")
                 continue
             if max_grad_norm > 0:
                 torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
@@ -117,8 +145,10 @@ class Trainer:
                 obs_global    = batch['global'].to(self.device)
                 target_pi     = batch['pi'].to(self.device)
                 target_v      = batch['v'].to(self.device)
+                action_mask   = batch['mask'].to(self.device)
 
-                pi_logits, value = self.model(obs_spatial, obs_global, obs_factories)
+                pi_logits, value = self.model(obs_spatial, obs_global, obs_factories, action_mask=action_mask)
+
                 log_pi = torch.nn.functional.log_softmax(pi_logits, dim=1)
                 loss_pi = -(target_pi * log_pi).sum(dim=1).mean()  # Cross-entropy with soft targets
                 loss_v  = torch.nn.functional.mse_loss(value, target_v)

@@ -145,8 +145,8 @@ class AzulNet(nn.Module):
         # Additive Action Masking
         if action_mask is not None:
             # mask is 1 for legal, 0 for illegal
-            # (mask - 1) * 1e9 -> 0 for legal, -1e9 for illegal
-            pi_logits = pi_logits + (action_mask - 1.0) * 1e9
+            # (mask - 1) * 1e4 -> 0 for legal, -1e4 for illegal
+            pi_logits = pi_logits + (action_mask - 1.0) * 1e4
         
         # Value head
         v = F.relu(self.value_fc1(shared))

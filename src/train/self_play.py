@@ -10,6 +10,8 @@ import torch
 from typing import Any, List, Dict, Tuple
 from azul.env import AzulEnv
 from mcts.mcts import MCTS
+from players.heuristic_player import HeuristicPlayer
+from players.random_player import RandomPlayer
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,15 @@ def _run_one_game(game_idx: int, env: AzulEnv, model: Any, simulations: int, cpu
                               temperature_threshold=temp_threshold,
                               noise_alpha=noise_alpha,
                               noise_epsilon=noise_eps)
+    return examples, stats
+
+def _run_one_game_vs_opponent(game_idx: int, env: AzulEnv, model: Any, simulations: int, cpuct: float, 
+                  temp_threshold: int, noise_alpha: float, noise_eps: float, opponent_type: str):
+    examples, stats = play_game_vs_opponent(env.clone(), model, simulations, cpuct, 
+                              temperature_threshold=temp_threshold,
+                              noise_alpha=noise_alpha,
+                              noise_epsilon=noise_eps,
+                              opponent_type=opponent_type)
     return examples, stats
 
 def play_game(
@@ -41,7 +52,10 @@ def play_game(
     
     start_time = time.perf_counter()
     move_idx = 0
+    # Enable Single Player Mode for "Maximize Own Score" logic
+    # This prevents the agent from minimizing opponent score in zero-sum backprop
     mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
+    mcts.single_player_mode = True 
     memory = []
     done = False
     
@@ -52,6 +66,9 @@ def play_game(
         'tree_reuse_count': 0,
         'tree_reset_count': 0
     }
+    
+    # NEW: Track floor moves for Reward Shaping (Option 2)
+    p_floor_moves = {0: 0, 1: 0}
 
     while not done:
         # Add Dirichlet noise to root for exploration
@@ -82,11 +99,14 @@ def play_game(
         # Record current observation and policy target
         obs = env._get_obs()
         obs_flat = env.encode_observation(obs)
+        action_mask = env.get_action_mask()
         memory.append({
             'obs': obs_flat,
+            'mask': action_mask,
             'pi': pi_target.copy(),
             'player': obs['current_player']
         })
+
         
         # Select action with temperature
         current_round = env.round_count
@@ -102,6 +122,10 @@ def play_game(
         
         # Track tree reuse
         was_in_tree = action in mcts.root.children
+        
+        # NEW: Track floor move
+        if action[2] == 5: # dest == 5 is floor
+            p_floor_moves[env.current_player] += 1
         
         _, reward, done, info = env.step(action)
         # Advance MCTS tree (reuse subtree)
@@ -129,35 +153,23 @@ def play_game(
     score_p0 = scores[0]
     score_p1 = scores[1]
     
-    # Win/Loss Value Target
-    # +1 for Win, -1 for Loss, 0 for Draw
+    # Win/Loss Value Target - REPLACED WITH OWN SCORE MAXIMIZATION
+    # We want to check if the network can learn to maximize its own score.
+    # We normalize by 100.0 (reasonable max score) and clamp to [-1, 1]
+    # equivalent to: v = clamp(score / 100.0, -1, 1)
     
-    # Standard Zero-Sum Logic: If max_rounds is reached, we judge by points.
-    # Progressive Discount:
-    # Rounds 1-5: No discount (1.0). Efficient win.
-    # Rounds > 5: Quadratic decay to penalize extension.
-    # discount = 0.99 ^ ((max(0, current_round - 5)) ** 2)
+    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
+    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
+
+    # For zero-sum compatibility in MCTS if needed? 
+    # MCTS expects a value for the player.
+    # We will just give the normalized score as the value.
+    # Note: This is NOT zero-sum anymore.
     
-    excess_rounds = max(0, current_round - 5)
-    discount = 0.99 ** (excess_rounds ** 2)
-    
-    # CRITICAL FIX: If game ended due to max_rounds, penalize BOTH players.
-    # This prevents the agent from learning to prolong the game to win by a small margin with terrible scores.
-    termination_reason = getattr(env, 'termination_reason', 'normal_end')
-    
-    if termination_reason == "max_rounds":
-        # Both players receive a loss
-        diff_0 = -1.0
-        diff_1 = -1.0
-    elif score_p0 > score_p1:
-        diff_0 = 1.0 * discount
-        diff_1 = -1.0 * discount
-    elif score_p0 < score_p1:
-        diff_0 = -1.0 * discount
-        diff_1 = 1.0 * discount
-    else:
-        diff_0 = 0.0
-        diff_1 = 0.0
+    diff_0 = val_0
+    diff_1 = val_1
+
+
 
     
     # Helper to calculate penalty (duplicate logic from rules to avoid importing rules here if possible, or just use simple logic)
@@ -195,9 +207,16 @@ def play_game(
             
         examples.append({
             'obs': entry['obs'],
+            'mask': entry['mask'],
             'pi': entry['pi'],
             'v': v
         })
+
+
+    # NEW: Discard data if max_rounds_reached
+    if getattr(env, 'termination_reason', 'normal_end') == "max_rounds_reached":
+        logger.warning(f"[Self-play] Game discarded due to max_rounds_reached (Rounds: {current_round})")
+        examples = [] # Discard ALL data for this game
 
     # Prepare MCTS statistics summary
     stats_summary = {
@@ -218,6 +237,194 @@ def play_game(
 
     return examples, stats_summary
 
+def play_game_vs_opponent(
+    env: AzulEnv,
+    model: Any,
+    simulations: int = 100,
+    cpuct: float = 1.0,
+    temperature_threshold: int = 30,
+    noise_alpha: float = 0.3,
+    noise_epsilon: float = 0.25,
+    opponent_type: str = 'heuristic'
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """
+    Play one full game: Agent (MCTS) vs Heuristic or Random.
+    Randomly assigns Agent to P0 or P1.
+    """
+    start_time = time.perf_counter()
+    move_idx = 0
+    mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
+    mcts.single_player_mode = True # Use single player logic (maximize absolute score)
+    
+    if opponent_type == 'heuristic':
+        opponent = HeuristicPlayer()
+    elif opponent_type == 'random':
+        opponent = RandomPlayer()
+    else:
+        raise ValueError(f"Unknown opponent type: {opponent_type}")
+    memory = []
+    done = False
+    
+    # 50% chance for agent to be P0
+    agent_player = np.random.randint(2) 
+    
+    mcts_stats = {
+        'total_visits': [],
+        'policy_entropy': [],
+        'tree_reuse_count': 0,
+        'tree_reset_count': 0
+    }
+
+    while not done:
+        is_agent_turn = (env.current_player == agent_player)
+        
+        if is_agent_turn:
+            # --- Agent Turn (MCTS) ---
+            mcts.add_root_noise(alpha=noise_alpha, epsilon=noise_epsilon)
+            mcts.run()
+            root = mcts.root
+            
+            mcts_stats['total_visits'].append(root.visits)
+            
+            # Policy Target
+            visits = np.zeros(env.action_size, dtype=np.float32)
+            for action, node in root.children.items():
+                idx = env.action_to_index(action)
+                visits[idx] = node.visits
+            if visits.sum() > 0:
+                pi_target = visits / visits.sum()
+                entropy = -np.sum(pi_target * np.log(pi_target + 1e-10))
+                mcts_stats['policy_entropy'].append(entropy)
+            else:
+                pi_target = visits
+                mcts_stats['policy_entropy'].append(0.0)
+
+            # Store experience
+            obs = env._get_obs()
+            obs_flat = env.encode_observation(obs)
+            action_mask = env.get_action_mask()
+            memory.append({
+                'obs': obs_flat,
+                'mask': action_mask,
+                'pi': pi_target.copy(),
+                'player': obs['current_player']
+            })
+
+            
+            # Select Action
+            if move_idx < temperature_threshold:
+                temp = 1.0
+            else:
+                temp = 0.0
+            if temperature_threshold == 0: temp = 0.0
+                
+            action = mcts.select_action(temperature=temp)
+            was_in_tree = action in mcts.root.children
+            if was_in_tree:
+                mcts_stats['tree_reuse_count'] += 1
+            else:
+                mcts_stats['tree_reset_count'] += 1
+
+        else:
+            # --- Heuristic Turn ---
+            # No MCTS for the heuristic itself, just direct prediction
+            # But we might want to store this as a training example too?
+            # User plan said: "Store for both, but the heuristic's moves are demonstrations"
+            # However, Heuristic doesn't give a policy distribution, just a hard action.
+            # We can create a one-hot policy target.
+            
+            obs = env._get_obs()
+            obs_flat = env.encode_observation(obs)
+            
+            try:
+                action_idx = opponent.predict(obs)
+                if isinstance(action_idx, tuple): # Should assume index but let's be safe
+                     # HeuristicPlayer usually returns index if flat, but check implementation
+                     # Reading `heuristic_player.py`: returns best_action (int)
+                     action = env.index_to_action(action_idx)
+                else: 
+                     action = env.index_to_action(action_idx)
+            except Exception as e:
+                # Fallback to random valid if heuristic fails
+                action = env.index_to_action(np.random.choice(env.get_valid_actions()))
+
+            # Create One-Hot Policy
+            pi_target = np.zeros(env.action_size, dtype=np.float32)
+            pi_target[env.action_to_index(action)] = 1.0
+            
+            action_mask = env.get_action_mask()
+            memory.append({
+                'obs': obs_flat,
+                'mask': action_mask,
+                'pi': pi_target,
+                'player': obs['current_player']
+            })
+
+            
+            # Advance MCTS to keep it in sync (observation update)
+            # We don't run MCTS search here, just advance state
+            pass
+
+        # Apply action
+        _, reward, done, info = env.step(action)
+        mcts.advance(action, env)
+        move_idx += 1
+
+    elapsed = time.perf_counter() - start_time
+    
+    # Calculate Results
+    final_obs = env._get_obs()
+    score_p0 = final_obs['players'][0]['score']
+    score_p1 = final_obs['players'][1]['score']
+    
+    # Value Target: Normalized Own Score
+    # v = clamp(score / 300.0, -1, 1)
+    
+    val_0 = np.clip(score_p0 / 300.0, -1.0, 1.0)
+    val_1 = np.clip(score_p1 / 300.0, -1.0, 1.0)
+    
+    diff_0 = val_0
+    diff_1 = val_1
+
+    # Build examples
+    # Build examples
+    examples = []
+    for entry in memory:
+        v = diff_0 if entry['player'] == 0 else diff_1
+        
+        examples.append({
+            'obs': entry['obs'],
+            'pi': entry['pi'],
+            'v': v
+        })
+
+    # NEW: Discard data if max_rounds_reached (Vs Heuristic)
+    term_reason = getattr(env, 'termination_reason', 'normal_end')
+    if term_reason == "max_rounds_reached":
+        logger.warning(f"[Self-play] Game vs {opponent_type} discarded due to max_rounds_reached (Rounds: {env.round_count})")
+        examples = [] # Discard data
+
+    # Stats
+    avg_visits = np.mean(mcts_stats['total_visits']) if mcts_stats['total_visits'] else 0
+    avg_entropy = np.mean(mcts_stats['policy_entropy']) if mcts_stats['policy_entropy'] else 0
+    reuse_rate = mcts_stats['tree_reuse_count'] / (mcts_stats['tree_reuse_count'] + mcts_stats['tree_reset_count']) if (mcts_stats['tree_reuse_count'] + mcts_stats['tree_reset_count']) > 0 else 0
+
+    stats_summary = {
+        'avg_visits': avg_visits,
+        'avg_entropy': avg_entropy,
+        'reuse_rate': reuse_rate,
+        'move_count': move_idx,
+        'p0_score': score_p0,
+        'p1_score': score_p1,
+        'round_count': env.round_count,
+        'winner': 0 if score_p0 > score_p1 else (1 if score_p1 > score_p0 else -1),
+        'termination_reason': getattr(env, 'termination_reason', 'normal_end'),
+        'opponent': opponent_type,
+        'agent_player': agent_player,
+        'winner_name': 'Agent' if (score_p0 > score_p1 and agent_player == 0) or (score_p1 > score_p0 and agent_player == 1) else (opponent_type.capitalize() if (score_p0 > score_p1 and agent_player == 1) or (score_p1 > score_p0 and agent_player == 0) else 'Draw')
+    }
+    return examples, stats_summary
+
 def generate_self_play_games(
     verbose: bool,
     n_games: int,
@@ -228,6 +435,7 @@ def generate_self_play_games(
     temperature_threshold: int = 30,
     noise_alpha: float = 0.3,
     noise_epsilon: float = 0.25,
+    opponent_type: str = 'self',  # 'self' or 'heuristic'
     game_logger: Any = None  # Optional logger for game results
 ):
     """
@@ -256,7 +464,11 @@ def generate_self_play_games(
         logger.info(f"[Self-play] CUDA GPU detected ({device}), running games sequentially (with GPU reuse)")
         all_examples = []
         for i in range(n_games):
-            examples, stats = _run_one_game(i+1, env, model, simulations, cpuct, 
+            if opponent_type != 'self':
+                 examples, stats = _run_one_game_vs_opponent(i+1, env, model, simulations, cpuct, 
+                                          temperature_threshold, noise_alpha, noise_epsilon, opponent_type)
+            else:
+                 examples, stats = _run_one_game(i+1, env, model, simulations, cpuct, 
                                           temperature_threshold, noise_alpha, noise_epsilon)
             all_examples.extend(examples)
             all_stats['avg_visits'].append(stats['avg_visits'])
@@ -269,6 +481,9 @@ def generate_self_play_games(
             
             # Log game result
             winner_str = f"P{stats.get('winner', -1)}" if stats.get('winner', -1) != -1 else "DRAW"
+            if 'winner_name' in stats:
+                winner_str += f" ({stats['winner_name']})"
+            
             term_reason = stats.get('termination_reason', 'normal_end')
             if game_logger:
                 game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}-{stats.get('p1_score', 0)}, "
@@ -315,10 +530,18 @@ def generate_self_play_games(
         all_examples = []
         
         # Prepare arguments for each game
-        game_args = [
-            (i+1, env, model, simulations, cpuct, temperature_threshold, noise_alpha, noise_epsilon)
-            for i in range(n_games)
-        ]
+        # Check opponent type
+        # Check opponent type
+        target_func = _run_one_game if opponent_type == 'self' else _run_one_game_vs_opponent
+        
+        args_with_opp = (simulations, cpuct, temperature_threshold, noise_alpha, noise_epsilon, opponent_type) if opponent_type != 'self' else (simulations, cpuct, temperature_threshold, noise_alpha, noise_epsilon)
+        
+        game_args = []
+        for i in range(n_games):
+            if opponent_type == 'self':
+                game_args.append((i+1, env, model, simulations, cpuct, temperature_threshold, noise_alpha, noise_epsilon))
+            else:
+                 game_args.append((i+1, env, model, simulations, cpuct, temperature_threshold, noise_alpha, noise_epsilon, opponent_type))
         
         # We need a wrapper function for the pool mapping since map unpacking args is annoying
         # But we already have _run_one_game_wrapper defined below locally? No, top level is better.
@@ -326,7 +549,7 @@ def generate_self_play_games(
         
         with mp.Pool(processes=n_workers) as pool:
             # chunksize=1 ensures better distribution if games vary in length
-            results_iter = pool.starmap_async(_run_one_game, game_args, chunksize=1)
+            results_iter = pool.starmap_async(target_func, game_args, chunksize=1)
             
             # Monitor progress
             total_done = 0
@@ -352,6 +575,9 @@ def generate_self_play_games(
             
             # Log game result
             winner_str = f"P{stats.get('winner', -1)}" if stats.get('winner', -1) != -1 else "DRAW"
+            if 'winner_name' in stats:
+                winner_str += f" ({stats['winner_name']})"
+            
             term_reason = stats.get('termination_reason', 'normal_end')
             if game_logger:
                 game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}-{stats.get('p1_score', 0)}, "

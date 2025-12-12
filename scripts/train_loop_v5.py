@@ -65,25 +65,24 @@ def get_curriculum_params(cycle):
         'cpuct': 1.2,
         'temp_threshold': 15,  # Enable temperature for first 15 moves
         'noise_alpha': 0.3,    # Dirichlet noise alpha
-        'noise_eps': 0.25      # Dirichlet noise epsilon
+        'noise_eps': 0.25,     # Dirichlet noise epsilon
+        'opponent_type': 'self' # Default: self-play
     }
     
     if cycle <= 5:
-        # Checking
+        # Bootstrap
         params['n_games'] = 50
-        params['simulations'] = 50
+        params['simulations'] = 200
         params['epochs'] = 5
         params['lr'] = 1e-3
         params['cpuct'] = 1.0
         params['temp_threshold'] = 15
-        params['max_rounds'] = 8
     elif cycle <= 10:
         # Warmup
-        params['n_games'] = 100
+        params['n_games'] = 200
         params['simulations'] = 100
         params['epochs'] = 10
         params['lr'] = 1e-3
-        params['max_rounds'] = 8
         params['temp_threshold'] = 15
         params['cpuct'] = 1.0
     elif cycle <= 25:
@@ -92,7 +91,6 @@ def get_curriculum_params(cycle):
         params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 5e-4
-        params['max_rounds'] = 8
         params['cpuct'] = 2.0
         params['temp_threshold'] = 15
         params['noise_eps'] = 0.35
@@ -100,7 +98,6 @@ def get_curriculum_params(cycle):
         # High Quality / Refinement
         params['n_games'] = 1000
         params['simulations'] = 400
-        params['max_rounds'] = 8
         params['epochs'] = 10
         params['lr'] = 1e-4
         params['cpuct'] = 1.5
@@ -147,14 +144,14 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
                     # Current Model's turn
                     # Use MCTS with low simulations for speed, or same as training?
                     # Let's use 50 sims for validation in V5 (more robust than 25)
-                    mcts = MCTS(env, current_model, simulations=50, cpuct=1.0)
+                    mcts = MCTS(env, current_model, simulations=200, cpuct=1.0)
                     mcts.run()
                     action = mcts.select_action(temperature=0.0) # Greedy validation
                 else:
                     # Opponent's turn
                     if opponent_name == "PreviousCycle":
                          # Previous model also needs MCTS
-                         mcts_prev = MCTS(env, opponent_player, simulations=50, cpuct=1.0)
+                         mcts_prev = MCTS(env, opponent_player, simulations=200, cpuct=1.0)
                          mcts_prev.run()
                          action = mcts_prev.select_action(temperature=0.0)
                     else:
@@ -258,7 +255,7 @@ def main():
     logger.log(f"[Loop] Using device: {device}")
 
     # Initialize Environment to get shapes
-    env = AzulEnv(num_players=2, max_rounds=8)
+    env = AzulEnv(num_players=2)
     obs_flat = env.encode_observation(env.reset())
     total_obs_size = obs_flat.shape[0]
     in_channels = env.num_players * 2 # 4
@@ -359,10 +356,7 @@ def main():
         logger.log(f"\n=== Cycle {cycle}/{args.total_cycles} ===")
         logger.log(f"Params: {params}")
         
-        # Update max_rounds in env based on params
-        if 'max_rounds' in params:
-            env.max_rounds = params['max_rounds']
-            logger.log(f"[Loop] Updated env.max_rounds to {env.max_rounds}")
+
         
         # 1. Self-Play Generation
         logger.log(f"[Loop] Generating {params['n_games']} games (Sims: {params['simulations']})...")
@@ -377,6 +371,7 @@ def main():
             temperature_threshold=params['temp_threshold'],
             noise_alpha=params['noise_alpha'],
             noise_epsilon=params['noise_eps'],
+            opponent_type=params.get('opponent_type', 'self'),
             game_logger=logger
         )
         
@@ -411,7 +406,7 @@ def main():
         for param_group in optimizer.param_groups:
             param_group['lr'] = params['lr']
             
-        trainer = Trainer(model, optimizer, device, log_dir=f'{logger.log_dir}/cycle_{cycle}')
+        trainer = Trainer(model, optimizer, device, log_dir=f'{logger.log_dir}/cycle_{cycle}', logger=logger.log)
         history = trainer.fit(dataloader, epochs=params['epochs'])
         
         # Log training summary with detailed breakdown

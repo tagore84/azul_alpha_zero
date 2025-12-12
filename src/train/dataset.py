@@ -60,8 +60,18 @@ class AzulDataset(Dataset):
         # Factories: (5 factories + 1 center) * 5 colors = 30
         factories_size = (5 + 1) * 5
         
+        # Handle mask (default to all ones if missing for backward compatibility)
+        if 'mask' in ex:
+            mask = torch.tensor(ex['mask'], dtype=torch.float32)
+        else:
+            # Fallback: assume all actions legal (essentially no mask)
+            # We need action_size. Hardcoded or inferred?
+            # pi size is action_size.
+            mask = torch.ones_like(pi)
+
         spatial = obs[:spatial_size].view(4, 5, 5)
         factories = obs[spatial_size : spatial_size + factories_size].view(6, 5)
         global_ = obs[spatial_size + factories_size:]
 
-        return {'spatial': spatial, 'factories': factories, 'global': global_, 'pi': pi, 'v': v}
+        return {'spatial': spatial, 'factories': factories, 'global': global_, 'pi': pi, 'v': v, 'mask': mask}
+
