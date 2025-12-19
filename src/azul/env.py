@@ -153,12 +153,14 @@ class AzulEnv(gym.Env):
                 # Find first empty slot (-1)
                 idxs = np.where(fl == -1)[0]
                 if idxs.size > 0:
-                    fl[idxs[0]] = 5 # Representing the -1 penalty token (distinct from colors 0-4)
+                    fl[idxs[0]] = 5 # Representing the -1 penalty token
+                else:
+                    # Fix Bug 5: If floor is full, it replaces the last tile
+                    # This ensures the player holds the token AND pays the max penalty
+                    fl[-1] = 5
                 
                 self.first_player_token = False
                 self.first_player_next_round = self.current_player
-                
-                # Check 1st token being first logic for overflow? No, just placement
 
         # Place tiles
         speculative_points = 0
@@ -254,17 +256,17 @@ class AzulEnv(gym.Env):
                     self.bag += self.discard
                     self.discard[:] = 0
                 total = self.bag.sum()
-                if total > 0:
-                    probs = self.bag / total
-                else:
-                    # no tiles left anywhere: uniform random over colors
-                    probs = np.ones(self.C, dtype=float) / self.C
+                if total == 0:
+                    # No tiles left anywhere, stop filling
+                    break
+                    
+                probs = self.bag / total
                 # choose a tile
                 tile = np.random.choice(self.C, p=probs)
                 tiles.append(tile)
-                # decrement bag only if it was refilled properly
-                if total > 0:
-                    self.bag[tile] -= 1
+                # decrement bag
+                self.bag[tile] -= 1
+            
             # place tiles into factory
             for t in tiles:
                 self.factories[i, t] += 1

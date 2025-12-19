@@ -12,7 +12,7 @@ from azul.rules import (
     Color
 )
 
-class HeuristicPlayerV2:
+class HeuristicPlayer:
     def __init__(self):
         self.device = torch.device("cpu")
 

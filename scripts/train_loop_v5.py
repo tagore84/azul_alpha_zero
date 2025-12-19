@@ -14,9 +14,10 @@ from train.self_play import generate_self_play_games
 from train.dataset import AzulDataset
 from train.trainer import Trainer
 from constants import SEED
-from players.heuristic_player import HeuristicPlayer
 from players.random_player import RandomPlayer
 from players.random_plus_player import RandomPlusPlayer
+from players.heuristic_player import HeuristicPlayer
+from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
 from mcts.mcts import MCTS
 import copy
 
@@ -116,6 +117,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
     random_player = RandomPlayer()
     random_plus_player = RandomPlusPlayer()
     heuristic_player = HeuristicPlayer()
+    min_max_mcts_player = HeuristicMinMaxMCTSPlayer()
     
     # Helper to play N games and return win rate for p1 (current_model)
     def play_validation_match(opponent_name, opponent_player, n_games=10):
@@ -191,7 +193,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
                 result_str = "DRAW"
             
             # Log every game result with scores
-            if logger: logger.log(f"Game {i+1}/{n_games}: {result_str} ({my_score}-{opp_score})")
+            if logger: logger.log(f"Game {i+1}/{n_games}: {result_str} ({my_score}   {opp_score})")
 
         
         win_rate = wins / n_games

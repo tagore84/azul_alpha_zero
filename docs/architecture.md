@@ -15,7 +15,7 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
 - **Transformer Encoder** para procesar las fábricas.
 - **Positional Encoding**: Información de posición para distinguir fábricas del centro.
 - **Tronco Compartido (Shared Trunk)**: Capa de fusión con **LayerNorm** que combina todas las características.
-- **Action Masking**: Enmascaramiento aditivo (`logits - 1e9`) directamente en la salida de la política.
+- **Action Masking**: Enmascaramiento aditivo (`logits - 1e4`) directamente en la salida de la política.
 
 ![Arquitectura AzulNet](./azul_net_architecture.png)
 
@@ -59,9 +59,9 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
 - **MLP**:
     - Linear (Input → 256) + ReLU
     - Linear (→ `action_size`)
-- **Action Masking**: Se suma `(mask - 1) * 1e9` a los logits de salida.
+- **Action Masking**: Se suma `(mask - 1) * 1e4` a los logits de salida.
     - Acciones legales (1) -> se suma 0.
-    - Acciones ilegales (0) -> se suma -1e9 (probabilidad ~0 tras softmax).
+    - Acciones ilegales (0) -> se suma -1e4 (probabilidad ~0 tras softmax).
 - **Salida**: Logits para cada acción posible.
 
 ### Rama de Valor (Value Head)
@@ -123,7 +123,7 @@ graph TD
     end
 ```
 
-## MCTS & Estrategia de Búsqueda (Fase 3.5)
+### MCTS & Estrategia de Búsqueda (Fase 3.5)
 
 ### Mejoras de Exploración
 Para evitar el sobreajuste a estrategias deterministas, se implementaron mecanismos robustos de exploración:
@@ -133,11 +133,10 @@ Para evitar el sobreajuste a estrategias deterministas, se implementaron mecanis
     - Parámetros: $\alpha=0.3$, $\epsilon=0.25$.
     - Esto fuerza al MCTS a considerar acciones que la red podría haber descartado prematuramente.
 
-2.  **Temperature Sampling (Dinámico)**:
-    - **Rondas 1-2**: $T=1.0$. Exploración alta.
-    - **Rondas 3-4**: $T=0.5$. Exploración reducida.
-    - **Rondas 5+**: $T=0.0$. Selección voraz (Greedy).
-    - Se eliminó el threshold fijo de 30 movimientos en favor de esta lógica basada en fases del juego.
+2.  **Temperature Sampling (Threshold)**:
+    - **Primeros 15 movimientos**: $T=1.0$. Alta exploración para diversificar aperturas.
+    - **Resto del juego**: $T=0.0$. Selección voraz (Greedy) para maximizar rendimiento.
+    - El parámetro `temp_threshold` (default 15) controla esta transición.
 
 ### Optimización: Tree Reuse
 - Se implementó la reutilización del árbol de búsqueda entre movimientos.
@@ -193,26 +192,38 @@ Para garantizar una convergencia estable en un espacio de acciones complejo:
 4.  **Remaining Tiles**: Input explícito de fichas restantes para cálculo de probabilidades.
 5.  **Dynamic Temperature**: Exploración adaptativa por rondas.
 
-## Correcciones Críticas (Fase 3.5 - Diciembre 2025)
+## Notas sobre Correcciones (Fase 3.5)
 
-Se identificaron y corrigieron bugs críticos que afectaban la validez del entrenamiento anterior al 4 de Diciembre de 2025:
+Se han validado y ajustado componentes críticos para asegurar la fidelidad con el reglamento y la estabilidad:
 
-1.  **Scoring Bug**:
-    *   **Problema**: Se contaba doble la ficha central cuando se completaban líneas horizontales y verticales simultáneamente (`score += v_count + 1`).
-    *   **Corrección**: `score += v_count`.
-    *   **Impacto**: Scores inflados y recompensas incorrectas.
+1.  **Validación de Reglas (Scoring)**:
+    *   **Estado**: Se confirmó que el código respeta fielmente las reglas oficiales de Azul (ver `docs/reglamento.pdf`), incluyendo la regla de puntuación compuesta donde una ficha cuenta tanto para la fila horizontal como para la vertical si completa ambas simultáneamente.
+    *   **Código**: `src/azul/rules.py` implementa `score += v_count + 1` cuando hay coincidencia vertical, lo cual es correcto según reglamento.
 
-2.  **State Reset Bug**:
-    *   **Problema**: Las `pattern_lines` y `floor_line` no se limpiaban correctamente entre rondas debido a asignación de nuevos arrays en lugar de modificación in-place.
-    *   **Corrección**: Uso de slicing `[:] = -1` para mantener referencias de memoria.
-    *   **Impacto**: Persistencia de estado inválido entre rondas.
+2.  **State Reset Bug (Corregido)**:
+    *   **Problema anterior**: Las `pattern_lines` y `floor_line` no se limpiaban correctamente entre rondas.
+    *   **Corrección**: Uso de slicing `[:] = -1` para mantener referencias de memoria y asegurar limpieza correcta.
 
 3.  **Training Loop Fixes**:
-    *   Corrección de `UserWarning` por mismatch de dimensiones en Value Loss.
-    *   Cambio de `CrossEntropy` a `KLDiv` para Policy Loss (mejor manejo de distribuciones).
+    *   Uso de **Cross Entropy** con targets suaves (soft targets) para la Policy Loss, asegurando mejor convergencia que KLDiv puro en este contexto.
+    *   Corrección de dimensiones en Value Loss.
 
 > [!IMPORTANT]
 > Los modelos entrenados antes del commit de corrección (4 Dic 2025) deben considerarse inválidos y descartarse.
 
 ---
-Última actualización: Diciembre de 2025 (Fase 4.2 - Full Information & Dynamic Temp)
+
+## Correcciones Robustas (Fase 4.2 - Diciembre 2025)
+
+Tras una revisión exhaustiva del reglamento y análisis de casos borde, se han implementado protecciones adicionales:
+
+1.  **Protección contra 'Infinite Refill'**:
+    *   **Problema**: Si la bolsa y los descartes estaban vacíos simultáneamente, el sistema generaba fichas aleatorias infinitamente para llenar las fábricas.
+    *   **Corrección**: El sistema ahora detecta el agotamiento total de fichas y detiene el llenado de fábricas inmediatamente, dejando fábricas vacías o parcialmente llenas según corresponda (regla oficial).
+
+2.  **Manejo de Ficha de Jugador Inicial (Suelo Lleno)**:
+    *   **Problema**: Si un jugador tomaba la ficha de jugador inicial con la línea de suelo llena, la ficha se "perdía" y no aplicaba penalización.
+    *   **Corrección**: Ahora se fuerza la colocación de la ficha en el último espacio de la línea de suelo (`fl[-1] = 5`), asegurando que el jugador retenga la posesión del turno y sufra la penalización máxima, conforme a la regla de "tratar como una ficha normal en el suelo".
+
+---
+Última actualización: Diciembre de 2025 (Fase 4.2 - Full Information & Dynamic Temp & Robust Rules)

@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 from azul.env import AzulEnv
 from players.random_plus_player import RandomPlusPlayer
 from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
-from players.heuristic_player_v2 import HeuristicPlayerV2
+from players.heuristic_player import HeuristicPlayerV2
 from players.deep_mcts_player import DeepMCTSPlayer
 
 def log_state(env, f):

@@ -1,247 +1,624 @@
-[2025-12-13 19:43:48] [Loop] Using device: mps
-[2025-12-13 19:43:48] [Loop] Shapes: Spatial=100, Factories=30, Global=38, Total=168
-[2025-12-13 19:43:50] [Loop] Starting from scratch (Cycle 1).
-[2025-12-13 19:43:50] 
+[2025-12-19 15:33:00] [Loop] Using device: mps
+[2025-12-19 15:33:00] [Loop] Shapes: Spatial=100, Factories=30, Global=38, Total=168
+[2025-12-19 15:33:01] [Loop] Starting from scratch (Cycle 1).
+[2025-12-19 15:33:01] 
 === Cycle 1/50 ===
-[2025-12-13 19:43:50] Params: {'n_games': 50, 'simulations': 500, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 30, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
-[2025-12-13 19:43:50] [Loop] Generating 50 games (Sims: 500)...
-[2025-12-13 22:19:35] [Game 1/50] Score: -51--39, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 2/50] Score: -42--24, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 3/50] Score: -29--32, Rounds: 7, Moves: 81, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 4/50] Score: -46--25, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 5/50] Score: -37--40, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 6/50] Score: -24--43, Rounds: 6, Moves: 70, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 7/50] Score: -37--37, Rounds: 6, Moves: 68, Winner: DRAW, End: normal_end
-[2025-12-13 22:19:35] [Game 8/50] Score: -50--25, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 9/50] Score: -52--51, Rounds: 7, Moves: 78, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 10/50] Score: -18--42, Rounds: 8, Moves: 86, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 11/50] Score: -51--35, Rounds: 10, Moves: 117, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 12/50] Score: -43--43, Rounds: 6, Moves: 67, Winner: DRAW, End: normal_end
-[2025-12-13 22:19:35] [Game 13/50] Score: -32--21, Rounds: 6, Moves: 72, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 14/50] Score: -91--42, Rounds: 9, Moves: 100, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 15/50] Score: -32--23, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 16/50] Score: -15--22, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 17/50] Score: -34--32, Rounds: 7, Moves: 76, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 18/50] Score: -28--37, Rounds: 6, Moves: 71, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 19/50] Score: -61--79, Rounds: 9, Moves: 103, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 20/50] Score: -19--20, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 21/50] Score: -20--47, Rounds: 7, Moves: 79, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 22/50] Score: -48--35, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 23/50] Score: -21--26, Rounds: 7, Moves: 82, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 24/50] Score: -51--21, Rounds: 7, Moves: 77, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 25/50] Score: -78--21, Rounds: 9, Moves: 100, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 26/50] Score: -50--66, Rounds: 8, Moves: 89, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 27/50] Score: -22--36, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 28/50] Score: -39--29, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 29/50] Score: -8--47, Rounds: 5, Moves: 61, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 30/50] Score: -40--43, Rounds: 7, Moves: 82, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 31/50] Score: -39--18, Rounds: 7, Moves: 77, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 32/50] Score: -41--30, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 33/50] Score: -37--35, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 34/50] Score: -41-3, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 35/50] Score: -46--24, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 36/50] Score: -11--52, Rounds: 7, Moves: 82, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 37/50] Score: -20--22, Rounds: 5, Moves: 60, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 38/50] Score: -42--46, Rounds: 6, Moves: 74, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 39/50] Score: -53--65, Rounds: 7, Moves: 79, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 40/50] Score: -71--61, Rounds: 9, Moves: 100, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 41/50] Score: -17--45, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 42/50] Score: -27--14, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 43/50] Score: -73--76, Rounds: 8, Moves: 84, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 44/50] Score: -13--31, Rounds: 6, Moves: 70, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 45/50] Score: -50--33, Rounds: 7, Moves: 81, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 46/50] Score: -26--39, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 47/50] Score: -2--42, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 48/50] Score: -42--25, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
-[2025-12-13 22:19:35] [Game 49/50] Score: -6--42, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Game 50/50] Score: -37--48, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
-[2025-12-13 22:19:35] [Loop] Moving model back to mps for training...
-[2025-12-13 22:19:35] [Loop] MCTS Stats: avg_visits=595.6, avg_entropy=2.58, reuse_rate=91.8%, avg_moves=72.2
-[2025-12-13 22:19:35] [Loop] Buffer size: 3608
-[2025-12-13 22:19:35] [Loop] Training for 5 epochs...
-[2025-12-13 22:20:06] [Loop] Training Finished. Avg Loss: 2.7555 (Policy: 2.7432, Value: 0.0123)
-[2025-12-13 22:20:06] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_1.pt
-[2025-12-13 22:20:06] Starting validation for Cycle 1...
-[2025-12-13 22:20:06] vs Random: Playing 10 games...
-[2025-12-13 22:21:37] Game 1/10: LOSS (-67--32)
-[2025-12-13 22:24:01] Game 2/10: LOSS (-116--39)
-[2025-12-13 22:25:16] Game 3/10: LOSS (-49--22)
-[2025-12-13 22:30:54] Game 4/10: LOSS (-73--14)
-[2025-12-13 22:47:43] Game 5/10: LOSS (-61--33)
-[2025-12-13 22:49:02] Game 6/10: LOSS (-44--8)
-[2025-12-13 23:06:38] Game 7/10: LOSS (-91--38)
-[2025-12-13 23:09:07] Game 8/10: LOSS (-120--80)
-[2025-12-13 23:12:00] Game 9/10: LOSS (-123--60)
-[2025-12-13 23:13:44] Game 10/10: LOSS (-50--26)
-[2025-12-13 23:13:44] vs Random: Wins=0, Losses=10, Draws=0 (WR: 0.00)
-[2025-12-13 23:13:44] No previous model found. Skipping vs Previous.
-[2025-12-13 23:13:44] 
+[2025-12-19 15:33:01] Params: {'n_games': 50, 'simulations': 200, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 15:33:01] [Loop] Generating 50 games (Sims: 200)...
+[2025-12-19 16:03:24] [Game 1/50] Score: -52--26, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 2/50] Score: -44--73, Rounds: 8, Moves: 83, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 3/50] Score: -41--76, Rounds: 10, Moves: 103, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 4/50] Score: -29--30, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 5/50] Score: -53--32, Rounds: 8, Moves: 88, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 6/50] Score: -42--26, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 7/50] Score: -30--47, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 8/50] Score: -10--14, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 9/50] Score: -46--25, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 10/50] Score: -26--49, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 11/50] Score: -35--20, Rounds: 10, Moves: 104, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 12/50] Score: -100--85, Rounds: 11, Moves: 116, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 13/50] Score: -40--35, Rounds: 7, Moves: 76, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 14/50] Score: -53--23, Rounds: 8, Moves: 86, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 15/50] Score: -34--32, Rounds: 5, Moves: 46, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 16/50] Score: -46--48, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 17/50] Score: -40--47, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 18/50] Score: -22--49, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 19/50] Score: -64--36, Rounds: 8, Moves: 86, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 20/50] Score: -53--32, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 21/50] Score: -64--37, Rounds: 8, Moves: 87, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 22/50] Score: -50--31, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 23/50] Score: -10--34, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 24/50] Score: 2--53, Rounds: 7, Moves: 70, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 25/50] Score: -101-1, Rounds: 11, Moves: 121, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 26/50] Score: -13--20, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 27/50] Score: -27--57, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 28/50] Score: -73--80, Rounds: 9, Moves: 93, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 29/50] Score: -48--32, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 30/50] Score: -57--12, Rounds: 8, Moves: 83, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 31/50] Score: -21--45, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 32/50] Score: -41--45, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 33/50] Score: -40--48, Rounds: 9, Moves: 95, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 34/50] Score: -38--43, Rounds: 7, Moves: 71, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 35/50] Score: -17-11, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 36/50] Score: -106--40, Rounds: 11, Moves: 115, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 37/50] Score: -58--34, Rounds: 7, Moves: 77, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 38/50] Score: -58--3, Rounds: 7, Moves: 76, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 39/50] Score: -28--54, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 40/50] Score: -42--47, Rounds: 8, Moves: 87, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 41/50] Score: -21--61, Rounds: 7, Moves: 77, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 42/50] Score: -35--39, Rounds: 8, Moves: 83, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 43/50] Score: -67--116, Rounds: 12, Moves: 124, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 44/50] Score: -33--23, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 45/50] Score: -35--47, Rounds: 10, Moves: 107, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 46/50] Score: -58--7, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 47/50] Score: -38--38, Rounds: 7, Moves: 79, Winner: DRAW, End: normal_end
+[2025-12-19 16:03:24] [Game 48/50] Score: -58--12, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 16:03:24] [Game 49/50] Score: -35--50, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Game 50/50] Score: -43--48, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2025-12-19 16:03:24] [Loop] Moving model back to mps for training...
+[2025-12-19 16:03:24] [Loop] MCTS Stats: avg_visits=231.3, avg_entropy=2.63, reuse_rate=100.0%, avg_moves=76.1
+[2025-12-19 16:03:24] [Loop] Buffer size: 3807
+[2025-12-19 16:03:24] [Loop] Training for 5 epochs...
+[2025-12-19 16:03:54] [Loop] Training Finished. Avg Loss: 2.7124 (Policy: 2.6977, Value: 0.0147)
+[2025-12-19 16:03:54] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_1.pt
+[2025-12-19 16:03:54] Starting validation for Cycle 1...
+[2025-12-19 16:03:54] vs Random: Playing 10 games...
+[2025-12-19 16:05:32] Game 1/10: LOSS (-43   -15)
+[2025-12-19 16:07:07] Game 2/10: LOSS (-43   -16)
+[2025-12-19 16:09:17] Game 3/10: DRAW (-41   -41)
+[2025-12-19 16:10:42] Game 4/10: LOSS (-45   -28)
+[2025-12-19 16:12:11] Game 5/10: LOSS (-44   -15)
+[2025-12-19 16:13:55] Game 6/10: LOSS (-54   -39)
+[2025-12-19 16:15:30] Game 7/10: LOSS (-56   -20)
+[2025-12-19 16:16:58] Game 8/10: LOSS (-60   -33)
+[2025-12-19 16:18:34] Game 9/10: LOSS (-58   -22)
+[2025-12-19 16:19:57] Game 10/10: LOSS (-57   -24)
+[2025-12-19 16:19:57] vs Random: Wins=0, Losses=9, Draws=1 (WR: 0.00)
+[2025-12-19 16:19:57] No previous model found. Skipping vs Previous.
+[2025-12-19 16:19:57] 
 === Cycle 2/50 ===
-[2025-12-13 23:13:44] Params: {'n_games': 50, 'simulations': 500, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 30, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
-[2025-12-13 23:13:44] [Loop] Generating 50 games (Sims: 500)...
-[2025-12-14 01:32:05] [Game 1/50] Score: -121--155, Rounds: 14, Moves: 149, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 2/50] Score: -59--45, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 3/50] Score: -56--83, Rounds: 10, Moves: 107, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 4/50] Score: -112--110, Rounds: 12, Moves: 130, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 5/50] Score: -107--122, Rounds: 11, Moves: 128, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 6/50] Score: -123--125, Rounds: 13, Moves: 138, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 7/50] Score: -100--142, Rounds: 13, Moves: 147, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 8/50] Score: -87--88, Rounds: 10, Moves: 108, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 9/50] Score: -151--140, Rounds: 15, Moves: 174, Winner: P1, End: max_rounds_reached
-[2025-12-14 01:32:05] [Game 10/50] Score: -166--138, Rounds: 15, Moves: 169, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 11/50] Score: -102--106, Rounds: 12, Moves: 127, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 12/50] Score: -58--72, Rounds: 8, Moves: 87, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 13/50] Score: -33--30, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 14/50] Score: -63--39, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 15/50] Score: -134--143, Rounds: 13, Moves: 140, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 16/50] Score: -69--87, Rounds: 9, Moves: 103, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 17/50] Score: -79--56, Rounds: 8, Moves: 86, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 18/50] Score: -76--56, Rounds: 8, Moves: 90, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 19/50] Score: -161--146, Rounds: 15, Moves: 165, Winner: P1, End: max_rounds_reached
-[2025-12-14 01:32:05] [Game 20/50] Score: -134--147, Rounds: 14, Moves: 153, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 21/50] Score: -51--21, Rounds: 6, Moves: 69, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 22/50] Score: -78--71, Rounds: 8, Moves: 89, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 23/50] Score: -84--80, Rounds: 9, Moves: 93, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 24/50] Score: -35--58, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 25/50] Score: -147--128, Rounds: 14, Moves: 153, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 26/50] Score: -86--114, Rounds: 10, Moves: 104, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 27/50] Score: -29--40, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 28/50] Score: -96--82, Rounds: 10, Moves: 113, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 29/50] Score: -122--147, Rounds: 14, Moves: 147, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 30/50] Score: -37--44, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 31/50] Score: -114--128, Rounds: 12, Moves: 138, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 32/50] Score: -81--95, Rounds: 10, Moves: 112, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 33/50] Score: -47--55, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 34/50] Score: -67--42, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 35/50] Score: -59--56, Rounds: 7, Moves: 74, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 36/50] Score: -104--69, Rounds: 10, Moves: 109, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 37/50] Score: -87--121, Rounds: 12, Moves: 129, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 38/50] Score: -82--106, Rounds: 10, Moves: 113, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 39/50] Score: -83--65, Rounds: 9, Moves: 94, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 40/50] Score: -61--59, Rounds: 9, Moves: 104, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 41/50] Score: -152--104, Rounds: 13, Moves: 138, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 42/50] Score: -49--33, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 43/50] Score: -76--77, Rounds: 8, Moves: 93, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 44/50] Score: -59--103, Rounds: 9, Moves: 102, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 45/50] Score: -101--108, Rounds: 11, Moves: 122, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 46/50] Score: -89--89, Rounds: 11, Moves: 122, Winner: DRAW, End: normal_end
-[2025-12-14 01:32:05] [Game 47/50] Score: -63--39, Rounds: 8, Moves: 89, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 48/50] Score: -107--82, Rounds: 11, Moves: 130, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Game 49/50] Score: -55--77, Rounds: 9, Moves: 95, Winner: P0, End: normal_end
-[2025-12-14 01:32:05] [Game 50/50] Score: -62--58, Rounds: 7, Moves: 76, Winner: P1, End: normal_end
-[2025-12-14 01:32:05] [Loop] Moving model back to mps for training...
-[2025-12-14 01:32:05] [Loop] MCTS Stats: avg_visits=618.1, avg_entropy=2.42, reuse_rate=91.6%, avg_moves=107.5
-[2025-12-14 01:32:05] [Loop] Buffer size: 8645
-[2025-12-14 01:32:05] [Loop] Training for 5 epochs...
-[2025-12-14 01:33:13] [Loop] Training Finished. Avg Loss: 2.7095 (Policy: 2.7009, Value: 0.0086)
-[2025-12-14 01:33:13] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_2.pt
-[2025-12-14 01:33:13] Starting validation for Cycle 2...
-[2025-12-14 01:33:13] vs Random: Playing 10 games...
-[2025-12-14 01:34:44] Game 1/10: LOSS (-57--17)
-[2025-12-14 01:36:24] Game 2/10: LOSS (-43--40)
-[2025-12-14 01:38:12] Game 3/10: LOSS (-66--19)
-[2025-12-14 01:40:10] Game 4/10: LOSS (-83--22)
-[2025-12-14 01:59:13] Game 5/10: LOSS (-151--69)
-[2025-12-14 02:00:37] Game 6/10: LOSS (-39--15)
-[2025-12-14 02:03:44] Game 7/10: LOSS (-138--45)
-[2025-12-14 02:05:16] Game 8/10: LOSS (-47--25)
-[2025-12-14 02:08:10] Game 9/10: LOSS (-126--66)
-[2025-12-14 02:09:50] Game 10/10: LOSS (-60--5)
-[2025-12-14 02:09:50] vs Random: Wins=0, Losses=10, Draws=0 (WR: 0.00)
-[2025-12-14 02:09:50] vs PreviousCycle: Playing 10 games...
-[2025-12-14 02:17:46] Game 1/10: LOSS (-188--182)
-[2025-12-14 02:26:16] Game 2/10: LOSS (-182--159)
-[2025-12-14 02:35:39] Game 3/10: LOSS (-188--164)
-[2025-12-14 02:43:27] Game 4/10: LOSS (-177--161)
-[2025-12-14 02:49:21] Game 5/10: LOSS (-112--72)
-[2025-12-14 02:57:47] Game 6/10: LOSS (-189--169)
-[2025-12-14 03:20:59] Game 7/10: LOSS (-168--143)
-[2025-12-14 03:28:39] Game 8/10: LOSS (-175--154)
-[2025-12-14 03:35:22] Game 9/10: LOSS (-161--130)
-[2025-12-14 03:42:57] Game 10/10: LOSS (-188--169)
-[2025-12-14 03:42:57] vs PreviousCycle: Wins=0, Losses=10, Draws=0 (WR: 0.00)
-[2025-12-14 03:42:57] 
+[2025-12-19 16:19:57] Params: {'n_games': 50, 'simulations': 200, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 16:19:57] [Loop] Generating 50 games (Sims: 200)...
+[2025-12-19 16:43:54] [Game 1/50] Score: -5--34, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 2/50] Score: 4--2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 3/50] Score: -11-34, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 4/50] Score: 5-6, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 5/50] Score: 19-11, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 6/50] Score: -12-14, Rounds: 7, Moves: 70, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 7/50] Score: -3--1, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 8/50] Score: -7-44, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 9/50] Score: 27-10, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 10/50] Score: -9--1, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 11/50] Score: -17-15, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 12/50] Score: 2--16, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 13/50] Score: 2--7, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 14/50] Score: 1-14, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 15/50] Score: 12--10, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 16/50] Score: 21--42, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 17/50] Score: 16--36, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 18/50] Score: -4-3, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 19/50] Score: -38-0, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 20/50] Score: -8--16, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 21/50] Score: -3--8, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 22/50] Score: -33--17, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 23/50] Score: 3-16, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 24/50] Score: -21--2, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 25/50] Score: 22--36, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 26/50] Score: -29--37, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 27/50] Score: -33--15, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 28/50] Score: 1--6, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 29/50] Score: 3-26, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 30/50] Score: -22-21, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 31/50] Score: -10-17, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 32/50] Score: 23--11, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 33/50] Score: 4--23, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 34/50] Score: 45-1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 35/50] Score: -9-32, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 36/50] Score: 36-4, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 37/50] Score: -33--26, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 38/50] Score: 3-10, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 39/50] Score: 20--26, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 40/50] Score: -15-42, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 41/50] Score: 14-5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 42/50] Score: -12--7, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 43/50] Score: -32--23, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 44/50] Score: -1--30, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 45/50] Score: 1-1, Rounds: 5, Moves: 59, Winner: DRAW, End: normal_end
+[2025-12-19 16:43:54] [Game 46/50] Score: -27-15, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 47/50] Score: 7-15, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Game 48/50] Score: 15--17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 49/50] Score: -13--24, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2025-12-19 16:43:54] [Game 50/50] Score: -15--6, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 16:43:54] [Loop] Moving model back to mps for training...
+[2025-12-19 16:43:54] [Loop] MCTS Stats: avg_visits=240.4, avg_entropy=2.51, reuse_rate=100.0%, avg_moves=56.4
+[2025-12-19 16:43:54] [Loop] Buffer size: 6626
+[2025-12-19 16:43:54] [Loop] Training for 5 epochs...
+[2025-12-19 16:44:44] [Loop] Training Finished. Avg Loss: 2.7411 (Policy: 2.7276, Value: 0.0135)
+[2025-12-19 16:44:44] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_2.pt
+[2025-12-19 16:44:44] Starting validation for Cycle 2...
+[2025-12-19 16:44:44] vs Random: Playing 10 games...
+[2025-12-19 16:46:23] Game 1/10: LOSS (-46   -17)
+[2025-12-19 16:47:50] Game 2/10: WIN (10   -31)
+[2025-12-19 16:49:28] Game 3/10: LOSS (-42   4)
+[2025-12-19 16:51:43] Game 4/10: LOSS (-68   -54)
+[2025-12-19 16:52:59] Game 5/10: DRAW (-31   -31)
+[2025-12-19 16:54:23] Game 6/10: WIN (-14   -35)
+[2025-12-19 16:55:59] Game 7/10: WIN (-9   -39)
+[2025-12-19 16:58:09] Game 8/10: LOSS (-73   -69)
+[2025-12-19 16:59:25] Game 9/10: LOSS (-27   3)
+[2025-12-19 17:00:51] Game 10/10: LOSS (-51   -22)
+[2025-12-19 17:00:51] vs Random: Wins=3, Losses=6, Draws=1 (WR: 0.30)
+[2025-12-19 17:00:51] vs PreviousCycle: Playing 10 games...
+[2025-12-19 17:03:20] Game 1/10: LOSS (-27   -3)
+[2025-12-19 17:06:49] Game 2/10: WIN (-48   -57)
+[2025-12-19 17:09:22] Game 3/10: WIN (10   -43)
+[2025-12-19 17:12:30] Game 4/10: WIN (-17   -48)
+[2025-12-19 17:15:37] Game 5/10: LOSS (-23   9)
+[2025-12-19 17:18:29] Game 6/10: WIN (-46   -60)
+[2025-12-19 17:21:08] Game 7/10: WIN (-16   -21)
+[2025-12-19 17:23:45] Game 8/10: WIN (-15   -58)
+[2025-12-19 17:26:43] Game 9/10: WIN (-17   -31)
+[2025-12-19 17:29:33] Game 10/10: WIN (-45   -54)
+[2025-12-19 17:29:33] vs PreviousCycle: Wins=8, Losses=2, Draws=0 (WR: 0.80)
+[2025-12-19 17:29:33] 
 === Cycle 3/50 ===
-[2025-12-14 03:42:57] Params: {'n_games': 50, 'simulations': 500, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 30, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
-[2025-12-14 03:42:57] [Loop] Generating 50 games (Sims: 500)...
-[2025-12-14 06:43:36] [Game 1/50] Score: -174--178, Rounds: 15, Moves: 170, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 2/50] Score: -57--55, Rounds: 7, Moves: 79, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 3/50] Score: -170--162, Rounds: 15, Moves: 169, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 4/50] Score: -164--176, Rounds: 15, Moves: 165, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 5/50] Score: -161--130, Rounds: 15, Moves: 177, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 6/50] Score: -181--166, Rounds: 15, Moves: 178, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 7/50] Score: -179--158, Rounds: 15, Moves: 163, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 8/50] Score: -38--38, Rounds: 6, Moves: 66, Winner: DRAW, End: normal_end
-[2025-12-14 06:43:36] [Game 9/50] Score: -172--159, Rounds: 15, Moves: 165, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 10/50] Score: -57--67, Rounds: 8, Moves: 87, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 11/50] Score: -171--165, Rounds: 15, Moves: 167, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 12/50] Score: -136--150, Rounds: 14, Moves: 158, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 13/50] Score: -88--66, Rounds: 8, Moves: 89, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 14/50] Score: -60--59, Rounds: 7, Moves: 79, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 15/50] Score: -140--132, Rounds: 13, Moves: 143, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 16/50] Score: -162--173, Rounds: 15, Moves: 171, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 17/50] Score: -175--179, Rounds: 15, Moves: 164, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 18/50] Score: -138--149, Rounds: 14, Moves: 150, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 19/50] Score: -140--163, Rounds: 14, Moves: 159, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 20/50] Score: -170--160, Rounds: 15, Moves: 170, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 21/50] Score: -90--78, Rounds: 9, Moves: 99, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 22/50] Score: -138--162, Rounds: 14, Moves: 160, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 23/50] Score: -170--164, Rounds: 15, Moves: 173, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 24/50] Score: -147--144, Rounds: 14, Moves: 148, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 25/50] Score: -85--102, Rounds: 10, Moves: 116, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 26/50] Score: -81--65, Rounds: 9, Moves: 99, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 27/50] Score: -154--190, Rounds: 15, Moves: 164, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 28/50] Score: -141--154, Rounds: 14, Moves: 152, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 29/50] Score: -100--134, Rounds: 11, Moves: 120, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 30/50] Score: -155--127, Rounds: 14, Moves: 165, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 31/50] Score: -168--183, Rounds: 15, Moves: 167, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 32/50] Score: -135--162, Rounds: 15, Moves: 162, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 33/50] Score: -136--123, Rounds: 13, Moves: 151, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 34/50] Score: -74--87, Rounds: 8, Moves: 88, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 35/50] Score: -168--171, Rounds: 15, Moves: 168, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 36/50] Score: -93--94, Rounds: 10, Moves: 114, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 37/50] Score: -139--119, Rounds: 12, Moves: 132, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 38/50] Score: -174--167, Rounds: 15, Moves: 167, Winner: P1, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 39/50] Score: -78--66, Rounds: 9, Moves: 96, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 40/50] Score: -88--65, Rounds: 8, Moves: 85, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 41/50] Score: -166--167, Rounds: 15, Moves: 173, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 42/50] Score: -149--160, Rounds: 15, Moves: 169, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 43/50] Score: -86--94, Rounds: 9, Moves: 97, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 44/50] Score: -150--145, Rounds: 14, Moves: 165, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 45/50] Score: -106--86, Rounds: 11, Moves: 115, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 46/50] Score: -55--59, Rounds: 8, Moves: 83, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 47/50] Score: -157--158, Rounds: 15, Moves: 161, Winner: P0, End: max_rounds_reached
-[2025-12-14 06:43:36] [Game 48/50] Score: -122--162, Rounds: 14, Moves: 149, Winner: P0, End: normal_end
-[2025-12-14 06:43:36] [Game 49/50] Score: -82--59, Rounds: 8, Moves: 89, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Game 50/50] Score: -69--21, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
-[2025-12-14 06:43:36] [Loop] Moving model back to mps for training...
-[2025-12-14 06:43:36] [Loop] MCTS Stats: avg_visits=632.0, avg_entropy=2.34, reuse_rate=91.7%, avg_moves=137.1
-[2025-12-14 06:43:36] [Loop] Buffer size: 12316
-[2025-12-14 06:43:36] [Loop] Training for 5 epochs...
-[2025-12-14 06:45:07] [Loop] Training Finished. Avg Loss: 2.6721 (Policy: 2.6646, Value: 0.0074)
-[2025-12-14 06:45:07] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_3.pt
-[2025-12-14 06:45:07] Starting validation for Cycle 3...
-[2025-12-14 06:45:07] vs Random: Playing 10 games...
-[2025-12-14 06:46:46] Game 1/10: LOSS (-75--26)
-[2025-12-14 06:48:06] Game 2/10: LOSS (-53--5)
-[2025-12-14 06:49:20] Game 3/10: LOSS (-38--24)
-[2025-12-14 06:51:08] Game 4/10: LOSS (-70--37)
-[2025-12-14 06:53:02] Game 5/10: LOSS (-88--6)
-[2025-12-14 06:54:41] Game 6/10: LOSS (-48--27)
-[2025-12-14 06:56:21] Game 7/10: LOSS (-81--40)
-[2025-12-14 07:13:59] Game 8/10: LOSS (-76--35)
-[2025-12-14 07:16:12] Game 9/10: LOSS (-71--25)
-[2025-12-14 07:39:52] Game 10/10: LOSS (-91--35)
-[2025-12-14 07:39:52] vs Random: Wins=0, Losses=10, Draws=0 (WR: 0.00)
-[2025-12-14 07:39:52] vs PreviousCycle: Playing 10 games...
-[2025-12-14 08:04:05] Game 1/10: WIN (-161--176)
-[2025-12-14 08:12:01] Game 2/10: LOSS (-196--178)
-[2025-12-14 08:20:11] Game 3/10: WIN (-185--190)
-[2025-12-14 08:24:00] Game 4/10: WIN (-58--78)
-[2025-12-14 08:31:39] Game 5/10: LOSS (-173--168)
-[2025-12-14 08:37:35] Game 6/10: LOSS (-135--125)
-[2025-12-14 08:45:49] Game 7/10: LOSS (-182--173)
-[2025-12-14 08:53:30] Game 8/10: LOSS (-196--178)
-[2025-12-14 09:33:53] Game 9/10: LOSS (-185--181)
-[2025-12-14 09:42:47] Game 10/10: LOSS (-191--179)
-[2025-12-14 09:42:47] vs PreviousCycle: Wins=3, Losses=7, Draws=0 (WR: 0.30)
+[2025-12-19 17:29:33] Params: {'n_games': 50, 'simulations': 200, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 17:29:33] [Loop] Generating 50 games (Sims: 200)...
+[2025-12-19 17:52:50] [Game 1/50] Score: -31-20, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 2/50] Score: 29-24, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 3/50] Score: -18-9, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 4/50] Score: -18-30, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 5/50] Score: -9-41, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 6/50] Score: 14-35, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 7/50] Score: -12-16, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 8/50] Score: 24-17, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 9/50] Score: 25--11, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 10/50] Score: 43-36, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 11/50] Score: 36-4, Rounds: 6, Moves: 69, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 12/50] Score: 20--30, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 13/50] Score: 5-27, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 14/50] Score: 26-18, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 15/50] Score: 30--20, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 16/50] Score: 37-12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 17/50] Score: 14-23, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 18/50] Score: 34-38, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 19/50] Score: 19--1, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 20/50] Score: 53-8, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 21/50] Score: 17-10, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 22/50] Score: 19-29, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 23/50] Score: 20--28, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 24/50] Score: 36--17, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 25/50] Score: 22-12, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 26/50] Score: 43--5, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 27/50] Score: 34-26, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 28/50] Score: 18-14, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 29/50] Score: 24--3, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 30/50] Score: 44--16, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 31/50] Score: 31-12, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 32/50] Score: -10-36, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 33/50] Score: -2-52, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 34/50] Score: -3-41, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 35/50] Score: -21-29, Rounds: 5, Moves: 60, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 36/50] Score: 56--13, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 37/50] Score: -16-4, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 38/50] Score: -1-21, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 39/50] Score: 16--26, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 40/50] Score: 12-5, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 41/50] Score: 27--19, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 42/50] Score: 5-0, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2025-12-19 17:52:50] [Game 43/50] Score: 8-17, Rounds: 5, Moves: 61, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 44/50] Score: 9-31, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 45/50] Score: 3-29, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 46/50] Score: -8-25, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 47/50] Score: -19-26, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 48/50] Score: 21-43, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 49/50] Score: -13--11, Rounds: 6, Moves: 69, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Game 50/50] Score: -19-26, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-19 17:52:50] [Loop] Moving model back to mps for training...
+[2025-12-19 17:52:50] [Loop] MCTS Stats: avg_visits=246.0, avg_entropy=2.37, reuse_rate=100.0%, avg_moves=57.3
+[2025-12-19 17:52:50] [Loop] Buffer size: 9491
+[2025-12-19 17:52:50] [Loop] Training for 5 epochs...
+[2025-12-19 17:54:03] [Loop] Training Finished. Avg Loss: 2.7312 (Policy: 2.7162, Value: 0.0150)
+[2025-12-19 17:54:04] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_3.pt
+[2025-12-19 17:54:04] Starting validation for Cycle 3...
+[2025-12-19 17:54:04] vs Random: Playing 10 games...
+[2025-12-19 17:55:23] Game 1/10: LOSS (-32   -22)
+[2025-12-19 17:56:33] Game 2/10: WIN (-28   -30)
+[2025-12-19 17:58:02] Game 3/10: LOSS (-42   -34)
+[2025-12-19 17:59:28] Game 4/10: LOSS (-27   -22)
+[2025-12-19 18:00:49] Game 5/10: WIN (-17   -34)
+[2025-12-19 18:02:25] Game 6/10: LOSS (-63   15)
+[2025-12-19 18:03:46] Game 7/10: LOSS (-42   -31)
+[2025-12-19 18:05:56] Game 8/10: DRAW (-64   -64)
+[2025-12-19 18:07:27] Game 9/10: LOSS (-30   -22)
+[2025-12-19 18:08:54] Game 10/10: LOSS (-35   -32)
+[2025-12-19 18:08:54] vs Random: Wins=2, Losses=7, Draws=1 (WR: 0.20)
+[2025-12-19 18:08:54] vs PreviousCycle: Playing 10 games...
+[2025-12-19 18:12:06] Game 1/10: LOSS (-16   -14)
+[2025-12-19 18:15:01] Game 2/10: LOSS (-14   5)
+[2025-12-19 18:18:07] Game 3/10: WIN (-25   -26)
+[2025-12-19 18:20:23] Game 4/10: WIN (-9   -40)
+[2025-12-19 18:24:21] Game 5/10: LOSS (-44   -17)
+[2025-12-19 18:27:06] Game 6/10: LOSS (-32   6)
+[2025-12-19 18:30:08] Game 7/10: LOSS (-36   -27)
+[2025-12-19 18:33:47] Game 8/10: LOSS (-47   -15)
+[2025-12-19 18:36:50] Game 9/10: LOSS (-53   -16)
+[2025-12-19 18:39:07] Game 10/10: LOSS (-40   -16)
+[2025-12-19 18:39:07] vs PreviousCycle: Wins=2, Losses=8, Draws=0 (WR: 0.20)
+[2025-12-19 18:39:07] 
+=== Cycle 4/50 ===
+[2025-12-19 18:39:07] Params: {'n_games': 50, 'simulations': 200, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 18:39:07] [Loop] Generating 50 games (Sims: 200)...
+[2025-12-19 19:00:33] [Game 1/50] Score: 9-40, Rounds: 5, Moves: 60, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 2/50] Score: 18-19, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 3/50] Score: 39-17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 4/50] Score: -20-28, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 5/50] Score: 3-32, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 6/50] Score: 22-9, Rounds: 7, Moves: 81, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 7/50] Score: 9-16, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 8/50] Score: 15-23, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 9/50] Score: 36--13, Rounds: 5, Moves: 60, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 10/50] Score: 41--7, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 11/50] Score: -4-20, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 12/50] Score: 22--13, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 13/50] Score: 12-47, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 14/50] Score: -19-57, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 15/50] Score: 33-15, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 16/50] Score: 31--15, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 17/50] Score: 6-24, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 18/50] Score: 30-14, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 19/50] Score: -9-44, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 20/50] Score: 17--8, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 21/50] Score: 35-31, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 22/50] Score: 47-24, Rounds: 5, Moves: 60, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 23/50] Score: 31-1, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 24/50] Score: 4-39, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 25/50] Score: 11--37, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 26/50] Score: 9-14, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 27/50] Score: 15--44, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 28/50] Score: 17-25, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 29/50] Score: 11-37, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 30/50] Score: -24-23, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 31/50] Score: 45-8, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 32/50] Score: -1-40, Rounds: 6, Moves: 69, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 33/50] Score: 20-27, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 34/50] Score: -37-38, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 35/50] Score: 13-32, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 36/50] Score: 40-23, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 37/50] Score: -25-46, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 38/50] Score: 36-27, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 39/50] Score: 17-5, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 40/50] Score: 38-34, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 41/50] Score: 20-7, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 42/50] Score: -24-33, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 43/50] Score: 19--23, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 44/50] Score: 37-20, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 45/50] Score: -1-38, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 46/50] Score: 17-8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 47/50] Score: 23-24, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 48/50] Score: 1-8, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Game 49/50] Score: 28-21, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 19:00:33] [Game 50/50] Score: -30-35, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 19:00:33] [Loop] Moving model back to mps for training...
+[2025-12-19 19:00:33] [Loop] MCTS Stats: avg_visits=249.6, avg_entropy=2.26, reuse_rate=100.0%, avg_moves=57.1
+[2025-12-19 19:00:33] [Loop] Buffer size: 12347
+[2025-12-19 19:00:33] [Loop] Training for 5 epochs...
+[2025-12-19 19:02:08] [Loop] Training Finished. Avg Loss: 2.6947 (Policy: 2.6809, Value: 0.0139)
+[2025-12-19 19:02:08] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_4.pt
+[2025-12-19 19:02:08] Starting validation for Cycle 4...
+[2025-12-19 19:02:08] vs Random: Playing 10 games...
+[2025-12-19 19:04:06] Game 1/10: WIN (-44   -48)
+[2025-12-19 19:05:54] Game 2/10: LOSS (-53   -25)
+[2025-12-19 19:07:27] Game 3/10: LOSS (-30   -20)
+[2025-12-19 19:08:48] Game 4/10: LOSS (-52   -12)
+[2025-12-19 19:10:24] Game 5/10: WIN (-19   -44)
+[2025-12-19 19:11:45] Game 6/10: LOSS (-37   -24)
+[2025-12-19 19:14:04] Game 7/10: LOSS (-51   -16)
+[2025-12-19 19:15:22] Game 8/10: LOSS (-35   -29)
+[2025-12-19 19:17:23] Game 9/10: WIN (-53   -64)
+[2025-12-19 19:18:53] Game 10/10: LOSS (-17   -10)
+[2025-12-19 19:18:53] vs Random: Wins=3, Losses=7, Draws=0 (WR: 0.30)
+[2025-12-19 19:18:53] vs PreviousCycle: Playing 10 games...
+[2025-12-19 19:21:41] Game 1/10: LOSS (-26   -15)
+[2025-12-19 19:24:25] Game 2/10: LOSS (-55   -26)
+[2025-12-19 19:27:33] Game 3/10: LOSS (-28   -24)
+[2025-12-19 19:29:59] Game 4/10: LOSS (-24   -21)
+[2025-12-19 19:32:33] Game 5/10: WIN (-15   -19)
+[2025-12-19 20:03:05] Game 6/10: WIN (-20   -58)
+[2025-12-19 20:21:33] Game 7/10: WIN (-24   -40)
+[2025-12-19 20:24:29] Game 8/10: LOSS (-39   15)
+[2025-12-19 20:27:38] Game 9/10: LOSS (-16   -5)
+[2025-12-19 20:30:00] Game 10/10: WIN (-13   -50)
+[2025-12-19 20:30:00] vs PreviousCycle: Wins=4, Losses=6, Draws=0 (WR: 0.40)
+[2025-12-19 20:30:00] 
+=== Cycle 5/50 ===
+[2025-12-19 20:30:00] Params: {'n_games': 50, 'simulations': 200, 'epochs': 5, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 20:30:00] [Loop] Generating 50 games (Sims: 200)...
+[2025-12-19 21:03:48] [Game 1/50] Score: 52-43, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 2/50] Score: -3-26, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 3/50] Score: 1-20, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 4/50] Score: -10-22, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 5/50] Score: 31-6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 6/50] Score: 1-7, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 7/50] Score: 34-14, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 8/50] Score: 20-36, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 9/50] Score: 43-47, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 10/50] Score: 23-17, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 11/50] Score: 37-6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 12/50] Score: 33-27, Rounds: 5, Moves: 61, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 13/50] Score: 22-45, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 14/50] Score: 36--31, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 15/50] Score: 10-31, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 16/50] Score: -5-4, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 17/50] Score: 21-18, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 18/50] Score: 14-14, Rounds: 5, Moves: 55, Winner: DRAW, End: normal_end
+[2025-12-19 21:03:48] [Game 19/50] Score: -29-31, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 20/50] Score: -16-19, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 21/50] Score: 23-16, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 22/50] Score: 33-13, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 23/50] Score: 28-3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 24/50] Score: 33-15, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 25/50] Score: -12-32, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 26/50] Score: 2-34, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 27/50] Score: 22-19, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 28/50] Score: 5-0, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 29/50] Score: 18-2, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 30/50] Score: 5-18, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 31/50] Score: 28-17, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 32/50] Score: 0-40, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 33/50] Score: 66-21, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 34/50] Score: 21--4, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 35/50] Score: 22-30, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 36/50] Score: 17-2, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 37/50] Score: 37-4, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 38/50] Score: 34-40, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 39/50] Score: 8--14, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 40/50] Score: 31-22, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 41/50] Score: 13-33, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 42/50] Score: 6-16, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 43/50] Score: 84-39, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 44/50] Score: 29-69, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 45/50] Score: 26-26, Rounds: 6, Moves: 72, Winner: DRAW, End: normal_end
+[2025-12-19 21:03:48] [Game 46/50] Score: 24-34, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 47/50] Score: -21-41, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 48/50] Score: 17-9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Game 49/50] Score: -6-28, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-19 21:03:48] [Game 50/50] Score: 28-27, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2025-12-19 21:03:48] [Loop] Moving model back to mps for training...
+[2025-12-19 21:03:48] [Loop] MCTS Stats: avg_visits=250.9, avg_entropy=2.23, reuse_rate=100.0%, avg_moves=57.2
+[2025-12-19 21:03:48] [Loop] Buffer size: 15205
+[2025-12-19 21:03:48] [Loop] Training for 5 epochs...
+[2025-12-19 21:05:41] [Loop] Training Finished. Avg Loss: 2.6599 (Policy: 2.6463, Value: 0.0136)
+[2025-12-19 21:05:41] [Loop] Saved checkpoint to data/checkpoints_v5/model_cycle_5.pt
+[2025-12-19 21:05:41] Starting validation for Cycle 5...
+[2025-12-19 21:05:41] vs Random: Playing 10 games...
+[2025-12-19 21:07:31] Game 1/10: LOSS (-80   -51)
+[2025-12-19 21:09:21] Game 2/10: WIN (-25   -39)
+[2025-12-19 21:11:00] Game 3/10: LOSS (-34   -30)
+[2025-12-19 21:12:39] Game 4/10: WIN (-11   -41)
+[2025-12-19 21:14:19] Game 5/10: LOSS (-56   -12)
+[2025-12-19 21:15:52] Game 6/10: LOSS (-21   -17)
+[2025-12-19 21:17:17] Game 7/10: LOSS (-40   -29)
+[2025-12-19 21:18:24] Game 8/10: LOSS (-35   -23)
+[2025-12-19 21:20:34] Game 9/10: LOSS (-72   -33)
+[2025-12-19 21:21:55] Game 10/10: LOSS (-39   -38)
+[2025-12-19 21:21:55] vs Random: Wins=2, Losses=8, Draws=0 (WR: 0.20)
+[2025-12-19 21:21:55] vs PreviousCycle: Playing 10 games...
+[2025-12-19 21:33:51] Game 1/10: LOSS (-74   -67)
+[2025-12-19 21:37:21] Game 2/10: LOSS (-66   -32)
+[2025-12-19 21:40:35] Game 3/10: WIN (-2   -16)
+[2025-12-19 21:43:42] Game 4/10: LOSS (-45   -39)
+[2025-12-19 21:46:23] Game 5/10: WIN (-10   -25)
+[2025-12-19 21:49:54] Game 6/10: LOSS (-43   -36)
+[2025-12-19 21:52:50] Game 7/10: LOSS (-48   -16)
+[2025-12-19 21:57:15] Game 8/10: LOSS (-55   -45)
+[2025-12-19 21:59:44] Game 9/10: LOSS (-32   -14)
+[2025-12-19 22:03:29] Game 10/10: WIN (-31   -40)
+[2025-12-19 22:03:29] vs PreviousCycle: Wins=3, Losses=7, Draws=0 (WR: 0.30)
+[2025-12-19 22:03:29] 
+=== Cycle 6/50 ===
+[2025-12-19 22:03:29] Params: {'n_games': 200, 'simulations': 100, 'epochs': 10, 'lr': 0.001, 'cpuct': 1.0, 'temp_threshold': 15, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self'}
+[2025-12-19 22:03:29] [Loop] Generating 200 games (Sims: 100)...
+[2025-12-20 00:00:46] [Game 1/200] Score: 20-63, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 2/200] Score: -33-7, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 3/200] Score: 29-33, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 4/200] Score: -30-39, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 5/200] Score: 21-47, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 6/200] Score: 27--3, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 7/200] Score: -15-18, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 8/200] Score: 17--3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 9/200] Score: 20-19, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 10/200] Score: -51-27, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 11/200] Score: 12--2, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 12/200] Score: -5-37, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 13/200] Score: 1--8, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 14/200] Score: 44-44, Rounds: 6, Moves: 67, Winner: DRAW, End: normal_end
+[2025-12-20 00:00:46] [Game 15/200] Score: 45--5, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 16/200] Score: -2-25, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 17/200] Score: -11-36, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 18/200] Score: -6-44, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 19/200] Score: 55--53, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 20/200] Score: 39--9, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 21/200] Score: 2-17, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 22/200] Score: 9-14, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 23/200] Score: -7-47, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 24/200] Score: -5-21, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 25/200] Score: 1-35, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 26/200] Score: 38--22, Rounds: 6, Moves: 57, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 27/200] Score: -4-35, Rounds: 7, Moves: 82, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 28/200] Score: 29--24, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 29/200] Score: -1-23, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 30/200] Score: 35--3, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 31/200] Score: 28-5, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 32/200] Score: 13-51, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 33/200] Score: 27-4, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 34/200] Score: -33-34, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 35/200] Score: 29-6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 36/200] Score: -13-12, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 37/200] Score: 36--9, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 38/200] Score: 26-21, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 39/200] Score: 20-2, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 40/200] Score: 5--1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 41/200] Score: -36-10, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 42/200] Score: 56-7, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 43/200] Score: 14-1, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 44/200] Score: 10-6, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 45/200] Score: -13-2, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 46/200] Score: 16-30, Rounds: 6, Moves: 69, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 47/200] Score: -8-19, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 48/200] Score: -28-25, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 49/200] Score: 28-2, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 50/200] Score: 10-19, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 51/200] Score: 33--14, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 52/200] Score: 9-31, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 53/200] Score: 3-6, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 54/200] Score: 15-39, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 55/200] Score: 27-33, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 56/200] Score: 12-0, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 57/200] Score: -6-12, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 58/200] Score: -8-53, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 59/200] Score: 11-56, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 60/200] Score: 6-9, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 61/200] Score: 31--18, Rounds: 5, Moves: 60, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 62/200] Score: 28-30, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 63/200] Score: -4-25, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 64/200] Score: 15-26, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 65/200] Score: -23-25, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 66/200] Score: 36-38, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 67/200] Score: 54--11, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 68/200] Score: -16-29, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 69/200] Score: 20--12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 70/200] Score: 33-12, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 71/200] Score: 20--4, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 72/200] Score: -7-0, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 73/200] Score: 23-1, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 74/200] Score: 17-7, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 75/200] Score: 25-14, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 76/200] Score: 23-3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 77/200] Score: 13-17, Rounds: 7, Moves: 74, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 78/200] Score: -7-36, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 79/200] Score: 18-0, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 80/200] Score: 28-39, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 81/200] Score: 18-22, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 82/200] Score: 1-6, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 83/200] Score: 35-7, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 84/200] Score: 7-19, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 85/200] Score: 7-30, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 86/200] Score: 23-29, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 87/200] Score: 32-24, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 88/200] Score: 12-26, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 89/200] Score: 5--20, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 90/200] Score: 11-25, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 91/200] Score: 6-47, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 92/200] Score: -2-7, Rounds: 6, Moves: 69, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 93/200] Score: 32-30, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 94/200] Score: 9-35, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 95/200] Score: 21-21, Rounds: 5, Moves: 53, Winner: DRAW, End: normal_end
+[2025-12-20 00:00:46] [Game 96/200] Score: 3-32, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 97/200] Score: -42-55, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 98/200] Score: 41-28, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 99/200] Score: 7--4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 100/200] Score: 5-24, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 101/200] Score: 17-11, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 102/200] Score: 8-24, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 103/200] Score: -20-35, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 104/200] Score: 15-14, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 105/200] Score: 11--5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 106/200] Score: -16-13, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 107/200] Score: 35--1, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 108/200] Score: 35--8, Rounds: 6, Moves: 70, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 109/200] Score: 10-31, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 110/200] Score: 0-37, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 111/200] Score: 45-36, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 112/200] Score: 32--18, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 113/200] Score: 2-40, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 114/200] Score: 29-24, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 115/200] Score: 74--2, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 116/200] Score: 30-59, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 117/200] Score: -24-24, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 118/200] Score: -24-17, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 119/200] Score: 16-17, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 120/200] Score: 28-35, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 121/200] Score: 22--13, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 122/200] Score: -24-42, Rounds: 6, Moves: 70, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 123/200] Score: 9--11, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 124/200] Score: -18-16, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 125/200] Score: 39-2, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 126/200] Score: 45-6, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 127/200] Score: 37-15, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 128/200] Score: 3-20, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 129/200] Score: 29--55, Rounds: 8, Moves: 83, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 130/200] Score: 12-21, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 131/200] Score: 25--10, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 132/200] Score: -11--2, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 133/200] Score: 13-11, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 134/200] Score: 67-27, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 135/200] Score: -19-52, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 136/200] Score: 23-22, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 137/200] Score: -48-14, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 138/200] Score: 2-6, Rounds: 5, Moves: 60, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 139/200] Score: 11--12, Rounds: 6, Moves: 69, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 140/200] Score: 15--4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 141/200] Score: 33-30, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 142/200] Score: 4-7, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 143/200] Score: 23--14, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 144/200] Score: 29-2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 145/200] Score: -9-3, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 146/200] Score: 16--5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 147/200] Score: 8--13, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 148/200] Score: -4-24, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 149/200] Score: 32--33, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 150/200] Score: 19-18, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 151/200] Score: 14-14, Rounds: 5, Moves: 57, Winner: DRAW, End: normal_end
+[2025-12-20 00:00:46] [Game 152/200] Score: 19-58, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 153/200] Score: 14-36, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 154/200] Score: 11-10, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 155/200] Score: 10-10, Rounds: 6, Moves: 59, Winner: DRAW, End: normal_end
+[2025-12-20 00:00:46] [Game 156/200] Score: 7--7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 157/200] Score: -9-0, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 158/200] Score: 4-8, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 159/200] Score: 38-15, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 160/200] Score: -19-15, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 161/200] Score: 21-8, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 162/200] Score: -34-18, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 163/200] Score: 58--16, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 164/200] Score: 19--22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 165/200] Score: -25-11, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 166/200] Score: 21-5, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 167/200] Score: -11-12, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 168/200] Score: 37-19, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 169/200] Score: 23-11, Rounds: 5, Moves: 61, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 170/200] Score: 33-52, Rounds: 7, Moves: 72, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 171/200] Score: -14-1, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 172/200] Score: 31-7, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 173/200] Score: 9-14, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 174/200] Score: 4-36, Rounds: 5, Moves: 60, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 175/200] Score: 18-20, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 176/200] Score: 28-34, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 177/200] Score: -14-10, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 178/200] Score: 23-35, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 179/200] Score: -13-27, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 180/200] Score: 11-1, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 181/200] Score: 39-18, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 182/200] Score: -12-12, Rounds: 7, Moves: 71, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 183/200] Score: 2-18, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 184/200] Score: 15-10, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 185/200] Score: -5--8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 186/200] Score: -2-14, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 187/200] Score: -37-29, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 188/200] Score: -25-32, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 189/200] Score: 49-15, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 190/200] Score: 13-8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 191/200] Score: -3-1, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 192/200] Score: 7--4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 193/200] Score: 44--17, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2025-12-20 00:00:46] [Game 194/200] Score: 27-54, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 195/200] Score: 8-29, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 196/200] Score: 11-19, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 197/200] Score: -8-35, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 198/200] Score: 32-46, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 199/200] Score: -27-9, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Game 200/200] Score: 0-26, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2025-12-20 00:00:46] [Loop] Moving model back to mps for training...
+[2025-12-20 00:00:46] [Loop] MCTS Stats: avg_visits=125.9, avg_entropy=2.11, reuse_rate=100.0%, avg_moves=56.9
+[2025-12-20 00:00:46] [Loop] Buffer size: 26588

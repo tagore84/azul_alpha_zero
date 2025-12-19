@@ -380,8 +380,8 @@ def play_game_vs_opponent(
     # Value Target: Normalized Own Score
     # v = clamp(score / 300.0, -1, 1)
     
-    val_0 = np.clip(score_p0 / 300.0, -1.0, 1.0)
-    val_1 = np.clip(score_p1 / 300.0, -1.0, 1.0)
+    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
+    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
     
     diff_0 = val_0
     diff_1 = val_1
@@ -486,7 +486,7 @@ def generate_self_play_games(
             
             term_reason = stats.get('termination_reason', 'normal_end')
             if game_logger:
-                game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}-{stats.get('p1_score', 0)}, "
+                game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}  {stats.get('p1_score', 0)}, "
                                f"Rounds: {stats.get('round_count', 0)}, Moves: {stats['move_count']}, "
                                f"Winner: {winner_str}, End: {term_reason}")
             
@@ -580,7 +580,7 @@ def generate_self_play_games(
             
             term_reason = stats.get('termination_reason', 'normal_end')
             if game_logger:
-                game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}-{stats.get('p1_score', 0)}, "
+                game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}  {stats.get('p1_score', 0)}, "
                                f"Rounds: {stats.get('round_count', 0)}, Moves: {stats['move_count']}, "
                                f"Winner: {winner_str}, End: {term_reason}")
         

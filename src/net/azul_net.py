@@ -69,14 +69,13 @@ class AzulNet(nn.Module):
         self.factory_out_size = (factories_count + 1) * factory_embed_dim
         
         # Shared Trunk (Fusion Layer)
-        combined_size = 2 * 5 * 5 + global_size + self.factory_out_size
+        combined_size = 3 * 5 * 5 + global_size + self.factory_out_size
         self.layer_norm = nn.LayerNorm(combined_size)
         self.fusion_fc1 = nn.Linear(combined_size, value_hidden)
         self.fusion_fc2 = nn.Linear(value_hidden, value_hidden)
         
         # Policy head
         self.policy_conv = nn.Conv2d(channels, 2, kernel_size=1)
-        self.policy_bn   = nn.BatchNorm2d(2)
         self.policy_bn   = nn.BatchNorm2d(2)
         # Input: shared trunk output (no action_mask concatenation)
         self.policy_fc1  = nn.Linear(value_hidden, value_hidden)
@@ -129,7 +128,7 @@ class AzulNet(nn.Module):
         v = F.relu(self.value_bn(self.value_conv(x)))
         v = v.view(v.size(0), -1)  # (B, 1*5*5)
         
-        combined = torch.cat([p, x_global, f], dim=1)
+        combined = torch.cat([p, v, x_global, f], dim=1)
         
         # Normalize combined features
         combined = self.layer_norm(combined)

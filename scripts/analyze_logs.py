@@ -50,8 +50,8 @@ def parse_logs():
                 continue
 
             # Parse Training Game
-            # [2025-12-08 16:36:35] [Game 1/50] Score: -11--64, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
-            train_game_match = re.search(r"\[Game \d+/\d+\] Score: (-?\d+)-(-?\d+),.*End: (\w+)", line)
+            # Supports both "Score: 10-20" and "Score: 10  20"
+            train_game_match = re.search(r"\[Game \d+/\d+\] Score: (-?\d+)[\s-]+(-?\d+),.*End: (\w+)", line)
             if train_game_match:
                 s0 = int(train_game_match.group(1))
                 s1 = int(train_game_match.group(2))
@@ -75,10 +75,6 @@ def parse_logs():
 
             # Detect Validation Opponent
             # [2025-12-08 17:49:15] vs Random: Playing 10 games...
-            # [2025-12-08 23:23:20] vs Random: Wins=10, Losses=0, Draws=0 (WR: 1.00)
-            # [2025-12-09 00:00:56] vs PreviousCycle: Playing 10 games...
-            
-            # We look for "vs X: Playing" to switch context
             opponent_match = re.search(r"vs (.*?): Playing", line)
             if opponent_match:
                 opp_name = opponent_match.group(1)
@@ -90,11 +86,11 @@ def parse_logs():
                 continue
 
             # Parse Validation Game
-            # [2025-12-08 17:49:15] Game 1/10: LOSS (-96-91)
-            val_game_match = re.search(r"Game \d+/\d+: (WIN|LOSS|DRAW) \((-?\d+)-(-?\d+)\)", line)
+            # Supports "LOSS (-96-91)" and "LOSS (-96   91)"
+            val_game_match = re.search(r"Game \d+/\d+: (WIN|LOSS|DRAW) \((-?\d+)[\s-]+(-?\d+)\)", line)
             if val_game_match:
                 if current_opponent is None:
-                    continue  # Should not happen if log is consistent
+                    continue  
 
                 outcome = val_game_match.group(1)
                 s0 = int(val_game_match.group(2))
@@ -114,10 +110,10 @@ def parse_logs():
 
     output_lines = []
     # Header
-    # Cycle | MaxRounds | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
-    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
+    # Cycle | MaxRounds | AvgScore (Tr) | AvgScore (Riv) | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
+    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'AvgScore (Tr)':<15} | {'AvgScore (Riv)':<15} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
     output_lines.append(header)
-    output_lines.append("-" * 130)
+    output_lines.append("-" * 166)
     
     for cycle in sorted(stats.keys()):
         d = stats[cycle]
@@ -127,27 +123,22 @@ def parse_logs():
         mr_count = d["train_max_rounds"]
         mr_pct = (mr_count / n_train * 100) if n_train > 0 else 0
         
-        # Calculate Diff P0 - P1 (First Player Advantage?)
-        # Since it's self play, we should probably look at abs diff (margin) or just diff.
-        # User asked for "maximizing point difference".
-        # In self-play this is ambiguous. I will show P0-P1 to see balance.
-        # Or I will show Abs(P0-P1) as "Intensity"? 
-        # Let's show P0-P1.
+        # Avg Score (Combined P0 + P1 since it's self play)
+        all_train_scores = d["train_scores_p0"] + d["train_scores_p1"]
+        avg_sc, std_sc = calc_stats(all_train_scores)
+        sc_str = f"{avg_sc:.1f} ({std_sc:.1f})"
+
+        # Calculate Diff P0 - P1 
         train_diffs = [p0 - p1 for p0, p1 in zip(d["train_scores_p0"], d["train_scores_p1"])]
         avg_tr, std_tr = calc_stats(train_diffs)
         tr_str = f"{avg_tr:.1f} ({std_tr:.1f})"
         
         # Validation Stats: Rival (Model - Rival)
-        # Note: In validation logic, 's0' is always Model? No, we need to check log parsing.
-        # In validate_cycle: "Current Model's turn... if (model_is_p0 and current_idx == 0)..."
-        # The log says: "WIN (My-Opp)" or "LOSS (My-Opp)".
-        # The regex captured (s0)-(s1) from "WIN (96-91)".
-        # The logging line in validation is: logger.log(f"Game ... {result_str} ({my_score}-{opp_score})")
-        # So group(2) is ALWAYS MyScore, group(3) is ALWAYS OppScore.
-        # Verified in train_loop_v5.py:
-        # if my_score > opp_score ... logger.log(f"... ({my_score}-{opp_score})")
+        # s0 is Model, s1 is Rival
+        riv_scores_model = d["val_rival_scores_p0"]
+        avg_riv_sc, std_riv_sc = calc_stats(riv_scores_model)
+        riv_sc_str = f"{avg_riv_sc:.1f} ({std_riv_sc:.1f})"
         
-        # Riv Diffs
         riv_diffs = [p0 - p1 for p0, p1 in zip(d["val_rival_scores_p0"], d["val_rival_scores_p1"])]
         avg_riv, std_riv = calc_stats(riv_diffs)
         riv_str = f"{avg_riv:.1f} ({std_riv:.1f})"
@@ -163,8 +154,7 @@ def parse_logs():
         n_prev = d["val_prev_games"]
         prev_wr = (d["val_prev_wins"] / n_prev * 100) if n_prev > 0 else 0
         
-        # line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {train_str:<18} | {riv_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%  | {val_loss_str:<8}"
-        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
+        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {sc_str:<15} | {riv_sc_str:<15} | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
         output_lines.append(line_str)
 
     # Print to console

@@ -372,6 +372,19 @@ class MCTS:
             # We need to replace it with the real env to keep them synchronized
             new_root.env = env.clone()
             
+            # NEW: Validate that the cached children are still legal in the new environment.
+            # This is necessary because stochastic events (like factory refill) might have happened differently
+            # in the real game vs the simulation, rendering previously valid actions illegal.
+            real_valid_actions = set(env.get_valid_actions())
+            cached_actions = set(new_root.children.keys())
+            
+            if not cached_actions.issubset(real_valid_actions):
+                # Stale tree detected (diverged environment). Reset this node to trigger re-expansion.
+                new_root.children = {}
+                new_root.visits = 0
+                new_root.value_sum = 0
+                new_root.prior = 1.0 # Reset prior? Or keep? Resetting is safer.
+            
             # Set as new root
             self.root = new_root
             
