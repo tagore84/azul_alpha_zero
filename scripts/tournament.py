@@ -14,7 +14,8 @@ import argparse
 from players.random_plus_player import RandomPlusPlayer
 from players.deep_mcts_player import DeepMCTSPlayer 
 from players.expert_player import ExpertPlayer
-from players.heuristic_player import HeuristicPlayer
+from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
+from players.heuristic_player_v2 import HeuristicPlayerV2
 from azul.env import AzulEnv
 
 
@@ -44,8 +45,7 @@ def play_game(p1, p2):
         # if predict returned a flat index, convert to action tuple
         if not isinstance(action, tuple):
             action = env.index_to_action(int(action))
-        
-        print(f"  Acción elegida: {action} (Source: {action[0]}, Color: {action[1]}, Dest: {action[2]})")
+
         
         obs, _, done, _ = env.step(action)
         turn += 1
@@ -129,17 +129,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     players = {
-        #"Heu": HeuristicPlayer(),
         #"AZ_Cycle01": DeepMCTSPlayer("data/checkpoints/model_cycle_1.pt", device="cpu", mcts_iters=50, cpuct=1.0),
         #"AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1002": DeepMCTSPlayer("data/model_history/model_epoch_002.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"AZ1000": DeepMCTSPlayer("data/model_history/model_checkpoint_1000.pt", device="cpu", mcts_iters=1, cpuct=0),
+        #"MCTS-200": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=200),
+        "MCTS-10k": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=500),
+        "MinMax-4": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=4),
+        #"Heuv2": HeuristicPlayerV2(),
         #"Exp": ExpertPlayer(),
-        "Rand": RandomPlayer(),
-        "Rand+": RandomPlusPlayer(),
-        #"Lillo1": LilloExpertillo(),
-        #"Maxi": MaximilianTimes(5, 1, 1.2, 1.0),
         # añade más aquí
     }
 

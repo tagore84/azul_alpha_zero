@@ -9,7 +9,7 @@ from players.random_player import RandomPlayer
 import argparse
 from players.deep_mcts_player import DeepMCTSPlayer 
 from players.expert_player import ExpertPlayer
-from players.heuristic_player import HeuristicPlayer
+from players.heuristic_min_max_mcts_player import HeuristicPlayer
 from azul.env import AzulEnv
 
 

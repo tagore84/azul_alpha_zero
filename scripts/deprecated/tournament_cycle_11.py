@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 from azul.utils import render_obs
 from players.random_player import RandomPlayer
 from players.deep_mcts_player import DeepMCTSPlayer 
-from players.heuristic_player import HeuristicPlayer
+from players.heuristic_min_max_mcts_player import HeuristicPlayer
 from azul.env import AzulEnv
 
 def play_game(p1, p2):

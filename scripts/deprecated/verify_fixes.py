@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 from azul.env import AzulEnv
 from azul.rules import transfer_to_wall
-from players.heuristic_player import HeuristicPlayer
+from players.heuristic_min_max_mcts_player import HeuristicPlayer
 
 def test_scoring_fix():
     """Verificar que el scoring ya no suma v_count + 1"""

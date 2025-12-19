@@ -5,7 +5,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from azul.env import AzulEnv
-from players.heuristic_player import HeuristicPlayer 
+from players.heuristic_min_max_mcts_player import HeuristicPlayer 
 
 def run_game():
     game_num = 1

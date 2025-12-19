@@ -2,13 +2,16 @@
 import sys
 import os
 import numpy as np
+import time
 
 # Add project src folder to PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from azul.env import AzulEnv
+from players.random_plus_player import RandomPlusPlayer
+from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
+from players.heuristic_player_v2 import HeuristicPlayerV2
 from players.deep_mcts_player import DeepMCTSPlayer
-from players.heuristic_player import HeuristicPlayer
 
 def log_state(env, f):
     f.write(f"\n{'='*20} Round {env.round_count} | Player {env.current_player} to move {'='*20}\n")
@@ -25,10 +28,13 @@ def log_state(env, f):
 
 def main():
     env = AzulEnv()
-    model_path = "data/checkpoints/best.pt"
-    p1 = HeuristicPlayer()
-    p2 = HeuristicPlayer()
-    players = [p1, p2]
+    model_path = "data/checkpoints_v5/best.pt"
+    p0 = DeepMCTSPlayer(model_path, device="cpu", mcts_iters=1000, cpuct=2)
+    p1 = DeepMCTSPlayer(model_path, device="cpu", mcts_iters=1000, cpuct=2)
+    #p0 = HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=1500)
+    #p1 = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=4)
+    players = [p0, p1]
+    move_times = {0: [], 1: []}
     
     obs = env.reset()
     done = False
@@ -37,7 +43,7 @@ def main():
     print(f"Running debug game... Logging to {log_file}")
     
     with open(log_file, "w") as f:
-        f.write("Starting Debug Game: HeuristicPlayer vs HeuristicPlayer\n")
+        f.write("Starting Debug Game: HeuristicPlayerV2 vs HeuristicPlayerV2\n")
         
         while not done:
             current_player_idx = env.current_player
@@ -47,7 +53,11 @@ def main():
             
             # Get action
             # HeuristicPlayer always returns tuple
+            start_time = time.time()
             action_raw = player.predict(obs)
+            end_time = time.time()
+            move_duration = end_time - start_time
+            move_times[current_player_idx].append(move_duration)
             
             if isinstance(action_raw, (int, np.integer)):
                  action = env.index_to_action(int(action_raw))
@@ -65,6 +75,15 @@ def main():
         winners = env.get_winner()
         f.write(f"Winners: Player {winners}\n")
         f.write(f"Final Scores: {[p['score'] for p in env.players]}\n")
+        
+        f.write("\nAverage Move Times:\n")
+        for p_idx, times in move_times.items():
+            if times:
+                avg_time = sum(times) / len(times)
+                f.write(f"Player {p_idx}: {avg_time:.4f} seconds\n")
+                print(f"Player {p_idx} Average Time: {avg_time:.4f} s")
+            else:
+                f.write(f"Player {p_idx}: No moves\n")
     
     print("Game finished.")
 

@@ -114,38 +114,57 @@ def parse_logs():
 
     output_lines = []
     # Header
-    # Cycle | MaxRounds | AvgSc(Tr) | AvgSc(Riv) | WR(Riv) | WR(Prev) | Val Loss
-    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'Avg Sc (Tr) (Std)':<18} | {'Avg Sc (Riv) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8} | {'Val Loss':<8}"
+    # Cycle | MaxRounds | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
+    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
     output_lines.append(header)
-    output_lines.append("-" * 110)
+    output_lines.append("-" * 130)
     
     for cycle in sorted(stats.keys()):
         d = stats[cycle]
         
-        # Training Stats
+        # Training Stats (Self-Play)
         n_train = d["train_games"]
         mr_count = d["train_max_rounds"]
         mr_pct = (mr_count / n_train * 100) if n_train > 0 else 0
         
-        all_train_scores = d["train_scores_p0"] + d["train_scores_p1"]
-        avg_train, std_train = calc_stats(all_train_scores)
-        train_str = f"{avg_train:.1f} ({std_train:.1f})"
+        # Calculate Diff P0 - P1 (First Player Advantage?)
+        # Since it's self play, we should probably look at abs diff (margin) or just diff.
+        # User asked for "maximizing point difference".
+        # In self-play this is ambiguous. I will show P0-P1 to see balance.
+        # Or I will show Abs(P0-P1) as "Intensity"? 
+        # Let's show P0-P1.
+        train_diffs = [p0 - p1 for p0, p1 in zip(d["train_scores_p0"], d["train_scores_p1"])]
+        avg_tr, std_tr = calc_stats(train_diffs)
+        tr_str = f"{avg_tr:.1f} ({std_tr:.1f})"
         
-        # Validation Stats: Rival
-        all_riv_scores = d["val_rival_scores_p0"] + d["val_rival_scores_p1"]
-        avg_riv, std_riv = calc_stats(all_riv_scores)
+        # Validation Stats: Rival (Model - Rival)
+        # Note: In validation logic, 's0' is always Model? No, we need to check log parsing.
+        # In validate_cycle: "Current Model's turn... if (model_is_p0 and current_idx == 0)..."
+        # The log says: "WIN (My-Opp)" or "LOSS (My-Opp)".
+        # The regex captured (s0)-(s1) from "WIN (96-91)".
+        # The logging line in validation is: logger.log(f"Game ... {result_str} ({my_score}-{opp_score})")
+        # So group(2) is ALWAYS MyScore, group(3) is ALWAYS OppScore.
+        # Verified in train_loop_v5.py:
+        # if my_score > opp_score ... logger.log(f"... ({my_score}-{opp_score})")
+        
+        # Riv Diffs
+        riv_diffs = [p0 - p1 for p0, p1 in zip(d["val_rival_scores_p0"], d["val_rival_scores_p1"])]
+        avg_riv, std_riv = calc_stats(riv_diffs)
         riv_str = f"{avg_riv:.1f} ({std_riv:.1f})"
 
         n_riv = d["val_rival_games"]
         riv_wr = (d["val_rival_wins"] / n_riv * 100) if n_riv > 0 else 0
         
-        # Validation Stats: Previous
+        # Prev Diffs
+        prev_diffs = [p0 - p1 for p0, p1 in zip(d["val_prev_scores_p0"], d["val_prev_scores_p1"])]
+        avg_prev, std_prev = calc_stats(prev_diffs)
+        prev_str = f"{avg_prev:.1f} ({std_prev:.1f})"
+        
         n_prev = d["val_prev_games"]
         prev_wr = (d["val_prev_wins"] / n_prev * 100) if n_prev > 0 else 0
         
-        val_loss_str = f"{d['train_loss_value']:.4f}" if d['train_loss_value'] is not None else "N/A"
-        
-        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {train_str:<18} | {riv_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%  | {val_loss_str:<8}"
+        # line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {train_str:<18} | {riv_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%  | {val_loss_str:<8}"
+        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
         output_lines.append(line_str)
 
     # Print to console
