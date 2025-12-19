@@ -183,5 +183,7 @@ data/*
 !data/checkpoint_dir/.gitkeep
 
 # User requested overrides
-!logs_v5/
-!logs_v5/**
+# !logs_v5/
+# !logs_v5/**
+logs_v5/
+
