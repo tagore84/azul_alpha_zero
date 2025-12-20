@@ -55,7 +55,7 @@ def play_game(
     # Enable Single Player Mode for "Maximize Own Score" logic
     # This prevents the agent from minimizing opponent score in zero-sum backprop
     mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
-    mcts.single_player_mode = True 
+    mcts.single_player_mode = False 
     memory = []
     done = False
     
@@ -153,13 +153,15 @@ def play_game(
     score_p0 = scores[0]
     score_p1 = scores[1]
     
-    # Win/Loss Value Target - REPLACED WITH OWN SCORE MAXIMIZATION
-    # We want to check if the network can learn to maximize its own score.
-    # We normalize by 100.0 (reasonable max score) and clamp to [-1, 1]
-    # equivalent to: v = clamp(score / 100.0, -1, 1)
+    # Win/Loss Value Target - RELATIVE SCORING (ZERO-SUM)
+    # We want to maximize the score difference (MyScore - OppScore)
+    # We normalize by 100.0 (reasonable max score difference) and clamp to [-1, 1]
     
-    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
-    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
+    score_diff_0 = score_p0 - score_p1
+    score_diff_1 = score_p1 - score_p0
+
+    val_0 = np.clip(score_diff_0 / 100.0, -1.0, 1.0)
+    val_1 = np.clip(score_diff_1 / 100.0, -1.0, 1.0)
 
     # For zero-sum compatibility in MCTS if needed? 
     # MCTS expects a value for the player.
@@ -254,7 +256,7 @@ def play_game_vs_opponent(
     start_time = time.perf_counter()
     move_idx = 0
     mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
-    mcts.single_player_mode = True # Use single player logic (maximize absolute score)
+    mcts.single_player_mode = False # Use zero-sum logic (maximize relative score)
     
     if opponent_type == 'heuristic':
         opponent = HeuristicPlayer()
@@ -377,11 +379,14 @@ def play_game_vs_opponent(
     score_p0 = final_obs['players'][0]['score']
     score_p1 = final_obs['players'][1]['score']
     
-    # Value Target: Normalized Own Score
-    # v = clamp(score / 300.0, -1, 1)
+    # Value Target: Normalized Relative Score
+    # v = clamp((score_self - score_opp) / 100.0, -1, 1)
     
-    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
-    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
+    score_diff_0 = score_p0 - score_p1
+    score_diff_1 = score_p1 - score_p0
+    
+    val_0 = np.clip(score_diff_0 / 100.0, -1.0, 1.0)
+    val_1 = np.clip(score_diff_1 / 100.0, -1.0, 1.0)
     
     diff_0 = val_0
     diff_1 = val_1

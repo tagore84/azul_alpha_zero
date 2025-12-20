@@ -12,4 +12,4 @@ Este documento sirve como fuente de verdad para protocolos obligatorios y contex
 
 *   **v5.0-absolute-verified**: Versión estable con "Absolute Scoring".
     *   **Validación**: El agente aprende a puntuar positivo (AvgScore > 0, WR > Random).
-    *   **Estado**: Punto de partida limpio antes de migrar a Relative Scoring.
+    *   **Estado**: Punto de partida limpio antes de migrar a .Relative Scoring

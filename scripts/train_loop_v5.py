@@ -80,15 +80,15 @@ def get_curriculum_params(cycle):
         params['temp_threshold'] = 15
     elif cycle <= 10:
         # Warmup
-        params['n_games'] = 200
-        params['simulations'] = 100
+        params['n_games'] = 100
+        params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 1e-3
         params['temp_threshold'] = 15
         params['cpuct'] = 1.0
     elif cycle <= 25:
         # Scaling
-        params['n_games'] = 500
+        params['n_games'] = 300
         params['simulations'] = 200
         params['epochs'] = 10
         params['lr'] = 5e-4
@@ -97,7 +97,7 @@ def get_curriculum_params(cycle):
         params['noise_eps'] = 0.35
     else:
         # High Quality / Refinement
-        params['n_games'] = 1000
+        params['n_games'] = 500
         params['simulations'] = 400
         params['epochs'] = 10
         params['lr'] = 1e-4
