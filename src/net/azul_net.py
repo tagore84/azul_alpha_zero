@@ -101,7 +101,7 @@ class AzulNet(nn.Module):
     ) -> tuple:
         """
         Args:
-            x_spatial: (B, in_channels, 5, 5)
+            x_spatial: (B, in_channels, 5, 5) - Typically 20 channels (2 players * 2 grids * 5 colors)
             x_global:  (B, global_size) - excluding factories
             x_factories: (B, N+1, 5) - factories + center counts
             action_mask: (B, action_size) - binary mask (1=legal, 0=illegal), optional
@@ -144,8 +144,8 @@ class AzulNet(nn.Module):
         # Additive Action Masking
         if action_mask is not None:
             # mask is 1 for legal, 0 for illegal
-            # (mask - 1) * 1e4 -> 0 for legal, -1e4 for illegal
-            pi_logits = pi_logits + (action_mask - 1.0) * 1e4
+            # Use masked_fill for stability (push illegal logits to -inf equivalent)
+            pi_logits = pi_logits.masked_fill(action_mask == 0, -1e9)
         
         # Value head
         v = F.relu(self.value_fc1(shared))

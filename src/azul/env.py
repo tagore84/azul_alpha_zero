@@ -13,7 +13,7 @@ import copy  # Add this import at the top of the file if not present
 class AzulEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 15):
+    def __init__(self, num_players: int = 2, factories_count: int = 5, seed: int = None, max_rounds: int = 1000):
         super().__init__()
         if seed is not None:
             np.random.seed(seed)
@@ -307,24 +307,18 @@ class AzulEnv(gym.Env):
                     self.discard[int(tile)] += 1
                 # tile 5 is the first player token, doesn't go to discard
             
-            # Fix Bug 1: Explicitly remove token 5 to prevent persistence issues
-            # We do this AFTER penalties (so it counts) but BEFORE resetting the array
-            # just in case there are reference issues.
-            p['floor_line'][p['floor_line'] == 5] = -1
+
             
             p['floor_line'][:] = -1
             
 
         # Check game end (any full wall row) OR max rounds reached
+        # Check game end (any full wall row)
         game_over = any(all(cell != -1 for cell in row) for p in self.players for row in p['wall'])
-        max_rounds_reached = self.round_count >= self.max_rounds
-
+        
         # NEW: Track termination reason
         if game_over:
             self.termination_reason = "normal_end"
-        elif max_rounds_reached:
-            game_over = True
-            self.termination_reason = "max_rounds_reached"
         else:
             self.termination_reason = "normal_end"
 
@@ -375,17 +369,19 @@ class AzulEnv(gym.Env):
     def encode_observation(self, obs: dict) -> np.ndarray:
         """
         Encode the observation dict into a flat numpy array.
-        Layout: [Spatial (pattern_lines + walls) | Factories | Global]
+        Layout: [Spatial (20 channels * 5 * 5) | Factories | Global]
         
-        Global features now include:
-        - bag (5), discard (5), first_player_token (1)
-        - floor_lines (num_players * 7), scores (num_players)
-        - round_count (1, normalized)
+        Spatial Channels (20):
+        - For each player (Current, then Opponent):
+          - Pattern Lines (5 channels): Channel i = 1 where color i exists
+          - Wall (5 channels): Channel i = 1 where color i exists
+        
+        Global features:
         - bag (5), discard (5), first_player_token (1)
         - floor_lines (num_players * 7), scores (num_players)
         - round_count (1, normalized)
         - bonuses per player: completed_rows, completed_cols, completed_colors (3 * num_players)
-        - remaining_tiles (5) [NEW]
+        - remaining_tiles (5)
         """
         # parts: bag, discard, factories, center
         # Spatial parts: pattern lines and walls
@@ -395,16 +391,33 @@ class AzulEnv(gym.Env):
         num_players = len(obs['players'])
         rotated_players = [obs['players'][(current_player + i) % num_players] for i in range(num_players)]
 
-        # players pattern_lines padded to 5x5
+        # One-Hot Encoding for Spatial Features
+        # Pattern Lines: 5 colors -> 5 planes per player
         for p in rotated_players:
-            plines = np.full((5, 5), -1, dtype=int)
-            for i, line in enumerate(p['pattern_lines']):
-                plines[i, :len(line)] = line
-            spatial_parts.append(plines)
-        
-        # walls
+            # Create 5 planes for pattern lines
+            # Each plane (5x5) corresponds to a color 0..4
+            pattern_planes = np.zeros((5, 5, 5), dtype=int)
+            
+            for row_idx, line in enumerate(p['pattern_lines']):
+                # line is a numpy array of tile indices (or -1)
+                for col_idx, tile in enumerate(line):
+                    if tile != -1:
+                        # Mark the cell (row_idx, col_idx) in specific color plane
+                        pattern_planes[tile, row_idx, col_idx] = 1
+            
+            spatial_parts.append(pattern_planes.flatten())
+
+        # Wall: 5 colors -> 5 planes per player
         for p in rotated_players:
-            spatial_parts.append(p['wall'])
+            wall_planes = np.zeros((5, 5, 5), dtype=int)
+            wall = p['wall']
+            for r in range(5):
+                for c in range(5):
+                    tile = wall[r, c]
+                    if tile != -1:
+                        wall_planes[tile, r, c] = 1
+            
+            spatial_parts.append(wall_planes.flatten())
             
         # Factories parts: factories (N*5), center (5)
         factories_parts = [
@@ -413,10 +426,18 @@ class AzulEnv(gym.Env):
         ]
         
         # Global parts: bag, discard, first_player, floor_lines, scores
+        
+        # One-Hot Round Count (8 positions: 0=R1 ... 7=R8+)
+        r_idx = min(obs['round_count'] - 1, 7)
+        round_one_hot = np.zeros(8, dtype=np.float32)
+        if r_idx >= 0:
+            round_one_hot[r_idx] = 1.0
+
         global_parts = [
             obs['bag'],
             obs['discard'],
-            np.array([int(obs['first_player_token'])], dtype=int)
+            np.array([int(obs['first_player_token'])], dtype=int),
+            round_one_hot
         ]
         
         # floor_lines (rotated)
@@ -426,16 +447,14 @@ class AzulEnv(gym.Env):
         scores = np.array([p['score'] for p in rotated_players], dtype=int)
         global_parts.append(scores)
         
-
-        
-        # NEW: Bonuses (completed rows, columns, colors per player)
+        # Bonuses (completed rows, columns, colors per player)
         for p in rotated_players:
             wall = p['wall']
-            # Completed rows: count rows where all cells != -1
+            # Completed rows
             completed_rows = sum(1 for row in wall if all(cell != -1 for cell in row))
-            # Completed columns: count columns where all cells != -1
+            # Completed columns
             completed_cols = sum(1 for col_idx in range(5) if all(wall[row_idx][col_idx] != -1 for row_idx in range(5)))
-            # Completed colors: count colors that appear 5 times on the wall
+            # Completed colors
             color_counts = np.zeros(5, dtype=int)
             for row in wall:
                 for cell in row:
@@ -445,16 +464,14 @@ class AzulEnv(gym.Env):
             
             global_parts.append(np.array([completed_rows, completed_cols, completed_colors], dtype=int))
         
-        # NEW: Remaining tiles (Bag + Discard + Factories + Center)
-        # We need to sum up all visible tiles in factories and center
-        visible_factories = obs['factories'].sum(axis=0) # Sum across factories for each color
+        # Remaining tiles
+        visible_factories = obs['factories'].sum(axis=0) 
         visible_center = obs['center']
         remaining = obs['bag'] + obs['discard'] + visible_factories + visible_center
         global_parts.append(remaining)
         
-        # Concatenate spatial then factories then global
-        # Spatial: (num_players * 2, 5, 5) flattened
-        spatial_flat = np.array(spatial_parts).flatten()
+        # Concatenate
+        spatial_flat = np.concatenate(spatial_parts)
         factories_flat = np.concatenate(factories_parts)
         global_flat = np.concatenate(global_parts)
         
@@ -594,4 +611,3 @@ class AzulEnv(gym.Env):
     
     def get_final_scores(self):
         return [p['score'] for p in self.players]
-

@@ -32,7 +32,7 @@ class MCTS:
             exploration = cpuct * self.prior * math.sqrt(self.parent.visits) / (1 + self.visits)
             return self.value + exploration
 
-    def __init__(self, env: AzulEnv, model: Any, simulations: int = 100, cpuct: float = 1.0):
+    def __init__(self, env: AzulEnv, model: Any, simulations: int = 100, cpuct: float = 1.0, single_player_mode: bool = False):
         """
         env: an AzulEnv instance to clone for rollouts.
         simulations: number of MCTS simulations per move.
@@ -43,7 +43,7 @@ class MCTS:
         self.model = model
         self.simulations = simulations
         self.cpuct = cpuct
-        self.single_player_mode = False # Default to False (Zero-Sum)
+        self.single_player_mode = single_player_mode
 
     def select(self) -> Tuple['MCTS.Node', list]:
         """
@@ -107,9 +107,51 @@ class MCTS:
                  new_env.step(action, is_sim=True)
                  node.children[action] = MCTS.Node(new_env, parent=node, prior=uniform_prior)
             
-            # 2. Pick Random Child
-            random_action = random.choice(valid_actions)
-            random_child = node.children[random_action]
+            # 2. Pick Child based on Opponent Model (Smart Opponent)
+            # We want to simulate a realistic opponent, not a random one.
+            # So we query the model for the opponent's policy.
+            
+            # Predict policy for opponent
+            obs = node.env._get_obs()
+            obs_flat = node.env.encode_observation(obs)
+            action_mask = np.zeros(node.env.action_size, dtype=np.float32)
+            for action in valid_actions:
+                idx = node.env.action_to_index(action)
+                action_mask[idx] = 1.0
+                
+            pi_logits, _ = self.model.predict(np.array([obs_flat]), np.array([action_mask]))
+            logits = pi_logits[0]
+            
+            # Compute probabilities
+            exp_logits = np.exp(logits - np.max(logits))
+            total = exp_logits.sum()
+            if total > 0:
+                priors = exp_logits / total
+            else:
+                priors = action_mask / action_mask.sum()
+                
+            # Filter for valid actions
+            valid_probs = []
+            for action in valid_actions:
+                idx = node.env.action_to_index(action)
+                valid_probs.append(priors[idx])
+                
+            valid_probs = np.array(valid_probs)
+            total_valid = valid_probs.sum()
+            if total_valid > 0:
+                valid_probs /= total_valid
+            else:
+                valid_probs = np.ones(len(valid_actions)) / len(valid_actions)
+                
+            # Sample action
+            try:
+                # Assuming valid_probs sums to 1 (renormalized)
+                chosen_idx = np.random.choice(len(valid_actions), p=valid_probs)
+                chosen_action = valid_actions[chosen_idx]
+            except ValueError:
+                chosen_action = random.choice(valid_actions)
+
+            random_child = node.children[chosen_action]
             
             # 3. Recurse (Expand the Agent Node)
             # Check if terminal
@@ -259,7 +301,7 @@ class MCTS:
                      # So we just need to pass the Agent's Score as 'value'.
                      agent_idx = self.root.player
                      agent_score = scores[agent_idx]
-                     value = np.clip(agent_score / 300.0, -1.0, 1.0)
+                     value = np.clip(agent_score / 100.0, -1.0, 1.0)
                 else:
                     # Standard Zero-Sum Logic:
                     if p0_score > p1_score:

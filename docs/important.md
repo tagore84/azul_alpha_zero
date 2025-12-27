@@ -13,3 +13,7 @@ Este documento sirve como fuente de verdad para protocolos obligatorios y contex
 *   **v5.0-absolute-verified**: Versión estable con "Absolute Scoring".
     *   **Validación**: El agente aprende a puntuar positivo (AvgScore > 0, WR > Random).
     *   **Estado**: Punto de partida limpio antes de migrar a Relative Scoring.
+
+## 3. Desarrollo y Estructura
+
+- **Scripts del Agente**: Cualquier script temporal, de utilidad o de debug que crees debe ser situado en `vibe_coding/agent_scripts`.

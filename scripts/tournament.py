@@ -15,7 +15,7 @@ from players.random_plus_player import RandomPlusPlayer
 from players.deep_mcts_player import DeepMCTSPlayer 
 from players.expert_player import ExpertPlayer
 from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
-from players.heuristic_player import HeuristicPlayerV2
+from players.heuristic_player import HeuristicPlayer
 from azul.env import AzulEnv
 
 
@@ -129,14 +129,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     players = {
-        #"AZ_Cycle01": DeepMCTSPlayer("data/checkpoints/model_cycle_1.pt", device="cpu", mcts_iters=50, cpuct=1.0),
+        "Cycle10": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_10.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle11": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_11.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle12": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_12.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle13": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_13.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle14": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_14.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle15": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_15.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle16": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_16.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle17": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_17.pt", device="cpu", mcts_iters=300, cpuct=1),
         #"AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1002": DeepMCTSPlayer("data/model_history/model_epoch_002.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"AZ1000": DeepMCTSPlayer("data/model_history/model_checkpoint_1000.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"MCTS-200": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=200),
-        "MCTS-10k": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=500),
-        "MinMax-4": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=4),
+        #"MCTS-10k": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=500),
+        "MinMax-3": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=3),
         #"Heuv2": HeuristicPlayerV2(),
         #"Exp": ExpertPlayer(),
         # añade más aquí

@@ -11,7 +11,7 @@ from mcts.mcts import MCTS
 from .base_player import BasePlayer
 
 class DeepMCTSPlayer(BasePlayer):
-    def __init__(self, model_path, device='cpu', mcts_iters=200, cpuct=1.0):
+    def __init__(self, model_path, device='cpu', mcts_iters=300, cpuct=1.0, single_player_mode=False):
         super().__init__()
         self.device = torch.device(device)
         # Load checkpoint and extract model state
@@ -32,7 +32,9 @@ class DeepMCTSPlayer(BasePlayer):
         env = AzulEnv()
         obs_flat = env.encode_observation(env.reset(initial=True))
         total_obs_size = obs_flat.shape[0]
-        spatial_size = env.num_players * 2 * 5 * 5
+        # Fix spatial size calculation to match train_loop_v5.py (20 channels for 2 players)
+        # 2 players * (Pattern + Wall) * 5 colors = 20 channels
+        spatial_size = env.num_players * 2 * 5 * 5 * 5
         factories_size = (env.N + 1) * 5
         global_size = total_obs_size - spatial_size - factories_size
         action_size = env.action_size
@@ -54,7 +56,8 @@ class DeepMCTSPlayer(BasePlayer):
         self.mcts = MCTS(self.prototype_env,
                          self.net,
                          simulations=mcts_iters,
-                         cpuct=cpuct)
+                         cpuct=cpuct,
+                         single_player_mode=single_player_mode)
 
     def _obs_to_env(self, obs: dict):
         """

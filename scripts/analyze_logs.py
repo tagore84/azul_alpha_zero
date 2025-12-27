@@ -31,7 +31,9 @@ def parse_logs():
         "val_prev_losses": 0,
 
         "train_loss_policy": None,
-        "train_loss_value": None
+        "train_loss_value": None,
+        
+        "train_rounds": []
     })
     
     current_cycle = 0
@@ -50,18 +52,22 @@ def parse_logs():
                 continue
 
             # Parse Training Game
-            # Supports both "Score: 10-20" and "Score: 10  20"
-            train_game_match = re.search(r"\[Game \d+/\d+\] Score: (-?\d+)[\s-]+(-?\d+),.*End: (\w+)", line)
+            # Supports "Score: 10  20" (current)
+            # Fixed regex to not eat negative sign of second number
+            # Also captures Rounds: 5
+            train_game_match = re.search(r"\[Game \d+/\d+\] Score: (-?\d+)\s+(-?\d+),.*Rounds: (\d+),.*End: (\w+)", line)
             if train_game_match:
                 s0 = int(train_game_match.group(1))
                 s1 = int(train_game_match.group(2))
-                end_reason = train_game_match.group(3)
+                rounds = int(train_game_match.group(3))
+                end_reason = train_game_match.group(4)
                 
                 stats[current_cycle]["train_games"] += 1
                 stats[current_cycle]["train_scores_p0"].append(s0)
                 stats[current_cycle]["train_scores_p1"].append(s1)
+                stats[current_cycle]["train_rounds"].append(rounds)
                 
-                if end_reason == "max_rounds":
+                if "max_rounds" in end_reason:
                     stats[current_cycle]["train_max_rounds"] += 1
                 continue
 
@@ -87,7 +93,7 @@ def parse_logs():
 
             # Parse Validation Game
             # Supports "LOSS (-96-91)" and "LOSS (-96   91)"
-            val_game_match = re.search(r"Game \d+/\d+: (WIN|LOSS|DRAW) \((-?\d+)[\s-]+(-?\d+)\)", line)
+            val_game_match = re.search(r"Game \d+/\d+: (WIN|LOSS|DRAW) \((-?\d+)\s+(-?\d+)\)", line)
             if val_game_match:
                 if current_opponent is None:
                     continue  
@@ -110,8 +116,8 @@ def parse_logs():
 
     output_lines = []
     # Header
-    # Cycle | MaxRounds | AvgScore (Tr) | AvgScore (Riv) | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
-    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'AvgScore (Tr)':<15} | {'AvgScore (Riv)':<15} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
+    # Cycle | MaxRounds | AvgRounds (Tr) | AvgScore (Tr) | AvgScore (Riv) | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
+    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'AvgRounds (Tr)':<15} | {'AvgScore (Tr)':<15} | {'AvgScore (Riv)':<15} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
     output_lines.append(header)
     output_lines.append("-" * 166)
     
@@ -122,6 +128,10 @@ def parse_logs():
         n_train = d["train_games"]
         mr_count = d["train_max_rounds"]
         mr_pct = (mr_count / n_train * 100) if n_train > 0 else 0
+        
+        # Avg Rounds
+        avg_rounds = statistics.mean(d["train_rounds"]) if d["train_rounds"] else 0
+        rounds_str = f"{avg_rounds:.1f}"
         
         # Avg Score (Combined P0 + P1 since it's self play)
         all_train_scores = d["train_scores_p0"] + d["train_scores_p1"]
@@ -154,7 +164,7 @@ def parse_logs():
         n_prev = d["val_prev_games"]
         prev_wr = (d["val_prev_wins"] / n_prev * 100) if n_prev > 0 else 0
         
-        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {sc_str:<15} | {riv_sc_str:<15} | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
+        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {rounds_str:<15} | {sc_str:<15} | {riv_sc_str:<15} | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
         output_lines.append(line_str)
 
     # Print to console

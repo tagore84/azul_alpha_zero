@@ -8,14 +8,14 @@ Este documento describe la arquitectura de la red neuronal utilizada en el proye
 La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas para capturar mejor el contexto del juego y las reglas, dividida en tres bloques de entrada y dos cabezas de salida con un tronco compartido:
 
 - **Entrada Triple**:
-    - `x_spatial`: Tablero y estado estructurado (CNN).
+    - `x_spatial`: Tablero y estado estructurado (CNN) con **One-Hot Encoding**.
     - `x_factories`: Estado de las fábricas (Transformer).
     - `x_global`: Estado global y conteos (MLP).
 - **Bloques residuales convolucionales** para la parte espacial.
 - **Transformer Encoder** para procesar las fábricas.
 - **Positional Encoding**: Información de posición para distinguir fábricas del centro.
 - **Tronco Compartido (Shared Trunk)**: Capa de fusión con **LayerNorm** que combina todas las características.
-- **Action Masking**: Enmascaramiento aditivo (`logits - 1e4`) directamente en la salida de la política.
+- **Action Masking**: Enmascaramiento aditivo (`logits - 1e9`) directamente en la salida de la política.
 
 ![Arquitectura AzulNet](./azul_net_architecture.png)
 
@@ -23,14 +23,20 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
 
 ### Entradas
 
-1.  **`x_spatial`**: Tensor `(batch, in_channels, 5, 5)`. Contiene tableros, muros y líneas de patrón.
+1.  **`x_spatial`**: Tensor `(batch, 20, 5, 5)`. 
+    - **One-Hot Encoding**: Cada color tiene su propio canal binario para evitar ordinalidad artificial.
+    - **Canales (20)**: 
+        - 5 colores x Pattern Lines (Jugador Actual)
+        - 5 colores x Wall (Jugador Actual)
+        - 5 colores x Pattern Lines (Oponente)
+        - 5 colores x Wall (Oponente)
 2.  **`x_factories`**: Tensor `(batch, N_factories + 1, 5)`. Contiene el conteo de colores en cada fábrica y el centro.
-3.  **`x_global`**: Vector `(batch, global_size=34)`. Contiene:
+3.  **`x_global`**: Vector `(batch, global_size=38)`. Contiene:
     - Bolsa, descartes, token inicial (11 features).
     - Líneas de suelo y puntuaciones (16 features).
-    - **[NUEVO]** Ronda actual normalizada (1 feature).
-    - **[NUEVO]** Bonificaciones potenciales: filas, columnas y colores completos por jugador (6 features).
-    - **[NUEVO]** Fichas restantes por color (5 features): Suma de bolsa, descartes, fábricas y centro.
+    - Ronda actual normalizada (1 feature).
+    - Bonificaciones potenciales: filas, columnas y colores completos por jugador (6 features).
+    - Fichas restantes por color (5 features): Suma de bolsa, descartes, fábricas y centro.
 
 ### Procesamiento de Fábricas
 
@@ -44,7 +50,7 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
 - **Conv Inicial**: 64 canales, kernel 3x3.
 - **Bloques Residuales**: 4 bloques estándar (Conv3x3 -> BN -> ReLU -> Conv3x3 -> BN -> Add -> ReLU).
 
-### Fusión y Tronco Compartido (Shared Trunk) [NUEVO]
+### Fusión y Tronco Compartido (Shared Trunk)
 
 - **Concatenación**: Salida espacial aplanada + Salida de fábricas + `x_global`.
 - **Normalización**: **LayerNorm** aplicada al vector concatenado para estabilizar escalas.
@@ -59,9 +65,9 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
 - **MLP**:
     - Linear (Input → 256) + ReLU
     - Linear (→ `action_size`)
-- **Action Masking**: Se suma `(mask - 1) * 1e4` a los logits de salida.
+- **Action Masking**: Se suma `(mask - 1) * 1e9` a los logits de salida.
     - Acciones legales (1) -> se suma 0.
-    - Acciones ilegales (0) -> se suma -1e4 (probabilidad ~0 tras softmax).
+    - Acciones ilegales (0) -> se suma -1e9 (probabilidad ~0 tras softmax).
 - **Salida**: Logits para cada acción posible.
 
 ### Rama de Valor (Value Head)
@@ -74,16 +80,15 @@ La arquitectura sigue el patrón de AlphaZero pero con mejoras significativas pa
     - `+1`: Victoria segura.
     - `-1`: Derrota segura.
     - `0`: Empate.
-    - Se cambió de regresión lineal (score difference) a clasificación Win/Loss para mayor estabilidad.
 
 ## Diagrama (Mermaid)
 
 ```mermaid
 graph TD
     subgraph Inputs
-        InputSpatial[Spatial (B, 4, 5, 5)]
+        InputSpatial[Spatial (B, 20, 5, 5)<br/>One-Hot Encoded]
         InputFactories[Factories (B, 6, 5)]
-        InputGlobal[Global (B, 34)]
+        InputGlobal[Global (B, 38)]
         ActionMask[Action Mask (B, 180)]
     end
 

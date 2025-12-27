@@ -33,6 +33,14 @@ def _run_one_game_vs_opponent(game_idx: int, env: AzulEnv, model: Any, simulatio
                               opponent_type=opponent_type)
     return examples, stats
 
+def _run_game_wrapper(args):
+    game_idx = args[0]
+    if len(args) == 8:
+         ex, st = _run_one_game(*args)
+    else:
+         ex, st = _run_one_game_vs_opponent(*args)
+    return game_idx, ex, st
+
 def play_game(
     env: AzulEnv,
     model: Any,
@@ -54,8 +62,9 @@ def play_game(
     move_idx = 0
     # Enable Single Player Mode for "Maximize Own Score" logic
     # This prevents the agent from minimizing opponent score in zero-sum backprop
-    mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
-    mcts.single_player_mode = True 
+    # FIX: Set to True to avoid "Mutual Destruction" equilibrium in training
+    mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct, single_player_mode=True)
+    # mcts.single_player_mode = True  # Handled in init 
     memory = []
     done = False
     
@@ -153,13 +162,21 @@ def play_game(
     score_p0 = scores[0]
     score_p1 = scores[1]
     
-    # Win/Loss Value Target - REPLACED WITH OWN SCORE MAXIMIZATION
-    # We want to check if the network can learn to maximize its own score.
-    # We normalize by 100.0 (reasonable max score) and clamp to [-1, 1]
-    # equivalent to: v = clamp(score / 100.0, -1, 1)
+    # Win/Loss Value Target - REVERTED TO SCORE DIFFERENCE (Relative)
+    # The agent was collapsing to short games ("Speedrun") to maximize own score constant.
+    # We need to incentivize winning (relative score).
     
-    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
-    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
+    diff_p0 = float(score_p0 - score_p1)
+    diff_p1 = float(score_p1 - score_p0)
+    
+    # Normalize by typical spread (e.g. 20 points) and clip or tanh
+    # Using tanh to allow for soft saturation
+    # val_0 = math.tanh(diff_p0 / 20.0)
+    # val_1 = math.tanh(diff_p1 / 20.0)
+    
+    # Or simple clipping if we want linearity near 0
+    val_0 = np.clip(diff_p0 / 20.0, -1.0, 1.0)
+    val_1 = np.clip(diff_p1 / 20.0, -1.0, 1.0)
 
     # For zero-sum compatibility in MCTS if needed? 
     # MCTS expects a value for the player.
@@ -214,9 +231,17 @@ def play_game(
 
 
     # NEW: Discard data if max_rounds_reached
-    if getattr(env, 'termination_reason', 'normal_end') == "max_rounds_reached":
-        logger.warning(f"[Self-play] Game discarded due to max_rounds_reached (Rounds: {current_round})")
-        examples = [] # Discard ALL data for this game
+    # if getattr(env, 'termination_reason', 'normal_end') == "max_rounds_reached":
+    #     logger.warning(f"[Self-play] Game ended due to max_rounds_reached (Rounds: {current_round}). Applying PENALTY to both.")
+    #     # Override values to -1.0 for everyone to penalize this outcome
+    #     examples = []
+    #     for entry in memory:
+    #         examples.append({
+    #             'obs': entry['obs'],
+    #             'mask': entry['mask'],
+    #             'pi': entry['pi'],
+    #             'v': -1.0  # Max penalty for both players
+    #         })
 
     # Prepare MCTS statistics summary
     stats_summary = {
@@ -253,8 +278,8 @@ def play_game_vs_opponent(
     """
     start_time = time.perf_counter()
     move_idx = 0
-    mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct)
-    mcts.single_player_mode = True # Use single player logic (maximize absolute score)
+    mcts = MCTS(env, model=model, simulations=simulations, cpuct=cpuct, single_player_mode=True)
+    # mcts.single_player_mode = True # Use single player logic (maximize absolute score)
     
     if opponent_type == 'heuristic':
         opponent = HeuristicPlayer()
@@ -399,10 +424,16 @@ def play_game_vs_opponent(
         })
 
     # NEW: Discard data if max_rounds_reached (Vs Heuristic)
-    term_reason = getattr(env, 'termination_reason', 'normal_end')
-    if term_reason == "max_rounds_reached":
-        logger.warning(f"[Self-play] Game vs {opponent_type} discarded due to max_rounds_reached (Rounds: {env.round_count})")
-        examples = [] # Discard data
+    # term_reason = getattr(env, 'termination_reason', 'normal_end')
+    # if term_reason == "max_rounds_reached":
+    #     logger.warning(f"[Self-play] Game vs {opponent_type} ended via max_rounds. Applying PENALTY.")
+    #     examples = []
+    #     for entry in memory:
+    #          examples.append({
+    #             'obs': entry['obs'],
+    #             'pi': entry['pi'],
+    #             'v': -1.0
+    #         })
 
     # Stats
     avg_visits = np.mean(mcts_stats['total_visits']) if mcts_stats['total_visits'] else 0
@@ -470,6 +501,8 @@ def generate_self_play_games(
             else:
                  examples, stats = _run_one_game(i+1, env, model, simulations, cpuct, 
                                           temperature_threshold, noise_alpha, noise_epsilon)
+            
+            print(".", end="", flush=True)
             all_examples.extend(examples)
             all_stats['avg_visits'].append(stats['avg_visits'])
             all_stats['avg_entropy'].append(stats['avg_entropy'])
@@ -549,40 +582,31 @@ def generate_self_play_games(
         
         with mp.Pool(processes=n_workers) as pool:
             # chunksize=1 ensures better distribution if games vary in length
-            results_iter = pool.starmap_async(target_func, game_args, chunksize=1)
+            results_iter = pool.imap_unordered(_run_game_wrapper, game_args, chunksize=1)
             
-            # Monitor progress
-            total_done = 0
-            while not results_iter.ready():
-                time.sleep(5)
-                # We can't easily get progress from starmap_async without a callback or partial results
-                # But simple waiting is fine for now, we see logs from workers? 
-                # Actually workers print to stdout, but might be buffered.
-                # Let's just trust the process.
-            
-            results = results_iter.get()
-            
-        # Process results
-        for i, (examples, stats) in enumerate(results):
-            all_examples.extend(examples)
-            all_stats['avg_visits'].append(stats['avg_visits'])
-            all_stats['avg_entropy'].append(stats['avg_entropy'])
-            all_stats['reuse_rate'].append(stats['reuse_rate'])
-            all_stats['move_count'].append(stats['move_count'])
-            all_stats['p0_score'].append(stats.get('p0_score', 0))
-            all_stats['p1_score'].append(stats.get('p1_score', 0))
-            all_stats['round_count'].append(stats.get('round_count', 0))
-            
-            # Log game result
-            winner_str = f"P{stats.get('winner', -1)}" if stats.get('winner', -1) != -1 else "DRAW"
-            if 'winner_name' in stats:
-                winner_str += f" ({stats['winner_name']})"
-            
-            term_reason = stats.get('termination_reason', 'normal_end')
-            if game_logger:
-                game_logger.log(f"[Game {i+1}/{n_games}] Score: {stats.get('p0_score', 0)}  {stats.get('p1_score', 0)}, "
-                               f"Rounds: {stats.get('round_count', 0)}, Moves: {stats['move_count']}, "
-                               f"Winner: {winner_str}, End: {term_reason}")
+            for game_idx, examples, stats in results_iter:
+                print(".", end="", flush=True)
+                
+                all_examples.extend(examples)
+                all_stats['avg_visits'].append(stats['avg_visits'])
+                all_stats['avg_entropy'].append(stats['avg_entropy'])
+                all_stats['reuse_rate'].append(stats['reuse_rate'])
+                all_stats['move_count'].append(stats['move_count'])
+                all_stats['p0_score'].append(stats.get('p0_score', 0))
+                all_stats['p1_score'].append(stats.get('p1_score', 0))
+                all_stats['round_count'].append(stats.get('round_count', 0))
+                
+                # Log game result
+                winner_str = f"P{stats.get('winner', -1)}" if stats.get('winner', -1) != -1 else "DRAW"
+                if 'winner_name' in stats:
+                    winner_str += f" ({stats['winner_name']})"
+                
+                term_reason = stats.get('termination_reason', 'normal_end')
+                if game_logger:
+                    game_logger.log(f"[Game {game_idx}/{n_games}] Score: {stats.get('p0_score', 0)}  {stats.get('p1_score', 0)}, "
+                                   f"Rounds: {stats.get('round_count', 0)}, Moves: {stats['move_count']}, "
+                                   f"Winner: {winner_str}, End: {term_reason}")
+            print()
         
         elapsed = time.time() - global_start
         logger.info(f"[Self-play] Completed generation of {n_games} games in {elapsed:.1f}s")

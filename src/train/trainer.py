@@ -62,6 +62,19 @@ class Trainer:
             # NaN Detection: Skip batch if NaN detected to prevent model corruption
             if torch.isnan(loss) or torch.isinf(loss):
                 self.log(f"[trainer] WARNING: NaN/Inf loss detected in batch {batch_idx}, skipping...")
+                self.log("[trainer] DUMPING BATCH AND MODEL STATE TO DISK (NaN Loss)...")
+                try:
+                    torch.save({
+                        'batch': {k: v.cpu() for k, v in batch.items()},
+                        'model_state': self.model.state_dict(),
+                        'optimizer_state': self.optimizer.state_dict(),
+                        'epoch': epoch,
+                        'batch_idx': batch_idx,
+                        'loss': loss.item()
+                    }, "nan_debug_dump.pt")
+                    self.log("[trainer] Dump saved to nan_debug_dump.pt")
+                except Exception as e:
+                    self.log(f"[trainer] Failed to dump batch: {e}")
                 continue
 
             # Backward and optimize
@@ -82,6 +95,19 @@ class Trainer:
                     if param.grad is not None and (torch.isnan(param.grad).any() or torch.isinf(param.grad).any()):
                         self.log(f"[trainer] PARAM {name} has NaN/Inf grad!")
                         self.log(f"[trainer] PARAM {name} stats: min={param.data.min()}, max={param.data.max()}, mean={param.data.mean()}")
+
+                self.log("[trainer] DUMPING BATCH AND MODEL STATE TO DISK...")
+                try:
+                    torch.save({
+                        'batch': {k: v.cpu() for k, v in batch.items()},
+                        'model_state': self.model.state_dict(),
+                        'optimizer_state': self.optimizer.state_dict(),
+                        'epoch': epoch,
+                        'batch_idx': batch_idx
+                    }, "nan_debug_dump.pt")
+                    self.log("[trainer] Dump saved to nan_debug_dump.pt")
+                except Exception as e:
+                    self.log(f"[trainer] Failed to dump batch: {e}")
 
                 self.optimizer.zero_grad()
                 

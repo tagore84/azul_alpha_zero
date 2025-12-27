@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 from azul.env import AzulEnv
 from players.random_plus_player import RandomPlusPlayer
 from players.heuristic_min_max_mcts_player import HeuristicMinMaxMCTSPlayer
-from players.heuristic_player import HeuristicPlayerV2
+from players.heuristic_player import HeuristicPlayer
 from players.deep_mcts_player import DeepMCTSPlayer
 
 def log_state(env, f):
@@ -29,11 +29,10 @@ def log_state(env, f):
 def main():
     env = AzulEnv()
     model_path = "data/checkpoints_v5/best.pt"
-    p0 = DeepMCTSPlayer(model_path, device="cpu", mcts_iters=1000, cpuct=2)
-    p1 = DeepMCTSPlayer(model_path, device="cpu", mcts_iters=1000, cpuct=2)
-    #p0 = HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=1500)
-    #p1 = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=4)
-    players = [p0, p1]
+    current_model_player = DeepMCTSPlayer(model_path, device="mps", mcts_iters=300, cpuct=1.0, single_player_mode=True)
+    heuristic_player = HeuristicPlayer()
+    min_max_player = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=2)
+    players = [current_model_player, min_max_player]
     move_times = {0: [], 1: []}
     
     obs = env.reset()
@@ -75,7 +74,7 @@ def main():
         winners = env.get_winner()
         f.write(f"Winners: Player {winners}\n")
         f.write(f"Final Scores: {[p['score'] for p in env.players]}\n")
-        
+        print(f"Final Scores: {[p['score'] for p in env.players]}\n")
         f.write("\nAverage Move Times:\n")
         for p_idx, times in move_times.items():
             if times:

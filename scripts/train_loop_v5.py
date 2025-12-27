@@ -53,59 +53,92 @@ def get_curriculum_params(cycle):
     """
     Returns training parameters based on the current cycle.
     Curriculum (Phase 5.0 - Scaling):
-    - Cycles 1-5: Warmup (100 sims, 200 games)
-    - Cycles 6-20: Scaling (200 sims, 500 games)
-    - Cycles 21+: High Quality (400 sims, 1000 games)
+    - Cycles 1-10: Warmup (300 sims, 100 games)
+    - Cycles 11-20: Scaling (300 sims, 300 games)
+    - Cycles 21+: High Quality (400 sims, 500 games)
     """
     # Default parameters
     params = {
         'n_games': 500,
-        'simulations': 200,
+        'simulations': 300,
         'epochs': 10,
         'lr': 1e-3,
         'cpuct': 1.2,
         'temp_threshold': 15,  # Enable temperature for first 15 moves
         'noise_alpha': 0.3,    # Dirichlet noise alpha
         'noise_eps': 0.25,     # Dirichlet noise epsilon
-        'opponent_type': 'self' # Default: self-play
+        'opponent_type': 'self', # Default: self-play
+        'validation_opponent': 'MinMaxDepth2' # Default validation opponent
     }
     
-    if cycle <= 5:
-        # Bootstrap
-        params['n_games'] = 50
-        params['simulations'] = 200
+    if cycle <= 3:
+        # Bootstrap (Cycle 1-5)
+        # Fase de arranque en la que se maximiza la diversidad de partidas para que la red aprenda 
+        # las reglas básicas del juego y obtenga señal inicial fiable.
+        params['n_games'] = 25
+        params['simulations'] = 300
         params['epochs'] = 5
         params['lr'] = 1e-3
-        params['cpuct'] = 1.0
+        params['cpuct'] = 1.25
         params['temp_threshold'] = 15
+        params['noise_eps'] = 0.25
+        params['noise_alpha'] = 0.3
+        params['validation_opponent'] = 'Random'
     elif cycle <= 10:
-        # Warmup
-        params['n_games'] = 200
-        params['simulations'] = 100
-        params['epochs'] = 10
-        params['lr'] = 1e-3
-        params['temp_threshold'] = 15
-        params['cpuct'] = 1.0
-    elif cycle <= 25:
-        # Scaling
-        params['n_games'] = 500
-        params['simulations'] = 200
+        # Warmup (Cycle 6-10)
+        # Fase de consolidación temprana donde se equilibra exploración y calidad para empezar a 
+        # distinguir jugadas prometedoras sin perder diversidad.
+        params['n_games'] = 100
+        params['simulations'] = 300
         params['epochs'] = 10
         params['lr'] = 5e-4
-        params['cpuct'] = 2.0
         params['temp_threshold'] = 15
-        params['noise_eps'] = 0.35
+        params['cpuct'] = 1.5
+        params['noise_eps'] = 0.25
+        params['noise_alpha'] = 0.25
+        params['validation_opponent'] = 'RandomPlus'
+    elif cycle <= 15:
+        # Warmup avanzado (Cycle 11-15)
+        # Fase de transición en la que se reduce gradualmente el ruido y se aumenta la 
+        # profundidad de búsqueda para refinar la policy y estabilizar el value.
+        params['n_games'] = 100
+        params['simulations'] = 300
+        params['epochs'] = 10
+        params['lr'] = 5e-4
+        params['temp_threshold'] = 12
+        params['cpuct'] = 1.6
+        params['noise_eps'] = 0.2
+        params['noise_alpha'] = 0.2
+        params['validation_opponent'] = 'Heuristic'
+    elif cycle <= 25:
+        # Scaling (Cycle 16-25)
+        # Fase de escalado en la que se generan grandes volúmenes de partidas con exploración 
+        # controlada para fortalecer patrones estratégicos y consistencia global.
+        params['n_games'] = 400
+        params['simulations'] = 300
+        params['epochs'] = 10
+        params['lr'] = 5e-4
+        params['cpuct'] = 1.7
+        params['temp_threshold'] = 10
+        params['noise_eps'] = 0.10
+        params['noise_alpha'] = 0.15
+        params['validation_opponent'] = 'Heuristic'
     else:
-        # High Quality / Refinement
-        params['n_games'] = 1000
+        # High Quality / Refinement (Cycle 26+)
+        # Fase de refinamiento final centrada en partidas de alta calidad, baja aleatoriedad y 
+        # aprendizaje estable para pulir decisiones y evaluación del estado.
+        params['n_games'] = 500
         params['simulations'] = 400
         params['epochs'] = 10
         params['lr'] = 1e-4
-        params['cpuct'] = 1.5
+        params['temp_threshold'] = 5
+        params['cpuct'] = 1
+        params['noise_eps'] = 0.10
+        params['noise_alpha'] = 0.1
         
     return params
 
-def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, logger=None):
+def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, params, logger=None):
     """
     Run validation matches against Heuristic and Previous Model.
     """
@@ -117,7 +150,7 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
     random_player = RandomPlayer()
     random_plus_player = RandomPlusPlayer()
     heuristic_player = HeuristicPlayer()
-    min_max_mcts_player = HeuristicMinMaxMCTSPlayer()
+    min_max_mcts_player = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=2)
     
     # Helper to play N games and return win rate for p1 (current_model)
     def play_validation_match(opponent_name, opponent_player, n_games=10):
@@ -146,14 +179,14 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
                     # Current Model's turn
                     # Use MCTS with low simulations for speed, or same as training?
                     # Let's use 50 sims for validation in V5 (more robust than 25)
-                    mcts = MCTS(env, current_model, simulations=200, cpuct=1.0)
+                    mcts = MCTS(env, current_model, simulations=300, cpuct=1.0, single_player_mode=True)
                     mcts.run()
                     action = mcts.select_action(temperature=0.0) # Greedy validation
                 else:
                     # Opponent's turn
                     if opponent_name == "PreviousCycle":
                          # Previous model also needs MCTS
-                         mcts_prev = MCTS(env, opponent_player, simulations=200, cpuct=1.0)
+                         mcts_prev = MCTS(env, opponent_player, simulations=300, cpuct=1.0, single_player_mode=True)
                          mcts_prev.run()
                          action = mcts_prev.select_action(temperature=0.0)
                     else:
@@ -194,7 +227,6 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
             
             # Log every game result with scores
             if logger: logger.log(f"Game {i+1}/{n_games}: {result_str} ({my_score}   {opp_score})")
-
         
         win_rate = wins / n_games
         msg = f"vs {opponent_name}: Wins={wins}, Losses={losses}, Draws={draws} (WR: {win_rate:.2f})"
@@ -202,19 +234,31 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, l
         else: print(f"[Validation] {msg}")
         return win_rate
 
-    if cycle <= 10:
-        wr_rival = play_validation_match("Random", random_player, n_games=10)
-    elif cycle <= 25:
-        wr_rival = play_validation_match("RandomPlus", random_plus_player, n_games=10)
+    # Determine rival based on params
+    val_opponent_name = params.get('validation_opponent', 'MinMaxDepth2')
+    
+    if val_opponent_name == 'Random':
+        opponent_player = random_player
+    elif val_opponent_name == 'RandomPlus':
+        opponent_player = random_plus_player
+    elif val_opponent_name == 'Heuristic':
+        opponent_player = heuristic_player
+    elif val_opponent_name == 'MinMaxDepth2':
+        opponent_player = min_max_mcts_player
     else:
-        wr_rival = play_validation_match("Heuristic", heuristic_player, n_games=10)
+        # Fallback
+        if logger: logger.log(f"[Validation] Unknown opponent type '{val_opponent_name}'. Defaulting to RandomPlus.")
+        val_opponent_name = 'RandomPlus'
+        opponent_player = random_plus_player
+
+    wr_rival = play_validation_match(val_opponent_name, opponent_player, n_games=10)
     
     # 2. vs Previous Model (if exists)
     wr_previous = 0.0
     if previous_model_path and os.path.exists(previous_model_path):
         # Load previous model
         try:
-            prev_checkpoint = torch.load(previous_model_path, map_location=device)
+            prev_checkpoint = torch.load(previous_model_path, map_location=device, weights_only=False)
             # We need a new model instance
             # Infer shape from current model
             prev_model = copy.deepcopy(current_model) # Hack to get same architecture
@@ -238,7 +282,7 @@ def main():
     parser = argparse.ArgumentParser(description="Azul Zero Training Loop (V5 - Scaling)")
     parser.add_argument('--total_cycles', type=int, default=50, help='Number of generation-training cycles')
     parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints_v5', help='Directory to save models')
-    parser.add_argument('--max_dataset_size', type=int, default=200000, help='Max examples in replay buffer')
+    parser.add_argument('--max_dataset_size', type=int, default=100000, help='Max examples in replay buffer')
     parser.add_argument('--resume', action='store_true', help='Resume from the latest checkpoint')
     args = parser.parse_args()
 
@@ -260,8 +304,8 @@ def main():
     env = AzulEnv(num_players=2)
     obs_flat = env.encode_observation(env.reset())
     total_obs_size = obs_flat.shape[0]
-    in_channels = env.num_players * 2 # 4
-    spatial_size = in_channels * 5 * 5 # 100
+    in_channels = env.num_players * 2 * 5 # 2 players * (Pattern + Wall) * 5 colors = 20
+    spatial_size = in_channels * 5 * 5 # 20 * 25 = 500
     
     # Factories size: (N + 1) * 5
     factories_size = (env.N + 1) * 5 # 30
@@ -310,7 +354,7 @@ def main():
                 logger.log(f"[Loop] Checking checkpoint: {ckpt_path}")
                 
                 try:
-                    checkpoint = torch.load(ckpt_path, map_location=device)
+                    checkpoint = torch.load(ckpt_path, map_location=device, weights_only=False)
                     
                     # Temporarily load state dict to check for NaNs
                     # Ensure current model matches architecture (it should)
@@ -332,6 +376,23 @@ def main():
                         start_cycle = c + 1
                         logger.log(f"[Loop] Resumed from Cycle {c}. Next cycle: {start_cycle}")
                         loaded_cycle = c
+                        
+                        # Load replay buffer if exists
+                        buffer_path = os.path.join(args.checkpoint_dir, "replay_buffer.pt")
+                        if os.path.exists(buffer_path):
+                            try:
+                                logger.log(f"[Loop] Loading replay buffer from {buffer_path}...")
+                                loaded_buffer = torch.load(buffer_path, weights_only=False)
+                                if isinstance(loaded_buffer, list):
+                                    replay_buffer = loaded_buffer
+                                    logger.log(f"[Loop] Loaded replay buffer with {len(replay_buffer)} examples.")
+                                else:
+                                    logger.log("[Loop] Warning: Loaded buffer is not a list. Ignoring.")
+                            except Exception as e:
+                                logger.log(f"[Loop] Failed to load replay buffer: {e}")
+                        else:
+                            logger.log("[Loop] No replay buffer file found. Starting with empty buffer.")
+                        
                         break
                         
                 except Exception as e:
@@ -362,6 +423,7 @@ def main():
         
         # 1. Self-Play Generation
         logger.log(f"[Loop] Generating {params['n_games']} games (Sims: {params['simulations']})...")
+        print("." * params['n_games'])
         model.eval()
         new_examples, mcts_stats = generate_self_play_games(
             verbose=False,
@@ -431,12 +493,20 @@ def main():
         # Save latest as 'best.pt' for easy access
         torch.save({'model_state': model.state_dict()}, os.path.join(args.checkpoint_dir, "best.pt"))
 
+        # Save Replay Buffer
+        buffer_save_path = os.path.join(args.checkpoint_dir, "replay_buffer.pt")
+        try:
+            torch.save(replay_buffer, buffer_save_path)
+            logger.log(f"[Loop] Saved replay buffer ({len(replay_buffer)} examples) to {buffer_save_path}")
+        except Exception as e:
+            logger.log(f"[Loop] Failed to save replay buffer: {e}")
+
         # 4. Validation
         prev_model_path = None
         if cycle > 1:
             prev_model_path = os.path.join(args.checkpoint_dir, f"model_cycle_{cycle-1}.pt")
         
-        validate_cycle(model, prev_model_path, device, f'{logger.log_dir}/cycle_{cycle}', cycle, logger=logger)
+        validate_cycle(model, prev_model_path, device, f'{logger.log_dir}/cycle_{cycle}', cycle, params, logger=logger)
         logger.dump() # Dump after validation
 if __name__ == "__main__":
     main()

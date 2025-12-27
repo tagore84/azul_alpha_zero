@@ -54,9 +54,10 @@ class AzulDataset(Dataset):
         pi = torch.tensor(ex['pi'], dtype=torch.float32)
         v = torch.tensor(ex['v'], dtype=torch.float32)
 
-        # Layout: [Spatial (100) | Factories (30) | Global (Rest)]
-        # Spatial: 4 channels * 5 * 5 = 100
-        spatial_size = 4 * 5 * 5
+        # Layout: [Spatial (500) | Factories (30) | Global (Rest)]
+        # Spatial: 20 channels * 5 * 5 = 500
+        # (2 players * (5 pattern + 5 wall))
+        spatial_size = 20 * 5 * 5
         # Factories: (5 factories + 1 center) * 5 colors = 30
         factories_size = (5 + 1) * 5
         
@@ -69,7 +70,7 @@ class AzulDataset(Dataset):
             # pi size is action_size.
             mask = torch.ones_like(pi)
 
-        spatial = obs[:spatial_size].view(4, 5, 5)
+        spatial = obs[:spatial_size].view(20, 5, 5)
         factories = obs[spatial_size : spatial_size + factories_size].view(6, 5)
         global_ = obs[spatial_size + factories_size:]
 
