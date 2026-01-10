@@ -163,28 +163,22 @@ def play_game(
     score_p1 = scores[1]
     
     # Win/Loss Value Target - REVERTED TO SCORE DIFFERENCE (Relative)
-    # The agent was collapsing to short games ("Speedrun") to maximize own score constant.
-    # We need to incentivize winning (relative score).
+    # NEW (V6): Reward Shaping (Hybrid Absolute + Relative)
+    # To fix "Suicide Equilibrium", we add incentives for Absolute Score
     
-    diff_p0 = float(score_p0 - score_p1)
-    diff_p1 = float(score_p1 - score_p0)
+    # Relative: Winning margin (tanh / 20)
+    rel_0 = np.tanh((score_p0 - score_p1) / 20.0)
+    rel_1 = np.tanh((score_p1 - score_p0) / 20.0)
     
-    # Normalize by typical spread (e.g. 20 points) and clip or tanh
-    # Using tanh to allow for soft saturation
-    # val_0 = math.tanh(diff_p0 / 20.0)
-    # val_1 = math.tanh(diff_p1 / 20.0)
+    # Absolute: Quality standard (tanh / 40) - 40 points is a good game
+    abs_0 = np.tanh(score_p0 / 40.0)
+    abs_1 = np.tanh(score_p1 / 40.0)
     
-    # Or simple clipping if we want linearity near 0
-    val_0 = np.clip(diff_p0 / 20.0, -1.0, 1.0)
-    val_1 = np.clip(diff_p1 / 20.0, -1.0, 1.0)
+    # Combined Reward (50% Win, 50% Quality)
+    diff_0 = 0.5 * rel_0 + 0.5 * abs_0
+    diff_1 = 0.5 * rel_1 + 0.5 * abs_1
 
-    # For zero-sum compatibility in MCTS if needed? 
-    # MCTS expects a value for the player.
-    # We will just give the normalized score as the value.
-    # Note: This is NOT zero-sum anymore.
-    
-    diff_0 = val_0
-    diff_1 = val_1
+    # v is now this mixed signal
 
 
 
@@ -403,13 +397,18 @@ def play_game_vs_opponent(
     score_p1 = final_obs['players'][1]['score']
     
     # Value Target: Normalized Own Score
-    # v = clamp(score / 300.0, -1, 1)
+    # V6 Update: Use same Hybrid Logic as self-play
     
-    val_0 = np.clip(score_p0 / 100.0, -1.0, 1.0)
-    val_1 = np.clip(score_p1 / 100.0, -1.0, 1.0)
+    # Relative: Winning margin
+    rel_0 = np.tanh((score_p0 - score_p1) / 20.0)
+    rel_1 = np.tanh((score_p1 - score_p0) / 20.0)
     
-    diff_0 = val_0
-    diff_1 = val_1
+    # Absolute: Quality standard
+    abs_0 = np.tanh(score_p0 / 40.0)
+    abs_1 = np.tanh(score_p1 / 40.0)
+    
+    diff_0 = 0.5 * rel_0 + 0.5 * abs_0
+    diff_1 = 0.5 * rel_1 + 0.5 * abs_1
 
     # Build examples
     # Build examples

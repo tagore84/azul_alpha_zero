@@ -1,0 +1,1599 @@
+[2026-01-09 11:01:27] [Loop] Using device: mps
+[2026-01-09 11:01:27] [Loop] Shapes: Spatial=500, Factories=30, Global=46
+[2026-01-09 11:01:28] [Loop] Starting V6 sequence (Soft Reset).
+[2026-01-09 11:01:28] [Loop] Found V5 Base Model at data/checkpoints_v5/model_cycle_26.pt. Loading weights...
+[2026-01-09 11:01:28] [Loop] Weights loaded successfully.
+[2026-01-09 11:01:28] [Loop] WARNING: Discarding Optimizer State and Replay Buffer from V5 to force adaptation.
+[2026-01-09 11:01:28] 
+=== Cycle 1/50 ===
+[2026-01-09 11:01:28] Params: {'n_games': 200, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 20, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self', 'validation_opponent': 'RandomPlus'}
+[2026-01-09 11:01:28] [Loop] Generating 200 games (Sims: 300)...
+[2026-01-09 11:06:21] [Game 6/200] Score: 17  28, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:06:28] [Game 7/200] Score: -5  -44, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 11:06:34] [Game 4/200] Score: 23  -37, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 11:06:36] [Game 8/200] Score: -7  10, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:07:18] [Game 1/200] Score: 0  -42, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 11:07:41] [Game 5/200] Score: -32  0, Rounds: 7, Moves: 69, Winner: P1, End: normal_end
+[2026-01-09 11:08:36] [Game 3/200] Score: -17  4, Rounds: 7, Moves: 75, Winner: P1, End: normal_end
+[2026-01-09 11:10:20] [Game 2/200] Score: 16  -61, Rounds: 9, Moves: 102, Winner: P0, End: normal_end
+[2026-01-09 11:11:12] [Game 11/200] Score: -2  -35, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 11:12:02] [Game 10/200] Score: -2  -26, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 11:12:17] [Game 9/200] Score: -23  3, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 11:12:59] [Game 13/200] Score: 14  -10, Rounds: 6, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 11:13:21] [Game 12/200] Score: -8  -48, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2026-01-09 11:13:48] [Game 14/200] Score: -7  -31, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 11:14:41] [Game 16/200] Score: 18  4, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 11:14:41] [Game 15/200] Score: 34  34, Rounds: 6, Moves: 61, Winner: DRAW, End: normal_end
+[2026-01-09 11:16:43] [Game 18/200] Score: 34  -16, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 11:17:04] [Game 17/200] Score: 5  -32, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 11:17:37] [Game 19/200] Score: 9  -12, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 11:17:44] [Game 20/200] Score: 9  -32, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 11:18:58] [Game 21/200] Score: -11  -36, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 11:19:20] [Game 22/200] Score: -10  -30, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 11:19:23] [Game 24/200] Score: -25  1, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 11:19:35] [Game 23/200] Score: -2  -26, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 11:21:21] [Game 25/200] Score: 4  -14, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-09 11:22:38] [Game 28/200] Score: -6  -39, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 11:23:01] [Game 26/200] Score: -21  6, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 11:24:11] [Game 27/200] Score: -9  -28, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2026-01-09 11:24:14] [Game 32/200] Score: -26  1, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 11:24:28] [Game 30/200] Score: -13  -5, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2026-01-09 11:24:54] [Game 29/200] Score: -37  19, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-09 11:26:18] [Game 31/200] Score: -7  -49, Rounds: 7, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 11:27:00] [Game 33/200] Score: -44  -11, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-09 11:28:17] [Game 35/200] Score: 18  -26, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 11:28:20] [Game 34/200] Score: 18  -41, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 11:29:24] [Game 38/200] Score: -4  -27, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 11:29:48] [Game 39/200] Score: -6  -23, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 11:29:53] [Game 37/200] Score: -17  -36, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 11:30:17] [Game 36/200] Score: -9  -30, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 11:32:11] [Game 40/200] Score: -8  -39, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 11:32:34] [Game 42/200] Score: 4  0, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 11:33:13] [Game 43/200] Score: -28  4, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 11:33:31] [Game 41/200] Score: -43  -17, Rounds: 7, Moves: 71, Winner: P1, End: normal_end
+[2026-01-09 11:34:21] [Game 44/200] Score: -3  -39, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 11:34:52] [Game 45/200] Score: 12  25, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 11:35:32] [Game 47/200] Score: -5  -10, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 11:37:10] [Game 46/200] Score: -20  -36, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2026-01-09 11:37:28] [Game 48/200] Score: 17  -20, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 11:38:20] [Game 50/200] Score: -1  -19, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 11:38:34] [Game 49/200] Score: -25  -9, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 11:39:37] [Game 51/200] Score: 5  -31, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 11:39:47] [Game 53/200] Score: -18  37, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 11:40:45] [Game 54/200] Score: -22  25, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 11:41:48] [Game 52/200] Score: 15  -22, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-09 11:41:55] [Game 55/200] Score: 0  17, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 11:41:57] [Game 56/200] Score: 33  -6, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 11:43:14] [Game 58/200] Score: 2  -37, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 11:43:15] [Game 57/200] Score: -35  3, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:44:26] [Game 60/200] Score: -1  -20, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 11:45:34] [Game 59/200] Score: -5  -44, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 11:46:45] [Game 62/200] Score: 8  -19, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 11:46:50] [Game 61/200] Score: -4  -52, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 11:47:20] [Game 63/200] Score: -19  24, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 11:48:13] [Game 65/200] Score: -41  -5, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:48:15] [Game 66/200] Score: -35  -8, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 11:49:04] [Game 64/200] Score: -11  -10, Rounds: 7, Moves: 75, Winner: P1, End: normal_end
+[2026-01-09 11:51:02] [Game 67/200] Score: 2  -22, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 11:51:35] [Game 68/200] Score: -36  -10, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 11:52:32] [Game 71/200] Score: -14  -33, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 11:53:07] [Game 70/200] Score: -35  12, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 11:53:13] [Game 69/200] Score: -37  -7, Rounds: 7, Moves: 74, Winner: P1, End: normal_end
+[2026-01-09 11:54:29] [Game 72/200] Score: -16  -54, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 11:55:02] [Game 73/200] Score: 32  -17, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-09 11:56:37] [Game 74/200] Score: -35  -30, Rounds: 7, Moves: 76, Winner: P1, End: normal_end
+[2026-01-09 11:56:50] [Game 76/200] Score: 21  -31, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 11:57:49] [Game 77/200] Score: -16  7, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:58:19] [Game 75/200] Score: 3  -69, Rounds: 8, Moves: 83, Winner: P0, End: normal_end
+[2026-01-09 11:58:21] [Game 78/200] Score: -50  -8, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 11:59:44] [Game 79/200] Score: -6  -29, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 12:00:28] [Game 81/200] Score: 5  -22, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:00:49] [Game 80/200] Score: -41  1, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2026-01-09 12:01:43] [Game 82/200] Score: 4  22, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 12:02:59] [Game 84/200] Score: -15  -41, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:03:46] [Game 83/200] Score: -45  -13, Rounds: 7, Moves: 72, Winner: P1, End: normal_end
+[2026-01-09 12:04:43] [Game 85/200] Score: 11  -12, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 12:05:18] [Game 86/200] Score: 15  -24, Rounds: 7, Moves: 72, Winner: P0, End: normal_end
+[2026-01-09 12:05:59] [Game 88/200] Score: -32  -5, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 12:06:09] [Game 89/200] Score: -30  2, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 12:06:29] [Game 87/200] Score: 1  -15, Rounds: 7, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 12:08:23] [Game 91/200] Score: -8  9, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 12:08:55] [Game 92/200] Score: -12  -35, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:09:20] [Game 90/200] Score: -8  -61, Rounds: 8, Moves: 81, Winner: P0, End: normal_end
+[2026-01-09 12:09:47] [Game 93/200] Score: -2  -17, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:10:28] [Game 94/200] Score: -2  9, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 12:11:28] [Game 95/200] Score: -35  -6, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 12:12:12] [Game 96/200] Score: -42  -17, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-09 12:14:12] [Game 99/200] Score: -30  0, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 12:14:31] [Game 98/200] Score: -17  -28, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 12:14:48] [Game 101/200] Score: -1  -45, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 12:14:53] [Game 97/200] Score: -19  -41, Rounds: 8, Moves: 90, Winner: P0, End: normal_end
+[2026-01-09 12:15:52] [Game 102/200] Score: -47  3, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 12:16:07] [Game 100/200] Score: -9  -36, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2026-01-09 12:17:17] [Game 103/200] Score: -10  17, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
+[2026-01-09 12:17:18] [Game 104/200] Score: -15  -32, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:19:15] [Game 105/200] Score: -38  14, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 12:19:30] [Game 108/200] Score: -47  -7, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 12:19:41] [Game 106/200] Score: 13  -24, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:21:18] [Game 107/200] Score: -25  -61, Rounds: 6, Moves: 71, Winner: P0, End: normal_end
+[2026-01-09 12:21:21] [Game 110/200] Score: -15  -5, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 12:21:49] [Game 109/200] Score: -9  -42, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 12:22:14] [Game 111/200] Score: -19  -31, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 12:22:41] [Game 112/200] Score: -8  6, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 12:24:30] [Game 113/200] Score: -37  7, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 12:24:44] [Game 115/200] Score: 1  -22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 12:24:57] [Game 114/200] Score: -27  -6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 12:26:53] [Game 118/200] Score: 5  -19, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:27:27] [Game 116/200] Score: 16  -28, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2026-01-09 12:27:38] [Game 120/200] Score: 6  0, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 12:29:20] [Game 119/200] Score: -20  -54, Rounds: 7, Moves: 71, Winner: P0, End: normal_end
+[2026-01-09 12:29:37] [Game 122/200] Score: -10  -14, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 12:29:40] [Game 117/200] Score: -62  -15, Rounds: 8, Moves: 88, Winner: P1, End: normal_end
+[2026-01-09 12:30:47] [Game 121/200] Score: 22  -33, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 12:31:13] [Game 123/200] Score: -38  -1, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2026-01-09 12:32:40] [Game 126/200] Score: 5  22, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 12:33:10] [Game 125/200] Score: -3  -34, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 12:34:23] [Game 124/200] Score: -17  -29, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-09 12:35:01] [Game 129/200] Score: 9  -4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:35:05] [Game 127/200] Score: -4  20, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 12:37:50] [Game 130/200] Score: 3  4, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-09 12:38:20] [Game 131/200] Score: -44  -8, Rounds: 7, Moves: 74, Winner: P1, End: normal_end
+[2026-01-09 12:38:24] [Game 128/200] Score: 9  -71, Rounds: 9, Moves: 103, Winner: P0, End: normal_end
+[2026-01-09 12:38:28] [Game 133/200] Score: 11  -26, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:39:34] [Game 132/200] Score: 8  -41, Rounds: 7, Moves: 71, Winner: P0, End: normal_end
+[2026-01-09 12:40:19] [Game 135/200] Score: 14  -18, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 12:41:28] [Game 136/200] Score: -32  -3, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 12:41:44] [Game 134/200] Score: 2  -40, Rounds: 7, Moves: 72, Winner: P0, End: normal_end
+[2026-01-09 12:43:28] [Game 138/200] Score: -15  2, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 12:43:38] [Game 137/200] Score: -44  2, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-09 12:44:23] [Game 141/200] Score: -10  32, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 12:44:31] [Game 140/200] Score: -43  29, Rounds: 6, Moves: 68, Winner: P1, End: normal_end
+[2026-01-09 12:45:10] [Game 139/200] Score: -9  -38, Rounds: 7, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 12:47:17] [Game 142/200] Score: -55  -20, Rounds: 7, Moves: 74, Winner: P1, End: normal_end
+[2026-01-09 12:47:56] [Game 143/200] Score: 25  -4, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 12:48:07] [Game 144/200] Score: -21  19, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 12:49:14] [Game 145/200] Score: -9  -20, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 12:49:43] [Game 146/200] Score: -12  -54, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 12:49:52] [Game 148/200] Score: 7  -22, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:50:41] [Game 149/200] Score: 4  -36, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:51:23] [Game 147/200] Score: 1  -45, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-09 12:53:36] [Game 152/200] Score: -3  -29, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 12:53:54] [Game 150/200] Score: 13  -16, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 12:54:20] [Game 151/200] Score: 0  -40, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 12:54:53] [Game 153/200] Score: -12  16, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 12:56:02] [Game 156/200] Score: 12  -30, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 12:56:05] [Game 155/200] Score: -1  -33, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 12:56:31] [Game 154/200] Score: -28  -11, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-09 12:57:38] [Game 157/200] Score: 5  -36, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 12:58:54] [Game 158/200] Score: -16  17, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 12:59:11] [Game 159/200] Score: -10  2, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 12:59:56] [Game 161/200] Score: -8  -24, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 13:00:41] [Game 160/200] Score: -42  7, Rounds: 7, Moves: 73, Winner: P1, End: normal_end
+[2026-01-09 13:01:17] [Game 163/200] Score: -6  12, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 13:01:57] [Game 162/200] Score: -18  -2, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-09 13:02:13] [Game 164/200] Score: 18  -42, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 13:04:29] [Game 165/200] Score: -7  -27, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-09 13:04:50] [Game 166/200] Score: 5  -25, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 13:07:00] [Game 167/200] Score: 5  -35, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2026-01-09 13:07:06] [Game 170/200] Score: -38  22, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 13:07:11] [Game 169/200] Score: -22  -36, Rounds: 7, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 13:07:52] [Game 168/200] Score: -24  -54, Rounds: 8, Moves: 91, Winner: P0, End: normal_end
+[2026-01-09 13:08:09] [Game 172/200] Score: -35  34, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 13:08:42] [Game 171/200] Score: 8  -27, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 13:09:27] [Game 174/200] Score: -4  -20, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 13:09:36] [Game 173/200] Score: -33  5, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 13:12:28] [Game 177/200] Score: -29  -33, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 13:12:43] [Game 176/200] Score: 13  -30, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 13:12:46] [Game 179/200] Score: -11  10, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 13:13:29] [Game 180/200] Score: -26  -4, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 13:14:07] [Game 181/200] Score: -26  -6, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 13:14:32] [Game 175/200] Score: -58  -19, Rounds: 8, Moves: 92, Winner: P1, End: normal_end
+[2026-01-09 13:14:40] [Game 178/200] Score: -9  -53, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2026-01-09 13:15:28] [Game 182/200] Score: -44  30, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 13:17:41] [Game 183/200] Score: 5  -25, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 13:18:11] [Game 184/200] Score: 10  -15, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 13:18:17] [Game 185/200] Score: -30  -15, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-09 13:18:50] [Game 186/200] Score: -1  -25, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 13:19:35] [Game 188/200] Score: -4  8, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 13:19:39] [Game 189/200] Score: -2  -33, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 13:20:42] [Game 187/200] Score: 22  -23, Rounds: 7, Moves: 72, Winner: P0, End: normal_end
+[2026-01-09 13:22:52] [Game 190/200] Score: -24  -3, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-09 13:28:33] [Game 194/200] Score: -27  -1, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 13:29:31] [Game 192/200] Score: -39  15, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 13:29:51] [Game 191/200] Score: -5  -45, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 13:29:54] [Game 195/200] Score: -4  54, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 13:30:03] [Game 193/200] Score: 18  -37, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 13:31:03] [Game 196/200] Score: -7  -39, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 13:32:21] [Game 198/200] Score: 3  -5, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 13:32:35] [Game 197/200] Score: 11  -20, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 13:34:56] [Game 199/200] Score: -29  25, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 13:36:13] [Game 200/200] Score: -50  -34, Rounds: 8, Moves: 92, Winner: P1, End: normal_end
+[2026-01-09 13:36:13] [Loop] MCTS Stats: avg_visits=414.2, avg_entropy=1.84, reuse_rate=100.0%, avg_moves=61.3
+[2026-01-09 13:36:13] [Loop] Buffer size: 12260
+[2026-01-09 13:36:13] [Loop] Training for 10 epochs...
+[2026-01-09 13:40:14] [Loop] Training Finished. Avg Loss: 2.1699
+[2026-01-09 13:40:14] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_1.pt
+[2026-01-09 13:40:15] Starting validation for Cycle 1...
+[2026-01-09 13:40:15] vs RandomPlus: Playing 10 games...
+[2026-01-09 13:43:09] Game 1/10: WIN (39   18)
+[2026-01-09 13:45:37] Game 2/10: WIN (9   -10)
+[2026-01-09 13:49:26] Game 3/10: WIN (28   16)
+[2026-01-09 13:52:16] Game 4/10: WIN (27   -7)
+[2026-01-09 13:55:24] Game 5/10: WIN (35   -7)
+[2026-01-09 13:59:06] Game 6/10: WIN (45   11)
+[2026-01-09 14:02:37] Game 7/10: WIN (4   2)
+[2026-01-09 14:05:25] Game 8/10: WIN (22   -19)
+[2026-01-09 14:09:21] Game 9/10: WIN (45   16)
+[2026-01-09 14:13:45] Game 10/10: WIN (58   45)
+[2026-01-09 14:13:45] vs RandomPlus: Wins=10, Losses=0, Draws=0 (WR: 1.00)
+[2026-01-09 14:13:45] No previous model found. Skipping vs Previous.
+[2026-01-09 14:13:45] 
+=== Cycle 2/50 ===
+[2026-01-09 14:13:45] Params: {'n_games': 200, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 20, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self', 'validation_opponent': 'RandomPlus'}
+[2026-01-09 14:13:45] [Loop] Generating 200 games (Sims: 300)...
+[2026-01-09 14:32:04] [Game 4/200] Score: 20  -20, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 14:32:23] [Game 8/200] Score: -6  -16, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 14:32:24] [Game 3/200] Score: -8  -39, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 14:32:41] [Game 5/200] Score: -33  -3, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 14:33:38] [Game 1/200] Score: 7  3, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 14:33:53] [Game 6/200] Score: 36  -11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 14:33:54] [Game 2/200] Score: -44  -1, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 14:34:43] [Game 7/200] Score: 38  -26, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 14:38:56] [Game 11/200] Score: 7  22, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 14:38:58] [Game 10/200] Score: -4  -10, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 14:39:33] [Game 13/200] Score: -6  9, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 14:39:41] [Game 12/200] Score: 6  -3, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 14:39:57] [Game 15/200] Score: 13  1, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 14:40:28] [Game 9/200] Score: -28  33, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 14:40:43] [Game 16/200] Score: 14  -40, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 14:40:54] [Game 14/200] Score: 4  -7, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 14:44:25] [Game 18/200] Score: 17  19, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 14:44:35] [Game 19/200] Score: -21  15, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 14:45:19] [Game 17/200] Score: 3  -7, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 14:45:33] [Game 21/200] Score: 33  28, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 14:45:35] [Game 20/200] Score: 31  33, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 14:48:01] [Game 23/200] Score: -8  16, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 14:48:19] [Game 22/200] Score: -38  -9, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 14:49:28] [Game 24/200] Score: -13  -69, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 14:52:30] [Game 26/200] Score: 29  28, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 14:53:21] [Game 25/200] Score: 17  7, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 14:53:53] [Game 29/200] Score: 22  -25, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 14:53:59] [Game 27/200] Score: 33  25, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 14:54:27] [Game 28/200] Score: -2  -26, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 15:00:21] [Game 32/200] Score: 17  16, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 15:00:24] [Game 31/200] Score: -25  1, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 15:00:36] [Game 30/200] Score: 44  -9, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 15:02:20] [Game 33/200] Score: -7  -17, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 15:02:48] [Game 35/200] Score: -4  -37, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 15:02:52] [Game 34/200] Score: -16  14, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 15:03:17] [Game 36/200] Score: 1  -28, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 15:03:23] [Game 37/200] Score: 16  -4, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 15:05:07] [Game 38/200] Score: -23  12, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 15:05:08] [Game 40/200] Score: 34  25, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 15:07:35] [Game 43/200] Score: -10  -42, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 15:08:08] [Game 45/200] Score: 12  -36, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 15:08:12] [Game 39/200] Score: 14  -71, Rounds: 8, Moves: 87, Winner: P0, End: normal_end
+[2026-01-09 15:08:21] [Game 41/200] Score: -24  13, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 15:09:13] [Game 44/200] Score: -33  22, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 15:09:39] [Game 42/200] Score: -72  2, Rounds: 7, Moves: 75, Winner: P1, End: normal_end
+[2026-01-09 15:10:07] [Game 47/200] Score: -1  39, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 15:10:30] [Game 46/200] Score: -29  45, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 15:28:16] [Game 50/200] Score: 0  19, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 15:28:27] [Game 49/200] Score: -8  -12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 15:29:36] [Game 51/200] Score: 31  -4, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 15:29:49] [Game 48/200] Score: -3  -20, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 15:30:16] [Game 53/200] Score: 11  -15, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 15:30:33] [Game 54/200] Score: -41  5, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 15:31:16] [Game 52/200] Score: 3  -11, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 15:34:46] [Game 55/200] Score: 48  -53, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2026-01-09 15:34:54] [Game 57/200] Score: 15  -9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 15:35:13] [Game 56/200] Score: 17  4, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 15:36:06] [Game 58/200] Score: 40  -2, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 15:36:15] [Game 59/200] Score: 18  -13, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 15:37:10] [Game 61/200] Score: 32  29, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 15:37:26] [Game 60/200] Score: 13  -24, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 15:38:31] [Game 62/200] Score: 34  28, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 15:42:42] [Game 64/200] Score: 8  12, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 15:43:11] [Game 65/200] Score: -20  -46, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 15:43:32] [Game 63/200] Score: 30  5, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 15:43:40] [Game 67/200] Score: -9  5, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 15:44:10] [Game 68/200] Score: -5  6, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 15:44:17] [Game 66/200] Score: 35  -19, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 15:45:02] [Game 69/200] Score: -8  6, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 15:46:34] [Game 70/200] Score: -10  -23, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 15:50:50] [Game 71/200] Score: 3  -39, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 15:51:21] [Game 73/200] Score: 15  11, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 15:51:55] [Game 74/200] Score: 34  15, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 15:52:37] [Game 75/200] Score: -11  15, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 15:52:47] [Game 77/200] Score: 31  -33, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 15:53:09] [Game 76/200] Score: 18  -13, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 15:55:03] [Game 78/200] Score: -8  -4, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 15:55:05] [Game 72/200] Score: 74  -30, Rounds: 8, Moves: 82, Winner: P0, End: normal_end
+[2026-01-09 15:59:54] [Game 79/200] Score: -1  -10, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 16:00:26] [Game 80/200] Score: 8  -5, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:01:00] [Game 83/200] Score: -19  25, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 16:01:08] [Game 81/200] Score: -4  -1, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 16:02:07] [Game 84/200] Score: -3  28, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 16:03:08] [Game 85/200] Score: 14  15, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 16:03:38] [Game 86/200] Score: 35  -25, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 16:06:37] [Game 82/200] Score: -61  27, Rounds: 7, Moves: 73, Winner: P1, End: normal_end
+[2026-01-09 16:08:31] [Game 87/200] Score: -40  -2, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 16:10:05] [Game 90/200] Score: 16  2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:10:27] [Game 88/200] Score: 21  8, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 16:11:05] [Game 91/200] Score: 19  20, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 16:11:08] [Game 89/200] Score: -27  12, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 16:12:18] [Game 92/200] Score: 21  22, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 16:12:51] [Game 93/200] Score: 5  2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:15:49] [Game 94/200] Score: -5  -41, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 16:17:51] [Game 95/200] Score: -5  6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 16:18:55] [Game 96/200] Score: -18  -35, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 16:19:57] [Game 97/200] Score: 10  -1, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 16:20:29] [Game 100/200] Score: -10  -41, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 16:20:41] [Game 99/200] Score: 7  -25, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:21:26] [Game 98/200] Score: -18  2, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 16:21:51] [Game 101/200] Score: 4  21, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 16:24:41] [Game 102/200] Score: -3  -39, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 16:43:29] [Game 105/200] Score: 9  -11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:43:36] [Game 103/200] Score: -19  -47, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 16:43:45] [Game 104/200] Score: 13  -47, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 16:44:01] [Game 107/200] Score: -15  -28, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 16:44:17] [Game 106/200] Score: 15  -37, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 16:44:43] [Game 108/200] Score: 17  -23, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 16:45:02] [Game 109/200] Score: -42  14, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 16:48:48] [Game 110/200] Score: -47  34, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 16:49:32] [Game 113/200] Score: 23  4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 16:49:49] [Game 111/200] Score: 33  17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 16:50:42] [Game 115/200] Score: 13  24, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 16:50:44] [Game 114/200] Score: -25  -37, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 16:50:54] [Game 116/200] Score: -26  8, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 16:51:39] [Game 112/200] Score: 14  -19, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 16:51:55] [Game 117/200] Score: 0  4, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 16:56:08] [Game 118/200] Score: -5  -12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 16:56:55] [Game 119/200] Score: 13  3, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 16:57:22] [Game 122/200] Score: 8  31, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 16:57:35] [Game 120/200] Score: -8  -36, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 16:57:37] [Game 123/200] Score: 10  21, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 16:57:58] [Game 121/200] Score: -2  19, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 16:59:17] [Game 124/200] Score: 25  3, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 16:59:55] [Game 125/200] Score: 21  -8, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:04:05] [Game 126/200] Score: 16  -28, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 17:04:52] [Game 128/200] Score: -18  14, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:05:31] [Game 127/200] Score: -22  17, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 17:05:54] [Game 129/200] Score: -8  -3, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 17:06:50] [Game 132/200] Score: -16  -18, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-09 17:07:10] [Game 130/200] Score: 13  -25, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 17:07:24] [Game 131/200] Score: 24  -16, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 17:07:49] [Game 133/200] Score: 2  -27, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 17:11:46] [Game 136/200] Score: -9  -5, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-09 17:12:21] [Game 134/200] Score: 5  -38, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 17:12:32] [Game 135/200] Score: -1  1, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:13:09] [Game 137/200] Score: -17  -26, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:13:35] [Game 139/200] Score: 16  9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:13:47] [Game 141/200] Score: 7  -38, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 17:13:51] [Game 140/200] Score: 12  -13, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 17:14:11] [Game 138/200] Score: 0  -15, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 17:16:54] [Game 142/200] Score: 14  -2, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:17:25] [Game 143/200] Score: 6  0, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 17:17:49] [Game 144/200] Score: 34  37, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 17:18:46] [Game 146/200] Score: -39  14, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 17:19:19] [Game 145/200] Score: 17  -36, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 17:19:38] [Game 148/200] Score: 5  -42, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 17:20:46] [Game 147/200] Score: -5  -50, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-09 17:21:39] [Game 149/200] Score: -61  -7, Rounds: 7, Moves: 79, Winner: P1, End: normal_end
+[2026-01-09 17:22:08] [Game 150/200] Score: 4  -12, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 17:23:08] [Game 151/200] Score: -28  10, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 17:23:20] [Game 152/200] Score: 12  11, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:23:52] [Game 153/200] Score: 30  7, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:24:28] [Game 154/200] Score: 17  30, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:25:26] [Game 155/200] Score: -19  -20, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 17:25:29] [Game 156/200] Score: 13  -7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 17:26:48] [Game 157/200] Score: 15  -20, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 17:26:52] [Game 158/200] Score: 9  20, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:27:54] [Game 159/200] Score: 22  -25, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 17:28:36] [Game 160/200] Score: -26  10, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 17:28:46] [Game 161/200] Score: 26  42, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 17:29:20] [Game 162/200] Score: 43  39, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:30:34] [Game 163/200] Score: 12  16, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 17:30:51] [Game 164/200] Score: -21  -3, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 17:31:02] [Game 165/200] Score: 6  4, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 17:32:11] [Game 166/200] Score: -37  24, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-09 17:33:32] [Game 169/200] Score: 5  -16, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:33:53] [Game 168/200] Score: -22  -14, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:34:04] [Game 170/200] Score: -5  26, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 17:34:12] [Game 167/200] Score: -5  -37, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 17:36:03] [Game 172/200] Score: -37  1, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 17:36:03] [Game 171/200] Score: -22  29, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 17:36:38] [Game 173/200] Score: -40  1, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 17:37:25] [Game 174/200] Score: -16  -3, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 17:38:36] [Game 175/200] Score: 20  -31, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 17:39:04] [Game 176/200] Score: 30  24, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:39:11] [Game 178/200] Score: 44  41, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 17:39:13] [Game 177/200] Score: 8  -9, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 17:40:40] [Game 179/200] Score: -40  16, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 17:41:28] [Game 181/200] Score: 12  25, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 17:42:11] [Game 180/200] Score: -14  42, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 17:43:00] [Game 182/200] Score: -20  23, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-09 17:43:32] [Game 183/200] Score: 6  -28, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 17:43:50] [Game 184/200] Score: 5  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 17:44:13] [Game 185/200] Score: 17  -5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:45:19] [Game 186/200] Score: 2  56, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2026-01-09 17:46:14] [Game 188/200] Score: 8  0, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:47:03] [Game 189/200] Score: 33  18, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 17:47:09] [Game 187/200] Score: -28  8, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2026-01-09 17:49:02] [Game 193/200] Score: -28  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 17:49:05] [Game 192/200] Score: 1  9, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2026-01-09 17:49:08] [Game 190/200] Score: -16  45, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-09 17:50:01] [Game 194/200] Score: -14  26, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 17:50:07] [Game 191/200] Score: 2  -46, Rounds: 6, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 17:51:45] [Game 195/200] Score: 19  16, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 17:51:58] [Game 196/200] Score: -1  35, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-09 17:52:24] [Game 197/200] Score: 19  -29, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 17:53:33] [Game 198/200] Score: 21  23, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 17:53:35] [Game 200/200] Score: 6  -30, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 17:54:18] [Game 199/200] Score: 14  -24, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 17:54:19] [Loop] MCTS Stats: avg_visits=399.2, avg_entropy=2.01, reuse_rate=100.0%, avg_moves=55.6
+[2026-01-09 17:54:19] [Loop] Buffer size: 23375
+[2026-01-09 17:54:19] [Loop] Training for 10 epochs...
+[2026-01-09 18:00:31] [Loop] Training Finished. Avg Loss: 2.2052
+[2026-01-09 18:00:31] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_2.pt
+[2026-01-09 18:00:32] Starting validation for Cycle 2...
+[2026-01-09 18:00:32] vs RandomPlus: Playing 10 games...
+[2026-01-09 18:03:17] Game 1/10: LOSS (-18   1)
+[2026-01-09 18:06:04] Game 2/10: WIN (31   5)
+[2026-01-09 18:08:16] Game 3/10: WIN (12   10)
+[2026-01-09 18:10:47] Game 4/10: WIN (25   21)
+[2026-01-09 18:13:43] Game 5/10: WIN (5   0)
+[2026-01-09 18:16:07] Game 6/10: WIN (16   0)
+[2026-01-09 18:18:26] Game 7/10: WIN (20   -3)
+[2026-01-09 18:20:45] Game 8/10: LOSS (24   30)
+[2026-01-09 18:23:16] Game 9/10: WIN (27   -10)
+[2026-01-09 18:25:48] Game 10/10: WIN (22   9)
+[2026-01-09 18:25:48] vs RandomPlus: Wins=8, Losses=2, Draws=0 (WR: 0.80)
+[2026-01-09 18:25:48] vs PreviousCycle: Playing 10 games...
+[2026-01-09 18:30:29] Game 1/10: LOSS (23   37)
+[2026-01-09 18:35:19] Game 2/10: LOSS (27   40)
+[2026-01-09 18:39:57] Game 3/10: LOSS (33   40)
+[2026-01-09 18:44:29] Game 4/10: LOSS (34   37)
+[2026-01-09 18:49:03] Game 5/10: LOSS (34   38)
+[2026-01-09 18:53:30] Game 6/10: LOSS (-6   34)
+[2026-01-09 18:58:37] Game 7/10: WIN (41   12)
+[2026-01-09 19:03:18] Game 8/10: LOSS (28   41)
+[2026-01-09 19:07:40] Game 9/10: LOSS (35   45)
+[2026-01-09 19:12:10] Game 10/10: WIN (33   28)
+[2026-01-09 19:12:10] vs PreviousCycle: Wins=2, Losses=8, Draws=0 (WR: 0.20)
+[2026-01-09 19:12:10] 
+=== Cycle 3/50 ===
+[2026-01-09 19:12:10] Params: {'n_games': 200, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 20, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self', 'validation_opponent': 'RandomPlus'}
+[2026-01-09 19:12:10] [Loop] Generating 200 games (Sims: 300)...
+[2026-01-09 19:16:44] [Game 5/200] Score: 7  -27, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 19:16:51] [Game 3/200] Score: 13  18, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 19:16:58] [Game 2/200] Score: 25  19, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 19:17:17] [Game 4/200] Score: -15  8, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 19:17:18] [Game 7/200] Score: 38  38, Rounds: 5, Moves: 53, Winner: DRAW, End: normal_end
+[2026-01-09 19:17:23] [Game 1/200] Score: -26  20, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 19:17:25] [Game 8/200] Score: 2  28, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 19:17:25] [Game 6/200] Score: 22  -5, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 19:21:31] [Game 11/200] Score: 26  16, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:21:40] [Game 9/200] Score: -27  23, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 19:21:41] [Game 10/200] Score: 10  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:22:07] [Game 13/200] Score: 48  10, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:22:11] [Game 16/200] Score: 12  9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:22:17] [Game 12/200] Score: 26  24, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 19:22:41] [Game 14/200] Score: 24  28, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 19:23:01] [Game 15/200] Score: 49  92, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-09 19:26:19] [Game 18/200] Score: 4  33, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 19:26:40] [Game 19/200] Score: 11  14, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 19:26:48] [Game 17/200] Score: 0  -29, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:27:11] [Game 22/200] Score: 43  29, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 19:27:20] [Game 20/200] Score: 31  16, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 19:27:34] [Game 21/200] Score: -10  -20, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:27:43] [Game 24/200] Score: 12  21, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 19:28:46] [Game 23/200] Score: 10  4, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 19:31:20] [Game 26/200] Score: 8  28, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 19:31:44] [Game 27/200] Score: 34  16, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 19:31:54] [Game 30/200] Score: 11  6, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 19:31:57] [Game 29/200] Score: -28  18, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 19:32:09] [Game 28/200] Score: 22  36, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 19:32:21] [Game 31/200] Score: -21  1, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 19:32:29] [Game 25/200] Score: 23  -30, Rounds: 7, Moves: 70, Winner: P0, End: normal_end
+[2026-01-09 19:33:42] [Game 32/200] Score: 34  -27, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:35:41] [Game 33/200] Score: -38  5, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 19:36:07] [Game 34/200] Score: 7  4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 19:36:16] [Game 35/200] Score: 13  8, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 19:36:53] [Game 36/200] Score: 20  -6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 19:36:57] [Game 37/200] Score: -11  -18, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 19:37:19] [Game 38/200] Score: 0  -21, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:37:23] [Game 39/200] Score: -24  8, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 19:38:04] [Game 40/200] Score: -5  2, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 19:40:36] [Game 43/200] Score: 3  7, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 19:40:43] [Game 42/200] Score: 10  16, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 19:41:25] [Game 41/200] Score: 30  8, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 19:41:32] [Game 45/200] Score: 3  2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:41:36] [Game 44/200] Score: 25  -32, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 19:41:58] [Game 47/200] Score: 17  -13, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 19:42:47] [Game 48/200] Score: -1  -45, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:43:10] [Game 46/200] Score: 17  -11, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 19:44:55] [Game 49/200] Score: 11  44, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 19:45:36] [Game 50/200] Score: 28  13, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 19:45:56] [Game 53/200] Score: 49  3, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 19:46:20] [Game 54/200] Score: -22  16, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 19:46:39] [Game 52/200] Score: 24  33, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2026-01-09 19:47:00] [Game 55/200] Score: 26  2, Rounds: 5, Moves: 46, Winner: P0, End: normal_end
+[2026-01-09 19:47:08] [Game 51/200] Score: 6  -17, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 19:49:20] [Game 57/200] Score: 23  11, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 19:49:27] [Game 56/200] Score: 7  10, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-09 19:50:12] [Game 58/200] Score: 36  17, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:51:04] [Game 60/200] Score: 24  4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 19:51:29] [Game 61/200] Score: 35  -1, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 19:52:06] [Game 62/200] Score: 15  -10, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 19:52:23] [Game 59/200] Score: 25  -10, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2026-01-09 19:53:06] [Game 63/200] Score: 3  -41, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 19:53:51] [Game 65/200] Score: -7  7, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 19:54:55] [Game 64/200] Score: -7  -28, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 19:55:13] [Game 66/200] Score: -2  11, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 19:55:19] [Game 67/200] Score: 47  51, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 19:56:31] [Game 68/200] Score: -12  1, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 19:57:04] [Game 70/200] Score: -4  2, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 19:57:36] [Game 69/200] Score: 22  -5, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 19:58:43] [Game 71/200] Score: 17  -53, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 19:59:47] [Game 73/200] Score: 32  4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 19:59:52] [Game 72/200] Score: 4  30, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 19:59:52] [Game 75/200] Score: -14  21, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 20:01:03] [Game 74/200] Score: 30  32, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 20:01:09] [Game 76/200] Score: 18  -9, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:01:59] [Game 77/200] Score: -2  10, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 20:02:45] [Game 78/200] Score: 43  22, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 20:04:22] [Game 79/200] Score: 9  -19, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 20:04:26] [Game 80/200] Score: -4  32, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:04:38] [Game 82/200] Score: 15  49, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 20:06:26] [Game 83/200] Score: 15  6, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 20:06:26] [Game 81/200] Score: 34  -16, Rounds: 7, Moves: 68, Winner: P0, End: normal_end
+[2026-01-09 20:06:35] [Game 84/200] Score: 30  6, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 20:07:07] [Game 86/200] Score: 19  16, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 20:07:10] [Game 85/200] Score: 3  -20, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 20:08:56] [Game 89/200] Score: 44  40, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 20:09:15] [Game 88/200] Score: 10  24, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 20:09:15] [Game 87/200] Score: 7  -19, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 20:10:54] [Game 91/200] Score: -2  -39, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:11:02] [Game 90/200] Score: 12  10, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:11:45] [Game 93/200] Score: 1  9, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 20:12:10] [Game 92/200] Score: -19  5, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 20:12:13] [Game 94/200] Score: 26  35, Rounds: 5, Moves: 59, Winner: P1, End: normal_end
+[2026-01-09 20:13:41] [Game 97/200] Score: 13  -20, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:13:55] [Game 95/200] Score: -22  -3, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 20:14:18] [Game 96/200] Score: -12  23, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 20:15:25] [Game 98/200] Score: 27  12, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:16:13] [Game 99/200] Score: -5  -22, Rounds: 6, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 20:16:18] [Game 100/200] Score: -2  -27, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 20:17:15] [Game 101/200] Score: -1  -43, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 20:17:17] [Game 102/200] Score: 44  21, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 20:18:18] [Game 103/200] Score: -12  39, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 20:18:37] [Game 104/200] Score: 28  36, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 20:19:17] [Game 105/200] Score: 1  12, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 20:20:21] [Game 106/200] Score: 3  -43, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 20:21:02] [Game 108/200] Score: 17  -26, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:21:14] [Game 107/200] Score: -2  15, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 20:21:42] [Game 110/200] Score: 4  -3, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 20:22:17] [Game 109/200] Score: 6  -24, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:23:56] [Game 113/200] Score: -3  -6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 20:24:15] [Game 111/200] Score: -1  18, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 20:25:15] [Game 112/200] Score: -28  38, Rounds: 7, Moves: 72, Winner: P1, End: normal_end
+[2026-01-09 20:25:25] [Game 114/200] Score: 26  28, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 20:25:57] [Game 115/200] Score: 4  18, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 20:26:39] [Game 117/200] Score: 12  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:26:39] [Game 116/200] Score: 51  -7, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-09 20:27:24] [Game 118/200] Score: 8  -8, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 20:28:44] [Game 119/200] Score: 16  13, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 20:28:53] [Game 120/200] Score: 14  -6, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:30:04] [Game 122/200] Score: 26  28, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 20:30:39] [Game 121/200] Score: 46  33, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 20:30:52] [Game 123/200] Score: 15  -13, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:31:34] [Game 124/200] Score: 8  24, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 20:31:47] [Game 125/200] Score: -8  1, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 20:32:07] [Game 126/200] Score: 15  10, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:33:15] [Game 127/200] Score: -32  17, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:33:32] [Game 128/200] Score: 13  17, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:35:18] [Game 130/200] Score: 28  6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:35:39] [Game 131/200] Score: -1  14, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 20:35:50] [Game 129/200] Score: 55  34, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 20:36:07] [Game 132/200] Score: 0  32, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:36:28] [Game 133/200] Score: 13  16, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 20:36:29] [Game 134/200] Score: 8  -8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:37:54] [Game 136/200] Score: 0  31, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 20:38:00] [Game 135/200] Score: 14  3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:39:53] [Game 137/200] Score: 23  15, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:40:18] [Game 139/200] Score: 45  -3, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:40:20] [Game 138/200] Score: 8  -23, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:40:37] [Game 140/200] Score: 2  -13, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:41:51] [Game 142/200] Score: -3  -15, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 20:42:35] [Game 143/200] Score: 5  -5, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:42:45] [Game 141/200] Score: 1  -31, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 20:43:30] [Game 144/200] Score: 12  -33, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 20:44:53] [Game 146/200] Score: -8  5, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 20:45:29] [Game 147/200] Score: 29  1, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 20:45:43] [Game 145/200] Score: -19  26, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 20:45:49] [Game 148/200] Score: -36  0, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 20:46:20] [Game 149/200] Score: -7  4, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 20:47:29] [Game 151/200] Score: 58  48, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 20:48:10] [Game 150/200] Score: 25  16, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 20:48:13] [Game 152/200] Score: -6  -1, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:49:38] [Game 153/200] Score: 44  36, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 20:50:19] [Game 154/200] Score: 21  2, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:50:25] [Game 155/200] Score: 20  -7, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:50:41] [Game 156/200] Score: -6  26, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 20:50:54] [Game 157/200] Score: 33  11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:52:29] [Game 158/200] Score: -53  5, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-09 20:52:47] [Game 159/200] Score: -10  9, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 20:53:00] [Game 160/200] Score: 12  27, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 20:54:17] [Game 161/200] Score: 8  -2, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 20:54:56] [Game 162/200] Score: 25  -19, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 20:55:46] [Game 164/200] Score: 4  22, Rounds: 6, Moves: 57, Winner: P1, End: normal_end
+[2026-01-09 20:56:23] [Game 163/200] Score: 2  -17, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 20:57:19] [Game 165/200] Score: -35  11, Rounds: 7, Moves: 71, Winner: P1, End: normal_end
+[2026-01-09 20:57:21] [Game 167/200] Score: 13  15, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 20:57:22] [Game 166/200] Score: 9  6, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 20:57:40] [Game 168/200] Score: 28  26, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 20:59:04] [Game 169/200] Score: -4  -7, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 20:59:43] [Game 170/200] Score: 11  -23, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 21:01:09] [Game 172/200] Score: 22  -5, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 21:01:43] [Game 171/200] Score: 36  10, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 21:01:56] [Game 175/200] Score: 23  -25, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-09 21:01:59] [Game 174/200] Score: 14  -7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 21:02:20] [Game 173/200] Score: 11  -22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 21:02:24] [Game 176/200] Score: -7  12, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-09 21:04:10] [Game 178/200] Score: 16  -25, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 21:04:53] [Game 177/200] Score: 58  -32, Rounds: 7, Moves: 70, Winner: P0, End: normal_end
+[2026-01-09 21:06:14] [Game 182/200] Score: 20  -21, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-09 21:06:39] [Game 180/200] Score: -38  10, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 21:06:56] [Game 183/200] Score: 3  26, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 21:07:01] [Game 181/200] Score: 33  29, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 21:07:03] [Game 184/200] Score: 1  -13, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 21:07:13] [Game 179/200] Score: 34  -43, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-09 21:08:44] [Game 185/200] Score: 12  -9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 21:09:32] [Game 186/200] Score: 21  13, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 21:10:51] [Game 187/200] Score: 20  -16, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 21:11:21] [Game 188/200] Score: 7  -19, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 21:11:28] [Game 191/200] Score: 22  26, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 21:11:32] [Game 190/200] Score: 30  33, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 21:11:39] [Game 192/200] Score: 46  23, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-09 21:11:51] [Game 189/200] Score: -36  11, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2026-01-09 21:13:31] [Game 193/200] Score: 22  -11, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 21:14:36] [Game 194/200] Score: -1  -1, Rounds: 5, Moves: 57, Winner: DRAW, End: normal_end
+[2026-01-09 21:15:43] [Game 198/200] Score: 8  8, Rounds: 5, Moves: 49, Winner: DRAW, End: normal_end
+[2026-01-09 21:15:47] [Game 197/200] Score: 14  -11, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 21:15:59] [Game 199/200] Score: 19  -28, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 21:16:07] [Game 195/200] Score: 51  22, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 21:16:19] [Game 200/200] Score: 32  14, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 21:17:35] [Game 196/200] Score: 25  -45, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2026-01-09 21:17:35] [Loop] MCTS Stats: avg_visits=398.2, avg_entropy=2.03, reuse_rate=100.0%, avg_moves=54.0
+[2026-01-09 21:17:35] [Loop] Buffer size: 34182
+[2026-01-09 21:17:35] [Loop] Training for 10 epochs...
+[2026-01-09 21:26:06] [Loop] Training Finished. Avg Loss: 2.2361
+[2026-01-09 21:26:06] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_3.pt
+[2026-01-09 21:26:07] Starting validation for Cycle 3...
+[2026-01-09 21:26:07] vs RandomPlus: Playing 10 games...
+[2026-01-09 21:28:26] Game 1/10: WIN (8   4)
+[2026-01-09 21:31:14] Game 2/10: WIN (45   29)
+[2026-01-09 21:33:27] Game 3/10: WIN (43   -10)
+[2026-01-09 21:35:38] Game 4/10: WIN (32   -1)
+[2026-01-09 21:38:27] Game 5/10: WIN (47   27)
+[2026-01-09 21:40:40] Game 6/10: WIN (25   1)
+[2026-01-09 21:43:05] Game 7/10: WIN (-1   -30)
+[2026-01-09 21:45:43] Game 8/10: WIN (23   10)
+[2026-01-09 21:48:04] Game 9/10: WIN (28   -2)
+[2026-01-09 21:50:09] Game 10/10: WIN (37   4)
+[2026-01-09 21:50:09] vs RandomPlus: Wins=10, Losses=0, Draws=0 (WR: 1.00)
+[2026-01-09 21:50:09] vs PreviousCycle: Playing 10 games...
+[2026-01-09 21:54:45] Game 1/10: LOSS (13   29)
+[2026-01-09 21:59:24] Game 2/10: LOSS (26   53)
+[2026-01-09 22:04:24] Game 3/10: LOSS (24   43)
+[2026-01-09 22:09:01] Game 4/10: LOSS (32   41)
+[2026-01-09 22:13:25] Game 5/10: WIN (51   35)
+[2026-01-09 22:17:39] Game 6/10: LOSS (16   18)
+[2026-01-09 22:22:26] Game 7/10: LOSS (1   13)
+[2026-01-09 22:27:23] Game 8/10: LOSS (23   25)
+[2026-01-09 22:31:48] Game 9/10: LOSS (26   41)
+[2026-01-09 22:36:30] Game 10/10: WIN (45   40)
+[2026-01-09 22:36:30] vs PreviousCycle: Wins=2, Losses=8, Draws=0 (WR: 0.20)
+[2026-01-09 22:36:30] 
+=== Cycle 4/50 ===
+[2026-01-09 22:36:30] Params: {'n_games': 200, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 20, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self', 'validation_opponent': 'RandomPlus'}
+[2026-01-09 22:36:30] [Loop] Generating 200 games (Sims: 300)...
+[2026-01-09 22:40:46] [Game 3/200] Score: -15  10, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-09 22:40:53] [Game 6/200] Score: 4  7, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-09 22:40:54] [Game 7/200] Score: 14  -7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 22:40:55] [Game 5/200] Score: -10  26, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 22:41:03] [Game 4/200] Score: 54  22, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 22:41:04] [Game 8/200] Score: -7  35, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 22:41:11] [Game 1/200] Score: 16  -25, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 22:41:16] [Game 2/200] Score: 9  -36, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 22:45:00] [Game 9/200] Score: 8  34, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 22:45:21] [Game 10/200] Score: -13  19, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 22:45:28] [Game 12/200] Score: 19  -19, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 22:45:31] [Game 11/200] Score: -1  29, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 22:45:33] [Game 13/200] Score: 11  -21, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 22:45:49] [Game 15/200] Score: 18  -13, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 22:46:37] [Game 14/200] Score: 14  -8, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 22:46:38] [Game 16/200] Score: 7  -16, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 22:49:55] [Game 19/200] Score: 9  -6, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 22:50:03] [Game 17/200] Score: -8  3, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 22:50:04] [Game 20/200] Score: -7  -13, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 22:50:11] [Game 22/200] Score: 4  0, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 22:50:25] [Game 21/200] Score: 3  40, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 22:50:50] [Game 18/200] Score: 7  3, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 22:51:20] [Game 24/200] Score: 4  -4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 22:52:23] [Game 23/200] Score: 0  -34, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 22:54:19] [Game 25/200] Score: -6  -38, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 22:54:38] [Game 28/200] Score: 4  26, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 22:54:51] [Game 27/200] Score: 31  18, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 22:55:12] [Game 29/200] Score: 28  -31, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 22:55:15] [Game 30/200] Score: 17  9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 22:55:16] [Game 26/200] Score: -28  9, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-09 22:55:45] [Game 31/200] Score: 21  -11, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 22:56:59] [Game 32/200] Score: 17  -18, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 22:59:16] [Game 33/200] Score: 0  -33, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 22:59:25] [Game 35/200] Score: -3  24, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 22:59:32] [Game 34/200] Score: 21  14, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 23:00:03] [Game 37/200] Score: 8  19, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 23:00:13] [Game 36/200] Score: -2  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:00:19] [Game 39/200] Score: 15  -1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:00:29] [Game 38/200] Score: -7  -10, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 23:01:53] [Game 40/200] Score: -14  14, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 23:03:29] [Game 41/200] Score: 22  2, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:03:55] [Game 42/200] Score: 6  33, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 23:04:07] [Game 43/200] Score: 15  22, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:04:34] [Game 44/200] Score: 19  1, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 23:04:44] [Game 47/200] Score: -15  34, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 23:04:50] [Game 46/200] Score: 17  -11, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:05:00] [Game 45/200] Score: 32  -19, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 23:06:14] [Game 48/200] Score: 55  50, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 23:07:44] [Game 49/200] Score: 27  32, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:08:15] [Game 50/200] Score: 10  -1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:08:36] [Game 51/200] Score: 30  -5, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:09:09] [Game 52/200] Score: 17  7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:09:09] [Game 54/200] Score: -2  -18, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 23:09:15] [Game 53/200] Score: 11  3, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 23:09:37] [Game 55/200] Score: -8  4, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 23:10:38] [Game 56/200] Score: 34  6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 23:12:39] [Game 57/200] Score: 7  10, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 23:13:02] [Game 58/200] Score: 46  18, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-09 23:13:42] [Game 60/200] Score: 0  -3, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:13:47] [Game 59/200] Score: 13  8, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2026-01-09 23:13:56] [Game 62/200] Score: 53  0, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-09 23:14:55] [Game 61/200] Score: -20  -52, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2026-01-09 23:15:09] [Game 63/200] Score: 33  -14, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 23:15:52] [Game 64/200] Score: 9  12, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 23:17:40] [Game 66/200] Score: -24  21, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:18:18] [Game 68/200] Score: 27  -37, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 23:18:19] [Game 69/200] Score: 19  18, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:19:03] [Game 65/200] Score: 40  -28, Rounds: 7, Moves: 71, Winner: P0, End: normal_end
+[2026-01-09 23:19:18] [Game 70/200] Score: 7  7, Rounds: 5, Moves: 50, Winner: DRAW, End: normal_end
+[2026-01-09 23:19:29] [Game 67/200] Score: -14  9, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-09 23:19:34] [Game 71/200] Score: 33  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:20:16] [Game 72/200] Score: -12  6, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 23:22:05] [Game 73/200] Score: 29  1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:23:11] [Game 74/200] Score: 0  -40, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:23:29] [Game 76/200] Score: -7  27, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 23:23:58] [Game 77/200] Score: 10  -27, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:24:11] [Game 75/200] Score: -24  -40, Rounds: 7, Moves: 65, Winner: P0, End: normal_end
+[2026-01-09 23:24:15] [Game 78/200] Score: 10  12, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:25:05] [Game 80/200] Score: -3  -8, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 23:25:12] [Game 79/200] Score: -8  18, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 23:27:44] [Game 82/200] Score: 41  17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:27:44] [Game 83/200] Score: -5  -13, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:28:34] [Game 81/200] Score: -9  -27, Rounds: 7, Moves: 73, Winner: P0, End: normal_end
+[2026-01-09 23:28:38] [Game 86/200] Score: 3  -24, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:28:44] [Game 84/200] Score: 15  -53, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 23:29:08] [Game 85/200] Score: -4  31, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 23:29:27] [Game 87/200] Score: -16  5, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:29:44] [Game 88/200] Score: -5  -3, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:32:11] [Game 89/200] Score: 22  19, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 23:32:32] [Game 90/200] Score: 13  13, Rounds: 5, Moves: 54, Winner: DRAW, End: normal_end
+[2026-01-09 23:33:10] [Game 92/200] Score: 15  31, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:33:30] [Game 91/200] Score: 14  20, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 23:33:52] [Game 94/200] Score: 7  22, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 23:34:06] [Game 95/200] Score: -43  -17, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 23:34:43] [Game 93/200] Score: -16  -7, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-09 23:35:43] [Game 96/200] Score: 39  -25, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-09 23:37:01] [Game 98/200] Score: 25  31, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 23:37:33] [Game 97/200] Score: -15  18, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-09 23:37:33] [Game 99/200] Score: 20  24, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:37:51] [Game 101/200] Score: 19  -9, Rounds: 5, Moves: 45, Winner: P0, End: normal_end
+[2026-01-09 23:38:14] [Game 100/200] Score: 1  26, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-09 23:38:35] [Game 102/200] Score: 21  39, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 23:39:14] [Game 103/200] Score: -7  35, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:40:18] [Game 104/200] Score: 2  24, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:41:25] [Game 105/200] Score: 16  10, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-09 23:41:53] [Game 107/200] Score: 4  22, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:42:21] [Game 108/200] Score: 10  -13, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 23:42:45] [Game 106/200] Score: 20  18, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-09 23:42:49] [Game 109/200] Score: -13  -3, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-09 23:43:01] [Game 110/200] Score: 1  19, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:43:57] [Game 111/200] Score: 9  -15, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:45:19] [Game 112/200] Score: 17  -40, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-09 23:46:32] [Game 114/200] Score: 9  -5, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-09 23:47:00] [Game 115/200] Score: 38  13, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-09 23:47:28] [Game 117/200] Score: 5  30, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-09 23:47:41] [Game 116/200] Score: -33  2, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-09 23:47:52] [Game 118/200] Score: 13  3, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 23:47:55] [Game 113/200] Score: -40  12, Rounds: 7, Moves: 77, Winner: P1, End: normal_end
+[2026-01-09 23:48:32] [Game 119/200] Score: -12  23, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:49:54] [Game 120/200] Score: 10  14, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 23:51:14] [Game 121/200] Score: -15  -3, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-09 23:51:50] [Game 123/200] Score: 0  6, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-09 23:52:12] [Game 126/200] Score: 21  -1, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-09 23:52:24] [Game 124/200] Score: 24  43, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-09 23:52:29] [Game 122/200] Score: 54  -2, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-09 23:52:42] [Game 125/200] Score: 34  -6, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-09 23:54:05] [Game 127/200] Score: 8  -29, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 23:54:11] [Game 128/200] Score: 1  -5, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-09 23:55:56] [Game 129/200] Score: 28  46, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-09 23:56:43] [Game 130/200] Score: 13  13, Rounds: 5, Moves: 55, Winner: DRAW, End: normal_end
+[2026-01-09 23:57:15] [Game 131/200] Score: 29  21, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 23:57:43] [Game 134/200] Score: 3  4, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-09 23:58:02] [Game 133/200] Score: 27  -24, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-09 23:58:12] [Game 132/200] Score: -9  -24, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-09 23:58:23] [Game 135/200] Score: 9  -2, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-09 23:58:53] [Game 136/200] Score: 8  14, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 00:01:22] [Game 137/200] Score: 30  -40, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 00:01:44] [Game 138/200] Score: -50  -1, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 00:02:17] [Game 139/200] Score: -5  -40, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 00:02:41] [Game 141/200] Score: -8  30, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 00:02:51] [Game 143/200] Score: -26  34, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 00:02:52] [Game 142/200] Score: 10  30, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 00:03:12] [Game 140/200] Score: 19  -2, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 00:03:25] [Game 144/200] Score: 17  52, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 00:05:53] [Game 145/200] Score: 9  -4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 00:06:10] [Game 146/200] Score: 13  -4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:06:35] [Game 147/200] Score: 46  19, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 00:07:55] [Game 150/200] Score: 24  12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 00:07:57] [Game 148/200] Score: 33  -38, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 00:08:32] [Game 152/200] Score: 9  41, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 00:09:13] [Game 149/200] Score: 1  -44, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-10 00:09:45] [Game 151/200] Score: 27  -51, Rounds: 7, Moves: 70, Winner: P0, End: normal_end
+[2026-01-10 00:11:16] [Game 155/200] Score: -7  -8, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 00:11:24] [Game 154/200] Score: 15  -21, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 00:11:59] [Game 153/200] Score: -34  -4, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 00:12:09] [Game 156/200] Score: 1  0, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 00:12:35] [Game 157/200] Score: -18  -1, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 00:13:07] [Game 158/200] Score: 25  -12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 00:13:48] [Game 159/200] Score: 13  -6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 00:15:24] [Game 160/200] Score: 13  21, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 00:15:51] [Game 161/200] Score: -8  -30, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 00:15:57] [Game 162/200] Score: -14  3, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 00:17:05] [Game 164/200] Score: 12  2, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 00:17:13] [Game 165/200] Score: -10  13, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 00:17:29] [Game 166/200] Score: 14  -1, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:17:30] [Game 163/200] Score: -29  35, Rounds: 6, Moves: 66, Winner: P1, End: normal_end
+[2026-01-10 00:18:00] [Game 167/200] Score: 8  25, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 00:19:28] [Game 168/200] Score: 33  28, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 00:20:49] [Game 170/200] Score: 13  -36, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:21:08] [Game 169/200] Score: 5  51, Rounds: 6, Moves: 59, Winner: P1, End: normal_end
+[2026-01-10 00:21:54] [Game 172/200] Score: 1  47, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 00:22:06] [Game 171/200] Score: 28  4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 00:22:17] [Game 173/200] Score: 17  -19, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:22:25] [Game 174/200] Score: 49  1, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 00:23:29] [Game 175/200] Score: 21  6, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 00:23:47] [Game 176/200] Score: -6  27, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 00:25:32] [Game 177/200] Score: -23  -1, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 00:26:18] [Game 178/200] Score: -1  23, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 00:26:33] [Game 180/200] Score: -4  9, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 00:26:48] [Game 181/200] Score: 5  27, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 00:27:20] [Game 182/200] Score: 28  2, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 00:28:20] [Game 179/200] Score: -43  2, Rounds: 7, Moves: 68, Winner: P1, End: normal_end
+[2026-01-10 00:28:23] [Game 183/200] Score: 6  -7, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 00:29:23] [Game 184/200] Score: 20  44, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 00:30:07] [Game 185/200] Score: 24  64, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 00:30:41] [Game 186/200] Score: 4  -23, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 00:31:09] [Game 187/200] Score: 4  19, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 00:31:44] [Game 189/200] Score: 13  -5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 00:32:30] [Game 188/200] Score: 17  2, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 00:32:48] [Game 190/200] Score: 32  22, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:32:48] [Game 191/200] Score: 8  7, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 00:34:10] [Game 192/200] Score: 31  53, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 00:35:42] [Game 193/200] Score: -12  -30, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 00:35:45] [Game 194/200] Score: 35  2, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 00:36:37] [Game 195/200] Score: 40  32, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 00:37:09] [Game 199/200] Score: -26  -6, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 00:37:17] [Game 196/200] Score: -31  -9, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-10 00:37:28] [Game 197/200] Score: 9  -7, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 00:37:30] [Game 198/200] Score: -11  -29, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 00:38:24] [Game 200/200] Score: -3  -17, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 00:38:24] [Loop] MCTS Stats: avg_visits=398.3, avg_entropy=2.02, reuse_rate=100.0%, avg_moves=54.8
+[2026-01-10 00:38:24] [Loop] Buffer size: 45148
+[2026-01-10 00:38:24] [Loop] Training for 10 epochs...
+[2026-01-10 00:49:33] [Loop] Training Finished. Avg Loss: 2.2489
+[2026-01-10 00:49:33] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_4.pt
+[2026-01-10 00:49:35] Starting validation for Cycle 4...
+[2026-01-10 00:49:35] vs RandomPlus: Playing 10 games...
+[2026-01-10 00:51:52] Game 1/10: DRAW (27   27)
+[2026-01-10 00:53:58] Game 2/10: WIN (39   11)
+[2026-01-10 00:56:15] Game 3/10: WIN (20   12)
+[2026-01-10 00:58:31] Game 4/10: WIN (9   -17)
+[2026-01-10 01:01:22] Game 5/10: WIN (33   -3)
+[2026-01-10 01:04:12] Game 6/10: WIN (23   1)
+[2026-01-10 01:06:23] Game 7/10: WIN (30   11)
+[2026-01-10 01:09:06] Game 8/10: WIN (32   -14)
+[2026-01-10 01:11:31] Game 9/10: WIN (20   7)
+[2026-01-10 01:13:36] Game 10/10: WIN (-6   -22)
+[2026-01-10 01:13:36] vs RandomPlus: Wins=9, Losses=0, Draws=1 (WR: 0.90)
+[2026-01-10 01:13:37] vs PreviousCycle: Playing 10 games...
+[2026-01-10 01:18:01] Game 1/10: LOSS (41   49)
+[2026-01-10 01:22:30] Game 2/10: WIN (26   10)
+[2026-01-10 01:28:04] Game 3/10: WIN (33   16)
+[2026-01-10 01:32:51] Game 4/10: LOSS (30   40)
+[2026-01-10 01:37:22] Game 5/10: LOSS (14   15)
+[2026-01-10 01:41:57] Game 6/10: WIN (0   -1)
+[2026-01-10 01:46:21] Game 7/10: LOSS (21   23)
+[2026-01-10 01:51:24] Game 8/10: WIN (40   31)
+[2026-01-10 01:56:02] Game 9/10: WIN (31   19)
+[2026-01-10 02:00:52] Game 10/10: LOSS (14   29)
+[2026-01-10 02:00:52] vs PreviousCycle: Wins=5, Losses=5, Draws=0 (WR: 0.50)
+[2026-01-10 02:00:52] 
+=== Cycle 5/50 ===
+[2026-01-10 02:00:52] Params: {'n_games': 200, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 2.0, 'temp_threshold': 20, 'noise_alpha': 0.3, 'noise_eps': 0.25, 'opponent_type': 'self', 'validation_opponent': 'RandomPlus'}
+[2026-01-10 02:00:52] [Loop] Generating 200 games (Sims: 300)...
+[2026-01-10 02:05:25] [Game 4/200] Score: 10  18, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 02:05:27] [Game 1/200] Score: 36  -22, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 02:05:41] [Game 6/200] Score: 32  26, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 02:05:48] [Game 3/200] Score: 25  23, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 02:05:52] [Game 5/200] Score: -4  33, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 02:05:53] [Game 2/200] Score: 15  6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 02:05:57] [Game 8/200] Score: 23  22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 02:06:28] [Game 7/200] Score: 31  -30, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 02:09:57] [Game 12/200] Score: 5  8, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 02:10:00] [Game 9/200] Score: 22  13, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 02:10:28] [Game 13/200] Score: 21  38, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 02:10:36] [Game 10/200] Score: 53  3, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 02:10:39] [Game 16/200] Score: 26  30, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 02:10:49] [Game 15/200] Score: 0  -8, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 02:11:06] [Game 14/200] Score: 10  -17, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 02:11:42] [Game 11/200] Score: 41  20, Rounds: 6, Moves: 68, Winner: P0, End: normal_end
+[2026-01-10 02:27:59] [Game 17/200] Score: 24  -28, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 02:28:01] [Game 19/200] Score: 11  -1, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 02:28:07] [Game 18/200] Score: -16  25, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 02:36:05] [Game 20/200] Score: 9  2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 02:36:07] [Game 22/200] Score: 1  18, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 02:36:10] [Game 21/200] Score: -1  -24, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 02:53:45] [Game 24/200] Score: 6  31, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 02:53:51] [Game 23/200] Score: -50  17, Rounds: 7, Moves: 72, Winner: P1, End: normal_end
+[2026-01-10 02:57:47] [Game 26/200] Score: 13  28, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 02:58:16] [Game 28/200] Score: 37  29, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 02:58:33] [Game 29/200] Score: 19  25, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 03:15:08] [Game 27/200] Score: 14  34, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 03:15:31] [Game 30/200] Score: -23  19, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 03:15:55] [Game 25/200] Score: 10  -54, Rounds: 7, Moves: 76, Winner: P0, End: normal_end
+[2026-01-10 03:16:46] [Game 31/200] Score: -6  -13, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 03:34:05] [Game 32/200] Score: -32  8, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 03:34:55] [Game 33/200] Score: 27  -10, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 03:35:02] [Game 35/200] Score: 24  20, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 03:35:40] [Game 34/200] Score: -29  5, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 03:46:19] [Game 36/200] Score: 8  -11, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 03:46:46] [Game 37/200] Score: 4  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 03:47:06] [Game 38/200] Score: 6  -23, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 04:05:07] [Game 39/200] Score: -1  16, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 04:05:45] [Game 40/200] Score: 14  14, Rounds: 6, Moves: 64, Winner: DRAW, End: normal_end
+[2026-01-10 04:05:49] [Game 41/200] Score: 42  -8, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 04:05:51] [Game 42/200] Score: -21  17, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 04:09:25] [Game 43/200] Score: 20  7, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 04:09:49] [Game 44/200] Score: 15  -37, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 04:09:58] [Game 46/200] Score: -11  11, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 04:10:31] [Game 45/200] Score: 38  0, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-10 04:27:38] [Game 47/200] Score: 1  -21, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 04:28:07] [Game 50/200] Score: -6  -8, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 04:28:33] [Game 49/200] Score: 17  -17, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 04:37:56] [Game 48/200] Score: 0  15, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-10 04:38:56] [Game 51/200] Score: 20  -44, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 04:39:14] [Game 53/200] Score: 8  2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 04:39:47] [Game 54/200] Score: 5  -2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 04:40:08] [Game 52/200] Score: -4  41, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 04:52:24] [Game 55/200] Score: 19  31, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 04:52:44] [Game 57/200] Score: -18  -18, Rounds: 5, Moves: 51, Winner: DRAW, End: normal_end
+[2026-01-10 05:08:07] [Game 58/200] Score: 14  16, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 05:08:14] [Game 56/200] Score: -10  -7, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 05:09:22] [Game 60/200] Score: 3  -40, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 05:09:50] [Game 61/200] Score: 10  28, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 05:10:00] [Game 59/200] Score: 39  32, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 05:26:34] [Game 62/200] Score: 39  -24, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 05:28:27] [Game 63/200] Score: -4  31, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 05:28:48] [Game 66/200] Score: 13  14, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-10 05:29:12] [Game 64/200] Score: 24  4, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 05:29:49] [Game 65/200] Score: -5  28, Rounds: 6, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 05:30:25] [Game 68/200] Score: 16  0, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 05:30:46] [Game 67/200] Score: 29  30, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 05:35:53] [Game 69/200] Score: 20  14, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 05:36:16] [Game 70/200] Score: -1  54, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 05:54:06] [Game 71/200] Score: -8  14, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 05:55:18] [Game 73/200] Score: -1  15, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 05:55:30] [Game 74/200] Score: -17  14, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 05:55:49] [Game 72/200] Score: -27  4, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 05:56:19] [Game 75/200] Score: -9  7, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 06:09:51] [Game 76/200] Score: 10  -17, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 06:10:21] [Game 77/200] Score: 6  8, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 06:10:50] [Game 78/200] Score: 29  29, Rounds: 5, Moves: 54, Winner: DRAW, End: normal_end
+[2026-01-10 06:12:30] [Game 79/200] Score: -19  28, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 06:27:07] [Game 81/200] Score: 28  -21, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 06:27:31] [Game 82/200] Score: 44  50, Rounds: 5, Moves: 60, Winner: P1, End: normal_end
+[2026-01-10 06:27:49] [Game 84/200] Score: 12  15, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 06:27:56] [Game 83/200] Score: 9  1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 06:27:57] [Game 80/200] Score: 23  -41, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 06:43:58] [Game 85/200] Score: -6  5, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 06:44:28] [Game 86/200] Score: -16  15, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 06:47:05] [Game 87/200] Score: -45  24, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 06:48:10] [Game 88/200] Score: 26  25, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 06:48:28] [Game 92/200] Score: 30  -2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 06:48:31] [Game 89/200] Score: -16  -22, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 06:48:45] [Game 90/200] Score: 15  -20, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 06:49:09] [Game 91/200] Score: -20  -31, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 06:49:29] [Game 93/200] Score: 34  -20, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 06:59:58] [Game 94/200] Score: -2  -9, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 07:04:11] [Game 95/200] Score: -12  -11, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 07:04:57] [Game 97/200] Score: -8  1, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 07:05:10] [Game 96/200] Score: 32  -19, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 07:05:36] [Game 99/200] Score: 12  28, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 07:11:04] [Game 100/200] Score: -14  31, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 07:11:32] [Game 102/200] Score: -3  2, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 07:11:36] [Game 98/200] Score: 28  -13, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 07:31:13] [Game 103/200] Score: 8  21, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 07:31:24] [Game 101/200] Score: 18  -71, Rounds: 8, Moves: 91, Winner: P0, End: normal_end
+[2026-01-10 07:32:05] [Game 104/200] Score: 6  5, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 07:49:18] [Game 106/200] Score: 29  25, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 07:49:20] [Game 105/200] Score: 1  -28, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 07:49:31] [Game 107/200] Score: 28  25, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 07:50:20] [Game 109/200] Score: 29  -20, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 07:51:15] [Game 108/200] Score: 39  22, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 07:59:12] [Game 110/200] Score: 40  26, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 07:59:30] [Game 111/200] Score: -8  22, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 08:00:10] [Game 112/200] Score: 13  12, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 08:12:01] [Game 115/200] Score: 9  -21, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 08:12:12] [Game 114/200] Score: 17  -17, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 08:13:22] [Game 113/200] Score: 22  -17, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 08:13:47] [Game 117/200] Score: 37  19, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 08:14:17] [Game 116/200] Score: 6  -10, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 08:31:25] [Game 118/200] Score: 12  22, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:32:50] [Game 119/200] Score: 38  27, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 08:33:01] [Game 120/200] Score: 11  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:33:07] [Game 121/200] Score: -7  9, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 08:33:27] [Game 122/200] Score: 9  40, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:35:02] [Game 123/200] Score: -50  6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:35:12] [Game 124/200] Score: 13  -11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 08:35:57] [Game 125/200] Score: -2  10, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 08:38:48] [Game 126/200] Score: 25  -20, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 08:39:14] [Game 129/200] Score: 26  38, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 08:39:45] [Game 128/200] Score: -14  25, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 08:40:09] [Game 130/200] Score: 13  -4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 08:41:21] [Game 127/200] Score: -14  -25, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 08:41:40] [Game 131/200] Score: -4  -9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 08:42:23] [Game 132/200] Score: 14  25, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 08:42:49] [Game 133/200] Score: -21  24, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 08:45:43] [Game 136/200] Score: -4  -19, Rounds: 5, Moves: 46, Winner: P0, End: normal_end
+[2026-01-10 08:46:55] [Game 137/200] Score: 16  -20, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 08:47:10] [Game 135/200] Score: 11  -8, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 08:47:15] [Game 134/200] Score: 5  -41, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 08:48:51] [Game 140/200] Score: 22  12, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 08:48:52] [Game 138/200] Score: -8  8, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 08:49:35] [Game 139/200] Score: -13  8, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 08:51:30] [Game 141/200] Score: 9  33, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 08:52:58] [Game 142/200] Score: 4  8, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:53:58] [Game 143/200] Score: -31  6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 08:54:32] [Game 145/200] Score: 1  -35, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 08:54:35] [Game 144/200] Score: 21  -5, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 08:56:18] [Game 146/200] Score: -4  -13, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 08:56:43] [Game 148/200] Score: -8  21, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 09:01:21] [Game 147/200] Score: -11  -22, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 09:13:29] [Game 149/200] Score: 16  59, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 09:14:34] [Game 150/200] Score: -21  -12, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 09:15:35] [Game 151/200] Score: 6  -22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 09:15:37] [Game 153/200] Score: -9  -11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 09:15:42] [Game 152/200] Score: 1  -41, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 09:16:30] [Game 154/200] Score: -1  -21, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 09:33:37] [Game 155/200] Score: 23  21, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 09:34:29] [Game 156/200] Score: 50  -35, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 09:50:05] [Game 157/200] Score: 27  -5, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 09:50:22] [Game 158/200] Score: 27  24, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 09:51:13] [Game 159/200] Score: 3  -9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 09:51:21] [Game 160/200] Score: -16  -33, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 09:51:40] [Game 161/200] Score: 13  24, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 09:52:06] [Game 163/200] Score: 6  -39, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 09:52:19] [Game 162/200] Score: -23  -3, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 10:00:18] [Game 164/200] Score: 10  -15, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 10:05:27] [Game 165/200] Score: 22  11, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 10:05:51] [Game 166/200] Score: -9  -56, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 10:10:32] [Game 168/200] Score: 16  30, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 10:10:45] [Game 167/200] Score: 36  -33, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 10:10:59] [Game 169/200] Score: -5  -7, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 10:11:04] [Game 171/200] Score: 5  20, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 10:11:32] [Game 170/200] Score: -6  6, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 10:12:56] [Game 172/200] Score: 22  31, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 10:28:46] [Game 173/200] Score: 63  -10, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 10:29:22] [Game 174/200] Score: 5  -32, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 10:35:30] [Game 175/200] Score: 11  13, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 10:35:41] [Game 177/200] Score: 15  -6, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 10:36:02] [Game 178/200] Score: 2  -17, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 10:36:40] [Game 176/200] Score: 21  6, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 10:40:21] [Game 179/200] Score: 17  22, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 10:40:38] [Game 180/200] Score: 15  -9, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 10:41:06] [Game 181/200] Score: -6  14, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 10:42:16] [Game 182/200] Score: 43  6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 10:48:24] [Game 184/200] Score: -38  -1, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 10:48:31] [Game 185/200] Score: -3  19, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 11:04:44] [Game 186/200] Score: 51  15, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 11:05:01] [Game 183/200] Score: 38  25, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-10 11:05:43] [Game 188/200] Score: 39  12, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 11:05:47] [Game 187/200] Score: 17  3, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 11:07:26] [Game 189/200] Score: 24  41, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-10 11:07:30] [Game 190/200] Score: 39  17, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 11:11:18] [Game 192/200] Score: 5  -9, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 11:11:45] [Game 191/200] Score: 5  -10, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 11:12:01] [Game 193/200] Score: 30  -5, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 11:12:29] [Game 194/200] Score: -17  -31, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 11:13:05] [Game 196/200] Score: 21  31, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 11:13:08] [Game 195/200] Score: -14  34, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 11:26:47] [Game 197/200] Score: 20  -8, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 11:27:03] [Game 198/200] Score: 37  -13, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 11:28:16] [Game 200/200] Score: 5  12, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 11:29:40] [Game 199/200] Score: 45  0, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2026-01-10 11:29:40] [Loop] MCTS Stats: avg_visits=399.3, avg_entropy=2.02, reuse_rate=100.0%, avg_moves=55.1
+[2026-01-10 11:29:40] [Loop] Buffer size: 56161
+[2026-01-10 11:29:40] [Loop] Training for 10 epochs...
+[2026-01-10 11:43:58] [Loop] Training Finished. Avg Loss: 2.2584
+[2026-01-10 11:43:59] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_5.pt
+[2026-01-10 11:44:01] Starting validation for Cycle 5...
+[2026-01-10 11:44:01] vs RandomPlus: Playing 10 games...
+[2026-01-10 11:46:30] Game 1/10: WIN (32   -4)
+[2026-01-10 11:48:38] Game 2/10: WIN (6   -9)
+[2026-01-10 11:51:22] Game 3/10: WIN (36   14)
+[2026-01-10 11:53:35] Game 4/10: WIN (10   -17)
+[2026-01-10 11:56:04] Game 5/10: LOSS (5   9)
+[2026-01-10 11:58:20] Game 6/10: WIN (31   6)
+[2026-01-10 12:00:41] Game 7/10: WIN (41   22)
+[2026-01-10 12:03:15] Game 8/10: WIN (19   10)
+[2026-01-10 12:05:36] Game 9/10: WIN (55   5)
+[2026-01-10 12:07:50] Game 10/10: WIN (7   -5)
+[2026-01-10 12:07:50] vs RandomPlus: Wins=9, Losses=1, Draws=0 (WR: 0.90)
+[2026-01-10 12:07:50] vs PreviousCycle: Playing 10 games...
+[2026-01-10 12:12:39] Game 1/10: LOSS (39   52)
+[2026-01-10 12:17:49] Game 2/10: LOSS (18   29)
+[2026-01-10 12:22:48] Game 3/10: WIN (34   29)
+[2026-01-10 12:27:29] Game 4/10: WIN (57   23)
+[2026-01-10 12:31:59] Game 5/10: LOSS (21   30)
+[2026-01-10 12:36:49] Game 6/10: LOSS (31   52)
+[2026-01-10 12:41:47] Game 7/10: LOSS (4   12)
+[2026-01-10 12:46:14] Game 8/10: WIN (54   33)
+[2026-01-10 12:51:27] Game 9/10: WIN (27   24)
+[2026-01-10 12:56:21] Game 10/10: WIN (8   6)
+[2026-01-10 12:56:21] vs PreviousCycle: Wins=5, Losses=5, Draws=0 (WR: 0.50)
+[2026-01-10 12:56:21] 
+=== Cycle 6/50 ===
+[2026-01-10 12:56:21] Params: {'n_games': 400, 'simulations': 300, 'epochs': 10, 'lr': 0.0005, 'cpuct': 1.6, 'temp_threshold': 15, 'noise_alpha': 0.2, 'noise_eps': 0.2, 'opponent_type': 'self', 'validation_opponent': 'Heuristic'}
+[2026-01-10 12:56:21] [Loop] Generating 400 games (Sims: 300)...
+[2026-01-10 13:00:40] [Game 2/400] Score: 25  9, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 13:00:52] [Game 4/400] Score: 8  -8, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 13:01:00] [Game 5/400] Score: -29  4, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 13:01:08] [Game 1/400] Score: -6  32, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 13:01:11] [Game 8/400] Score: 21  -7, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:01:45] [Game 3/400] Score: 17  -5, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 13:02:09] [Game 7/400] Score: 25  21, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 13:02:22] [Game 6/400] Score: 14  7, Rounds: 6, Moves: 71, Winner: P0, End: normal_end
+[2026-01-10 13:05:11] [Game 10/400] Score: 22  -9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:05:17] [Game 9/400] Score: 28  24, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:05:19] [Game 11/400] Score: 24  30, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 13:05:38] [Game 12/400] Score: 26  21, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:05:48] [Game 13/400] Score: -2  -11, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:06:12] [Game 14/400] Score: 42  34, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:06:44] [Game 16/400] Score: 15  23, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 13:06:48] [Game 15/400] Score: 16  -1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:09:55] [Game 17/400] Score: -7  12, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 13:09:57] [Game 18/400] Score: -19  2, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 13:10:09] [Game 19/400] Score: 41  35, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 13:10:18] [Game 20/400] Score: 9  -34, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 13:10:32] [Game 21/400] Score: 13  -12, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:10:38] [Game 22/400] Score: 26  10, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:10:57] [Game 24/400] Score: 35  20, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 13:11:36] [Game 23/400] Score: 6  31, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 13:14:22] [Game 26/400] Score: 18  21, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-10 13:14:45] [Game 25/400] Score: -2  18, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 13:15:04] [Game 27/400] Score: 17  40, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 13:15:04] [Game 30/400] Score: 16  -15, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:15:20] [Game 28/400] Score: 29  -31, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 13:15:27] [Game 31/400] Score: -20  6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 13:15:28] [Game 29/400] Score: 22  13, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 13:16:54] [Game 32/400] Score: 29  -1, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 13:19:01] [Game 34/400] Score: 26  -4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:19:05] [Game 33/400] Score: 13  -16, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 13:19:42] [Game 36/400] Score: 27  14, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:20:10] [Game 37/400] Score: 17  14, Rounds: 5, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 13:20:12] [Game 39/400] Score: 34  -13, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 13:20:19] [Game 38/400] Score: 22  -4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 13:20:59] [Game 35/400] Score: 21  6, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-10 13:21:36] [Game 40/400] Score: 34  19, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:23:42] [Game 42/400] Score: -1  9, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 13:24:32] [Game 45/400] Score: 23  -2, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 13:24:38] [Game 41/400] Score: 2  -49, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 13:24:40] [Game 46/400] Score: 5  12, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 13:24:48] [Game 44/400] Score: 33  41, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 13:25:14] [Game 43/400] Score: 1  2, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 13:25:29] [Game 47/400] Score: 13  15, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 13:26:04] [Game 48/400] Score: -6  -8, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 13:28:14] [Game 49/400] Score: 36  -34, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:28:53] [Game 51/400] Score: 10  16, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 13:28:59] [Game 50/400] Score: 24  18, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:29:01] [Game 52/400] Score: 27  41, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 13:29:22] [Game 53/400] Score: -55  16, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 13:29:35] [Game 54/400] Score: 20  -20, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:29:58] [Game 55/400] Score: 33  3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:30:46] [Game 56/400] Score: 17  -2, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 13:32:35] [Game 57/400] Score: 1  26, Rounds: 5, Moves: 46, Winner: P1, End: normal_end
+[2026-01-10 13:33:28] [Game 58/400] Score: -10  48, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 13:33:36] [Game 60/400] Score: 52  25, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 13:33:44] [Game 59/400] Score: 22  27, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 13:33:45] [Game 61/400] Score: 5  -24, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:34:05] [Game 62/400] Score: -5  19, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 13:34:15] [Game 63/400] Score: 6  10, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 13:35:33] [Game 64/400] Score: 2  -15, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:37:21] [Game 65/400] Score: 24  -8, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 13:37:58] [Game 66/400] Score: 16  24, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 13:38:05] [Game 68/400] Score: 18  11, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 13:38:27] [Game 67/400] Score: 31  -13, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:38:30] [Game 70/400] Score: 5  -26, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 13:38:44] [Game 71/400] Score: 34  17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:39:08] [Game 69/400] Score: 23  -1, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 13:40:17] [Game 72/400] Score: 33  9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:41:55] [Game 73/400] Score: 51  36, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:42:22] [Game 74/400] Score: 5  32, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 13:42:33] [Game 75/400] Score: 20  17, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:42:44] [Game 76/400] Score: 35  19, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:43:13] [Game 78/400] Score: 12  11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:44:07] [Game 79/400] Score: 25  -25, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 13:45:21] [Game 80/400] Score: -15  22, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 13:45:35] [Game 77/400] Score: -9  -75, Rounds: 8, Moves: 88, Winner: P0, End: normal_end
+[2026-01-10 13:46:22] [Game 81/400] Score: -5  -9, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:47:12] [Game 83/400] Score: -20  16, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 13:47:26] [Game 84/400] Score: 7  25, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 13:47:54] [Game 82/400] Score: 19  31, Rounds: 6, Moves: 64, Winner: P1, End: normal_end
+[2026-01-10 13:48:04] [Game 86/400] Score: -4  12, Rounds: 5, Moves: 47, Winner: P1, End: normal_end
+[2026-01-10 13:48:12] [Game 85/400] Score: 23  44, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 13:49:40] [Game 88/400] Score: 41  33, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:49:41] [Game 87/400] Score: 40  28, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:51:08] [Game 89/400] Score: -5  -7, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 13:51:29] [Game 90/400] Score: 13  7, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 13:52:24] [Game 92/400] Score: 18  -27, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:52:35] [Game 94/400] Score: 21  29, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 13:52:54] [Game 91/400] Score: -34  29, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 13:53:23] [Game 93/400] Score: -12  6, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 13:53:59] [Game 95/400] Score: 6  -1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:55:31] [Game 96/400] Score: 32  -38, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 13:55:32] [Game 97/400] Score: 36  19, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 13:56:09] [Game 98/400] Score: 16  -14, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 13:56:49] [Game 99/400] Score: 10  6, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 13:57:38] [Game 101/400] Score: 24  4, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 13:58:42] [Game 103/400] Score: -4  -4, Rounds: 5, Moves: 54, Winner: DRAW, End: normal_end
+[2026-01-10 13:59:50] [Game 100/400] Score: -7  -55, Rounds: 7, Moves: 75, Winner: P0, End: normal_end
+[2026-01-10 13:59:57] [Game 104/400] Score: 36  27, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:00:00] [Game 105/400] Score: 7  -17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 14:00:25] [Game 106/400] Score: 2  17, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:01:05] [Game 107/400] Score: 17  20, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 14:01:07] [Game 102/400] Score: -69  16, Rounds: 8, Moves: 90, Winner: P1, End: normal_end
+[2026-01-10 14:01:50] [Game 108/400] Score: 10  1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 14:03:26] [Game 109/400] Score: -10  9, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:05:03] [Game 111/400] Score: -8  18, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 14:05:08] [Game 110/400] Score: 17  -17, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 14:05:26] [Game 113/400] Score: 9  2, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 14:05:30] [Game 115/400] Score: 6  20, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 14:05:53] [Game 114/400] Score: -30  23, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:05:58] [Game 112/400] Score: 11  -14, Rounds: 6, Moves: 70, Winner: P0, End: normal_end
+[2026-01-10 14:06:24] [Game 116/400] Score: 21  22, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:07:36] [Game 117/400] Score: 41  21, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:09:54] [Game 120/400] Score: 32  17, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 14:09:56] [Game 118/400] Score: 14  -16, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 14:10:06] [Game 121/400] Score: 40  -25, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 14:10:25] [Game 122/400] Score: -1  10, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:10:39] [Game 119/400] Score: 1  34, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 14:11:08] [Game 123/400] Score: 12  26, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 14:11:24] [Game 124/400] Score: -8  51, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 14:11:57] [Game 125/400] Score: 7  20, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:14:20] [Game 128/400] Score: 18  -10, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 14:14:20] [Game 126/400] Score: 16  32, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:14:37] [Game 127/400] Score: -22  -5, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 14:14:52] [Game 129/400] Score: 4  -2, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 14:15:18] [Game 131/400] Score: 20  -25, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 14:16:30] [Game 133/400] Score: 18  46, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:16:38] [Game 130/400] Score: -26  33, Rounds: 6, Moves: 70, Winner: P1, End: normal_end
+[2026-01-10 14:17:14] [Game 132/400] Score: 18  8, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 14:19:15] [Game 134/400] Score: 26  11, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 14:19:36] [Game 136/400] Score: 37  12, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 14:20:18] [Game 135/400] Score: -22  13, Rounds: 5, Moves: 56, Winner: P1, End: normal_end
+[2026-01-10 14:21:15] [Game 137/400] Score: 20  17, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-10 14:21:56] [Game 138/400] Score: 16  -18, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 14:22:02] [Game 140/400] Score: 14  23, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:22:36] [Game 139/400] Score: 29  -3, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:23:32] [Game 141/400] Score: 23  21, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 14:26:51] [Game 143/400] Score: 2  29, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 14:27:31] [Game 142/400] Score: 24  -4, Rounds: 6, Moves: 67, Winner: P0, End: normal_end
+[2026-01-10 14:27:47] [Game 144/400] Score: 24  -38, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 14:28:15] [Game 147/400] Score: 17  8, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:28:20] [Game 148/400] Score: -4  20, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 14:28:46] [Game 145/400] Score: 4  -35, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 14:29:24] [Game 149/400] Score: -2  0, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:29:26] [Game 146/400] Score: -3  -28, Rounds: 6, Moves: 66, Winner: P0, End: normal_end
+[2026-01-10 14:31:35] [Game 150/400] Score: 31  17, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 14:32:21] [Game 151/400] Score: 35  4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 14:32:27] [Game 152/400] Score: 0  -4, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 14:33:04] [Game 153/400] Score: 13  -8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 14:33:17] [Game 155/400] Score: 9  2, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 14:33:44] [Game 156/400] Score: 19  -14, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:33:59] [Game 157/400] Score: 34  43, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:34:05] [Game 154/400] Score: 20  13, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 14:36:07] [Game 158/400] Score: -3  21, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 14:37:52] [Game 159/400] Score: 6  14, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 14:38:00] [Game 160/400] Score: 16  22, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 14:38:30] [Game 161/400] Score: 20  22, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:38:33] [Game 162/400] Score: 46  23, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 14:39:32] [Game 164/400] Score: -1  29, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 14:39:48] [Game 163/400] Score: 36  -16, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 14:40:24] [Game 165/400] Score: 9  23, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-10 14:42:02] [Game 166/400] Score: 0  23, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 14:42:57] [Game 167/400] Score: 38  32, Rounds: 6, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 14:43:03] [Game 170/400] Score: 21  -24, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:43:06] [Game 168/400] Score: 8  -10, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 14:43:25] [Game 169/400] Score: 12  40, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 14:44:37] [Game 172/400] Score: -14  12, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 14:45:21] [Game 173/400] Score: 21  -13, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 14:45:24] [Game 171/400] Score: -10  12, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 14:46:36] [Game 174/400] Score: 18  23, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 14:47:48] [Game 176/400] Score: -11  18, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 14:47:52] [Game 175/400] Score: 23  56, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 14:47:55] [Game 177/400] Score: -5  34, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 14:47:57] [Game 178/400] Score: 17  7, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 14:49:28] [Game 179/400] Score: -6  35, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:50:11] [Game 181/400] Score: 9  21, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:50:38] [Game 180/400] Score: 33  13, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 14:51:47] [Game 182/400] Score: 11  19, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:52:13] [Game 183/400] Score: 15  8, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 14:52:22] [Game 184/400] Score: 34  -19, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 14:52:33] [Game 186/400] Score: 3  13, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 14:52:59] [Game 185/400] Score: 25  20, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 14:54:16] [Game 187/400] Score: 19  5, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 14:54:56] [Game 188/400] Score: 35  -13, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 14:55:01] [Game 189/400] Score: -12  30, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 14:56:13] [Game 190/400] Score: 25  35, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 14:56:45] [Game 191/400] Score: -16  13, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 14:57:18] [Game 193/400] Score: 30  6, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 14:57:34] [Game 194/400] Score: 36  15, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 14:58:23] [Game 192/400] Score: 28  2, Rounds: 6, Moves: 61, Winner: P0, End: normal_end
+[2026-01-10 14:58:50] [Game 195/400] Score: 32  18, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 15:00:09] [Game 197/400] Score: 9  2, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 15:00:26] [Game 196/400] Score: 0  -5, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 15:01:01] [Game 198/400] Score: -4  23, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:01:45] [Game 199/400] Score: 31  50, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:01:49] [Game 200/400] Score: 19  31, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 15:02:43] [Game 201/400] Score: 15  -11, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 15:02:51] [Game 202/400] Score: 23  -5, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 15:04:21] [Game 203/400] Score: 26  -14, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 15:04:54] [Game 204/400] Score: 43  -14, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:05:49] [Game 206/400] Score: 0  15, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:06:09] [Game 208/400] Score: 8  28, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 15:06:57] [Game 205/400] Score: 19  35, Rounds: 7, Moves: 71, Winner: P1, End: normal_end
+[2026-01-10 15:07:20] [Game 207/400] Score: 23  -22, Rounds: 6, Moves: 59, Winner: P0, End: normal_end
+[2026-01-10 15:07:33] [Game 210/400] Score: 7  -22, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:07:49] [Game 209/400] Score: 9  -25, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 15:09:22] [Game 211/400] Score: 18  21, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:10:19] [Game 212/400] Score: -25  -4, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:11:47] [Game 213/400] Score: 12  26, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:11:49] [Game 214/400] Score: 0  39, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:13:06] [Game 217/400] Score: 13  21, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:13:25] [Game 216/400] Score: 1  8, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:13:32] [Game 218/400] Score: 23  22, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 15:13:36] [Game 215/400] Score: 24  -18, Rounds: 6, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 15:15:42] [Game 220/400] Score: 5  27, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:16:06] [Game 219/400] Score: 8  -19, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 15:16:39] [Game 222/400] Score: 28  -6, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:16:42] [Game 221/400] Score: 12  3, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 15:18:00] [Game 223/400] Score: 9  26, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 15:18:03] [Game 226/400] Score: -12  57, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:18:10] [Game 224/400] Score: -1  22, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:18:45] [Game 225/400] Score: 28  -44, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:20:45] [Game 227/400] Score: 4  -41, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 15:20:55] [Game 228/400] Score: 11  25, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 15:21:02] [Game 229/400] Score: 18  -9, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 15:21:19] [Game 230/400] Score: 26  14, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:22:41] [Game 231/400] Score: 36  42, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:23:04] [Game 233/400] Score: 10  16, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:23:12] [Game 232/400] Score: -7  -26, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:24:13] [Game 234/400] Score: -20  46, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 15:25:54] [Game 235/400] Score: 18  -7, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 15:26:27] [Game 236/400] Score: 19  4, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:27:20] [Game 238/400] Score: -9  12, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:27:40] [Game 237/400] Score: -7  27, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 15:29:18] [Game 241/400] Score: 7  14, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:29:28] [Game 240/400] Score: 2  14, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 15:29:45] [Game 239/400] Score: 0  14, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 15:30:06] [Game 242/400] Score: -30  2, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:31:29] [Game 243/400] Score: 23  17, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 15:31:36] [Game 244/400] Score: 12  -17, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 15:33:06] [Game 245/400] Score: 8  22, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 15:33:23] [Game 246/400] Score: 17  -32, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 15:33:42] [Game 247/400] Score: 35  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:34:19] [Game 249/400] Score: 15  -1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:34:21] [Game 248/400] Score: 31  9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:34:32] [Game 250/400] Score: 12  3, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 15:36:08] [Game 252/400] Score: -4  11, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:36:11] [Game 251/400] Score: -1  -35, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 15:37:53] [Game 254/400] Score: 24  -5, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 15:38:00] [Game 253/400] Score: -2  26, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 15:38:17] [Game 255/400] Score: 10  46, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 15:38:57] [Game 257/400] Score: 7  -4, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:39:07] [Game 256/400] Score: 12  -40, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 15:39:26] [Game 258/400] Score: -33  14, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 15:40:29] [Game 260/400] Score: 14  12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:40:59] [Game 259/400] Score: 7  18, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:42:22] [Game 261/400] Score: 18  18, Rounds: 5, Moves: 51, Winner: DRAW, End: normal_end
+[2026-01-10 15:42:51] [Game 262/400] Score: 3  -31, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:42:58] [Game 263/400] Score: 28  29, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:43:37] [Game 265/400] Score: 18  31, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:44:08] [Game 266/400] Score: -1  5, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:44:56] [Game 264/400] Score: 14  -12, Rounds: 6, Moves: 69, Winner: P0, End: normal_end
+[2026-01-10 15:45:17] [Game 267/400] Score: 4  -33, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:45:34] [Game 268/400] Score: 0  6, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 15:46:46] [Game 269/400] Score: 32  43, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:47:55] [Game 270/400] Score: 42  9, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:48:07] [Game 272/400] Score: 25  26, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:48:18] [Game 271/400] Score: -21  3, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 15:48:54] [Game 273/400] Score: 44  23, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 15:49:57] [Game 274/400] Score: 38  12, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 15:49:58] [Game 275/400] Score: -10  32, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 15:50:24] [Game 276/400] Score: -1  6, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:51:13] [Game 277/400] Score: 20  32, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 15:52:09] [Game 278/400] Score: 5  3, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 15:52:29] [Game 279/400] Score: -16  36, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 15:53:11] [Game 280/400] Score: 12  -1, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 15:53:44] [Game 281/400] Score: 14  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:54:23] [Game 282/400] Score: 9  -1, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 15:54:58] [Game 283/400] Score: 70  26, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 15:55:10] [Game 284/400] Score: -19  18, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 15:55:39] [Game 285/400] Score: 11  -2, Rounds: 5, Moves: 48, Winner: P0, End: normal_end
+[2026-01-10 15:56:42] [Game 286/400] Score: 7  -24, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 15:57:52] [Game 288/400] Score: 22  -5, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 15:58:08] [Game 289/400] Score: 17  19, Rounds: 5, Moves: 50, Winner: P1, End: normal_end
+[2026-01-10 15:59:05] [Game 290/400] Score: 19  -10, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 15:59:13] [Game 287/400] Score: 25  -44, Rounds: 7, Moves: 78, Winner: P0, End: normal_end
+[2026-01-10 15:59:30] [Game 291/400] Score: 11  -12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 16:00:13] [Game 292/400] Score: 17  -5, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:00:22] [Game 293/400] Score: 1  -1, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:02:18] [Game 294/400] Score: 26  -21, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 16:02:35] [Game 295/400] Score: 27  23, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 16:03:27] [Game 296/400] Score: 18  -4, Rounds: 6, Moves: 64, Winner: P0, End: normal_end
+[2026-01-10 16:03:57] [Game 297/400] Score: 21  14, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 16:04:04] [Game 299/400] Score: -12  -5, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:04:29] [Game 298/400] Score: -33  1, Rounds: 5, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 16:04:51] [Game 300/400] Score: 16  -9, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:04:52] [Game 301/400] Score: 27  17, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:06:44] [Game 302/400] Score: -18  5, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:06:58] [Game 303/400] Score: 26  14, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:08:23] [Game 305/400] Score: -2  -4, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 16:08:36] [Game 304/400] Score: 24  4, Rounds: 6, Moves: 60, Winner: P0, End: normal_end
+[2026-01-10 16:08:43] [Game 307/400] Score: 19  13, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 16:08:47] [Game 306/400] Score: -2  1, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 16:09:21] [Game 309/400] Score: 26  -36, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:09:43] [Game 308/400] Score: 1  -12, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:11:19] [Game 310/400] Score: 15  -6, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 16:11:22] [Game 311/400] Score: 23  18, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:12:25] [Game 312/400] Score: 37  46, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:13:12] [Game 314/400] Score: 17  -6, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:13:22] [Game 315/400] Score: 4  -35, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 16:13:38] [Game 313/400] Score: -1  15, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 16:14:09] [Game 316/400] Score: 21  11, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:14:30] [Game 317/400] Score: -8  19, Rounds: 5, Moves: 46, Winner: P1, End: normal_end
+[2026-01-10 16:15:43] [Game 319/400] Score: 43  38, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:17:01] [Game 318/400] Score: 15  -7, Rounds: 6, Moves: 63, Winner: P0, End: normal_end
+[2026-01-10 16:17:11] [Game 320/400] Score: 34  2, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 16:17:30] [Game 321/400] Score: -11  20, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 16:17:49] [Game 322/400] Score: 0  36, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:18:41] [Game 324/400] Score: 47  38, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 16:18:51] [Game 325/400] Score: 6  -28, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 16:19:15] [Game 323/400] Score: -7  12, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 16:20:36] [Game 326/400] Score: 6  18, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:21:28] [Game 328/400] Score: 18  36, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:21:59] [Game 327/400] Score: 24  12, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:22:04] [Game 329/400] Score: 8  24, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 16:22:06] [Game 330/400] Score: 35  5, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:22:55] [Game 331/400] Score: 2  36, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:23:07] [Game 332/400] Score: 24  29, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 16:24:05] [Game 333/400] Score: 31  -13, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:25:59] [Game 334/400] Score: 23  31, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 16:26:14] [Game 338/400] Score: -2  1, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:26:23] [Game 336/400] Score: -3  -12, Rounds: 5, Moves: 50, Winner: P0, End: normal_end
+[2026-01-10 16:26:48] [Game 335/400] Score: -21  41, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 16:27:16] [Game 339/400] Score: 10  -16, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 16:27:42] [Game 337/400] Score: 13  15, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 16:27:54] [Game 340/400] Score: 3  27, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:28:50] [Game 341/400] Score: -15  17, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 16:30:37] [Game 343/400] Score: -9  10, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 16:30:40] [Game 344/400] Score: 19  12, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 16:31:03] [Game 342/400] Score: 37  -24, Rounds: 5, Moves: 56, Winner: P0, End: normal_end
+[2026-01-10 16:31:24] [Game 345/400] Score: 6  4, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:31:41] [Game 346/400] Score: 13  19, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 16:31:54] [Game 347/400] Score: 16  21, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:33:07] [Game 349/400] Score: 34  38, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:34:25] [Game 348/400] Score: 40  -13, Rounds: 7, Moves: 74, Winner: P0, End: normal_end
+[2026-01-10 16:35:15] [Game 351/400] Score: 33  31, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 16:35:33] [Game 352/400] Score: 7  7, Rounds: 5, Moves: 51, Winner: DRAW, End: normal_end
+[2026-01-10 16:35:53] [Game 350/400] Score: -14  46, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 16:35:54] [Game 353/400] Score: -5  21, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 16:36:06] [Game 354/400] Score: 26  2, Rounds: 5, Moves: 49, Winner: P0, End: normal_end
+[2026-01-10 16:36:26] [Game 355/400] Score: 5  34, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 16:37:53] [Game 356/400] Score: 18  -47, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:38:36] [Game 357/400] Score: 22  24, Rounds: 5, Moves: 49, Winner: P1, End: normal_end
+[2026-01-10 16:39:46] [Game 358/400] Score: 16  18, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:39:56] [Game 359/400] Score: -5  21, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:40:40] [Game 362/400] Score: -7  10, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:40:56] [Game 363/400] Score: 4  -2, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:41:01] [Game 361/400] Score: 28  30, Rounds: 6, Moves: 61, Winner: P1, End: normal_end
+[2026-01-10 16:41:02] [Game 360/400] Score: 7  28, Rounds: 6, Moves: 63, Winner: P1, End: normal_end
+[2026-01-10 16:43:09] [Game 364/400] Score: 2  5, Rounds: 6, Moves: 65, Winner: P1, End: normal_end
+[2026-01-10 16:43:55] [Game 365/400] Score: -53  15, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 16:44:13] [Game 366/400] Score: 27  30, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:44:23] [Game 367/400] Score: 12  18, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:45:28] [Game 371/400] Score: 29  21, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:45:42] [Game 368/400] Score: 4  -17, Rounds: 5, Moves: 57, Winner: P0, End: normal_end
+[2026-01-10 16:45:59] [Game 369/400] Score: -5  -37, Rounds: 5, Moves: 58, Winner: P0, End: normal_end
+[2026-01-10 16:47:17] [Game 370/400] Score: -8  45, Rounds: 7, Moves: 69, Winner: P1, End: normal_end
+[2026-01-10 16:47:35] [Game 372/400] Score: 8  -8, Rounds: 5, Moves: 51, Winner: P0, End: normal_end
+[2026-01-10 16:48:48] [Game 374/400] Score: 7  -14, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:48:52] [Game 375/400] Score: 9  25, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:49:02] [Game 373/400] Score: 39  20, Rounds: 6, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:50:03] [Game 377/400] Score: 2  40, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:50:36] [Game 376/400] Score: -16  5, Rounds: 6, Moves: 58, Winner: P1, End: normal_end
+[2026-01-10 16:50:58] [Game 378/400] Score: 10  -14, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:51:47] [Game 380/400] Score: 22  23, Rounds: 5, Moves: 48, Winner: P1, End: normal_end
+[2026-01-10 16:53:04] [Game 379/400] Score: 27  -15, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 16:53:25] [Game 383/400] Score: 2  11, Rounds: 5, Moves: 52, Winner: P1, End: normal_end
+[2026-01-10 16:53:31] [Game 381/400] Score: 7  41, Rounds: 5, Moves: 53, Winner: P1, End: normal_end
+[2026-01-10 16:53:32] [Game 382/400] Score: -4  4, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 16:54:50] [Game 384/400] Score: 30  32, Rounds: 5, Moves: 54, Winner: P1, End: normal_end
+[2026-01-10 16:54:58] [Game 385/400] Score: -8  29, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:55:57] [Game 386/400] Score: -13  20, Rounds: 5, Moves: 57, Winner: P1, End: normal_end
+[2026-01-10 16:56:47] [Game 387/400] Score: 12  8, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 16:57:54] [Game 389/400] Score: 26  -20, Rounds: 5, Moves: 47, Winner: P0, End: normal_end
+[2026-01-10 16:58:13] [Game 390/400] Score: 9  12, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 16:58:34] [Game 391/400] Score: 19  3, Rounds: 5, Moves: 54, Winner: P0, End: normal_end
+[2026-01-10 16:59:13] [Game 388/400] Score: -25  27, Rounds: 6, Moves: 62, Winner: P1, End: normal_end
+[2026-01-10 17:00:47] [Game 392/400] Score: -4  1, Rounds: 5, Moves: 55, Winner: P1, End: normal_end
+[2026-01-10 17:00:57] [Game 393/400] Score: 3  14, Rounds: 5, Moves: 51, Winner: P1, End: normal_end
+[2026-01-10 17:02:07] [Game 395/400] Score: 24  19, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 17:02:42] [Game 394/400] Score: 0  -35, Rounds: 6, Moves: 62, Winner: P0, End: normal_end
+[2026-01-10 17:03:43] [Game 397/400] Score: 29  8, Rounds: 5, Moves: 55, Winner: P0, End: normal_end
+[2026-01-10 17:04:17] [Game 399/400] Score: 21  15, Rounds: 5, Moves: 52, Winner: P0, End: normal_end
+[2026-01-10 17:04:31] [Game 396/400] Score: 22  -33, Rounds: 6, Moves: 65, Winner: P0, End: normal_end
+[2026-01-10 17:04:34] [Game 398/400] Score: -24  22, Rounds: 6, Moves: 67, Winner: P1, End: normal_end
+[2026-01-10 17:05:09] [Game 400/400] Score: 12  1, Rounds: 5, Moves: 53, Winner: P0, End: normal_end
+[2026-01-10 17:05:10] [Loop] MCTS Stats: avg_visits=411.2, avg_entropy=1.96, reuse_rate=100.0%, avg_moves=54.4
+[2026-01-10 17:05:10] [Loop] Buffer size: 77908
+[2026-01-10 17:05:10] [Loop] Training for 10 epochs...
+[2026-01-10 17:26:11] [Loop] Training Finished. Avg Loss: 2.2857
+[2026-01-10 17:26:11] [Loop] Saved checkpoint to data/checkpoints_v6/model_cycle_6.pt
+[2026-01-10 17:26:17] Starting validation for Cycle 6...
+[2026-01-10 17:26:17] vs Heuristic: Playing 10 games...
+[2026-01-10 17:28:33] Game 1/10: WIN (17   -21)
+[2026-01-10 17:32:02] Game 2/10: WIN (44   35)
+[2026-01-10 17:34:33] Game 3/10: WIN (28   9)
+[2026-01-10 17:37:32] Game 4/10: LOSS (32   48)
+[2026-01-10 17:40:01] Game 5/10: WIN (62   28)
+[2026-01-10 17:42:16] Game 6/10: DRAW (-8   -8)
+[2026-01-10 17:44:42] Game 7/10: WIN (31   15)
+[2026-01-10 17:47:02] Game 8/10: WIN (39   4)
+[2026-01-10 17:49:30] Game 9/10: WIN (39   16)
+[2026-01-10 17:51:37] Game 10/10: WIN (43   24)
+[2026-01-10 17:51:37] vs Heuristic: Wins=8, Losses=1, Draws=1 (WR: 0.80)
+[2026-01-10 17:51:37] vs PreviousCycle: Playing 10 games...
+[2026-01-10 17:57:23] Game 1/10: LOSS (36   53)
+[2026-01-10 18:01:50] Game 2/10: DRAW (45   45)
+[2026-01-10 18:06:05] Game 3/10: LOSS (57   59)
+[2026-01-10 18:10:55] Game 4/10: LOSS (37   41)
+[2026-01-10 18:15:09] Game 5/10: LOSS (24   44)
+[2026-01-10 18:19:52] Game 6/10: LOSS (35   39)
+[2026-01-10 18:24:23] Game 7/10: LOSS (8   9)
+[2026-01-10 18:29:19] Game 8/10: LOSS (35   40)
+[2026-01-10 18:33:54] Game 9/10: LOSS (22   28)
+[2026-01-10 18:38:32] Game 10/10: LOSS (-4   35)
+[2026-01-10 18:38:32] vs PreviousCycle: Wins=0, Losses=9, Draws=1 (WR: 0.00)

@@ -1,8 +1,8 @@
 import re
 import statistics
+import argparse
+import os
 from collections import defaultdict
-
-LOG_FILE = "logs_v5/training_monitor.log"
 
 def calc_stats(scores):
     if not scores:
@@ -11,7 +11,12 @@ def calc_stats(scores):
     stdev_val = statistics.stdev(scores) if len(scores) > 1 else 0
     return mean_val, stdev_val
 
-def parse_logs():
+def parse_logs(log_dir):
+    log_file = os.path.join(log_dir, "training_monitor.log")
+    if not os.path.exists(log_file):
+        print(f"Error: Log file not found at {log_file}")
+        return
+
     stats = defaultdict(lambda: {
         "train_games": 0,
         "train_max_rounds": 0,
@@ -30,16 +35,16 @@ def parse_logs():
         "val_prev_wins": 0,
         "val_prev_losses": 0,
 
-        "train_loss_policy": None,
-        "train_loss_value": None,
+        "train_loss_str": "N/A",
         
         "train_rounds": []
     })
     
     current_cycle = 0
     current_opponent = None  # "Rival" or "Prev"
+    current_opponent_name = "N/A"
 
-    with open(LOG_FILE, "r") as f:
+    with open(log_file, "r") as f:
         for line in f:
             # Detect Cycle Header
             cycle_match = re.search(r"=== Cycle (\d+)/", line)
@@ -72,11 +77,16 @@ def parse_logs():
                 continue
 
             # Parse Training Loss
-            # [Loop] Training Finished. Avg Loss: 3.8096 (Policy: 3.6685, Value: 0.1411)
-            loss_match = re.search(r"Training Finished.*Policy: ([\d\.]+), Value: ([\d\.]+)", line)
+            # Supports V5: Avg Loss: 3.8096 (Policy: 3.6685, Value: 0.1411)
+            # Supports V6: Avg Loss: 3.8096
+            loss_match = re.search(r"Training Finished\. Avg Loss: ([\d\.]+)(.*)", line)
             if loss_match:
-                stats[current_cycle]["train_loss_policy"] = float(loss_match.group(1))
-                stats[current_cycle]["train_loss_value"] = float(loss_match.group(2))
+                base_loss = loss_match.group(1)
+                extra_info = loss_match.group(2).strip() # (Policy: ..., Value: ...)
+                if extra_info:
+                    stats[current_cycle]["train_loss_str"] = f"{base_loss} {extra_info}"
+                else:
+                    stats[current_cycle]["train_loss_str"] = base_loss
                 continue
 
             # Detect Validation Opponent
@@ -89,6 +99,8 @@ def parse_logs():
                 else:
                     # Random, RandomPlus, Heuristic -> Rival
                     current_opponent = "Rival"
+                    # Clean name ("vs RandomPlus: " -> "RandomPlus")
+                    stats[current_cycle]["rival_name"] = opp_name.replace(":", "").strip()
                 continue
 
             # Parse Validation Game
@@ -116,13 +128,16 @@ def parse_logs():
 
     output_lines = []
     # Header
-    # Cycle | MaxRounds | AvgRounds (Tr) | AvgScore (Tr) | AvgScore (Riv) | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
-    header = f"{'Cycle':<6} | {'MaxRounds':<10} | {'AvgRounds (Tr)':<15} | {'AvgScore (Tr)':<15} | {'AvgScore (Riv)':<15} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
+    # Cycle | RivalName | MaxRounds | AvgRounds (Tr) | AvgScore (Tr) | AvgScore (Riv) | Diff (Tr)(Std) | Diff (Riv)(Std) | Diff (Prev)(Std) | WR (Riv) | WR (Prev)
+    header = f"{'Cycle':<6} | {'RivalName':<12} | {'MaxRounds':<10} | {'AvgRounds (Tr)':<15} | {'AvgScore (Tr)':<15} | {'AvgScore (Riv)':<15} | {'Diff (Tr) (Std)':<18} | {'Diff (Riv) (Std)':<18} | {'Diff (Prev) (Std)':<18} | {'WR (Riv)':<8} | {'WR (Prev)':<8}"
     output_lines.append(header)
-    output_lines.append("-" * 166)
+    output_lines.append("-" * 180)
     
     for cycle in sorted(stats.keys()):
         d = stats[cycle]
+        
+        # Rival Name
+        riv_name = d.get("rival_name", "Unknown")[:12] # Limit len
         
         # Training Stats (Self-Play)
         n_train = d["train_games"]
@@ -164,17 +179,22 @@ def parse_logs():
         n_prev = d["val_prev_games"]
         prev_wr = (d["val_prev_wins"] / n_prev * 100) if n_prev > 0 else 0
         
-        line_str = f"{cycle:<6} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {rounds_str:<15} | {sc_str:<15} | {riv_sc_str:<15} | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
+        
+        line_str = f"{cycle:<6} | {riv_name:<12} | {mr_count}/{n_train} ({mr_pct:.0f}%) | {rounds_str:<15} | {sc_str:<15} | {riv_sc_str:<15} | {tr_str:<18} | {riv_str:<18} | {prev_str:<18} | {riv_wr:<6.1f}%  | {prev_wr:<6.1f}%"
         output_lines.append(line_str)
 
     # Print to console
     print("\n".join(output_lines))
 
     # Write to file
-    output_file = "logs_v5/training_analyzed.log"
+    output_file = os.path.join(log_dir, "training_analyzed.log")
     with open(output_file, "w") as f:
         f.write("\n".join(output_lines) + "\n")
     print(f"\nAnalysis saved to {output_file}")
 
 if __name__ == "__main__":
-    parse_logs()
+    parser = argparse.ArgumentParser(description="Analyze Azul Zero Training Logs")
+    parser.add_argument("--dir", type=str, default="logs_v6", help="Log directory (default: logs_v6)")
+    args = parser.parse_args()
+    
+    parse_logs(args.dir)

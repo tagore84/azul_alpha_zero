@@ -123,18 +123,32 @@ def get_curriculum_params(cycle):
         params['noise_eps'] = 0.10
         params['noise_alpha'] = 0.15
         params['validation_opponent'] = 'Heuristic'
-    else:
-        # High Quality / Refinement (Cycle 26+)
+    elif cycle <= 30:
+        # High Quality / Refinement (Cycle 26-30)
         # Fase de refinamiento final centrada en partidas de alta calidad, baja aleatoriedad y 
         # aprendizaje estable para pulir decisiones y evaluación del estado.
         params['n_games'] = 500
         params['simulations'] = 400
         params['epochs'] = 10
         params['lr'] = 1e-4
-        params['temp_threshold'] = 5
-        params['cpuct'] = 1
+        params['temp_threshold'] = 10
+        params['cpuct'] = 1.5
         params['noise_eps'] = 0.10
         params['noise_alpha'] = 0.1
+        params['validation_opponent'] = 'MinMaxDepth1'
+    else:
+        # High Quality / Refinement (Cycle 31+)
+        # Fase de refinamiento final centrada en partidas de alta calidad, baja aleatoriedad y 
+        # aprendizaje estable para pulir decisiones y evaluación del estado.
+        params['n_games'] = 500
+        params['simulations'] = 400
+        params['epochs'] = 10
+        params['lr'] = 1e-4
+        params['temp_threshold'] = 10
+        params['cpuct'] = 1.5
+        params['noise_eps'] = 0.10
+        params['noise_alpha'] = 0.1
+        params['validation_opponent'] = 'MinMaxDepth2'
         
     return params
 
@@ -150,7 +164,8 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, p
     random_player = RandomPlayer()
     random_plus_player = RandomPlusPlayer()
     heuristic_player = HeuristicPlayer()
-    min_max_mcts_player = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=2)
+    min_max_1 = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=1)
+    min_max_2 = HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=2)
     
     # Helper to play N games and return win rate for p1 (current_model)
     def play_validation_match(opponent_name, opponent_player, n_games=10):
@@ -244,7 +259,9 @@ def validate_cycle(current_model, previous_model_path, device, log_dir, cycle, p
     elif val_opponent_name == 'Heuristic':
         opponent_player = heuristic_player
     elif val_opponent_name == 'MinMaxDepth2':
-        opponent_player = min_max_mcts_player
+        opponent_player = min_max_2
+    elif val_opponent_name == 'MinMaxDepth1':
+        opponent_player = min_max_1
     else:
         # Fallback
         if logger: logger.log(f"[Validation] Unknown opponent type '{val_opponent_name}'. Defaulting to RandomPlus.")
@@ -282,7 +299,7 @@ def main():
     parser = argparse.ArgumentParser(description="Azul Zero Training Loop (V5 - Scaling)")
     parser.add_argument('--total_cycles', type=int, default=50, help='Number of generation-training cycles')
     parser.add_argument('--checkpoint_dir', type=str, default='data/checkpoints_v5', help='Directory to save models')
-    parser.add_argument('--max_dataset_size', type=int, default=100000, help='Max examples in replay buffer')
+    parser.add_argument('--max_dataset_size', type=int, default=300000, help='Max examples in replay buffer')
     parser.add_argument('--resume', action='store_true', help='Resume from the latest checkpoint')
     args = parser.parse_args()
 
@@ -372,7 +389,8 @@ def main():
                         continue # Try next cycle
                     else:
                         # Found a good one
-                        optimizer.load_state_dict(checkpoint['optimizer_state'])
+                        # optimizer.load_state_dict(checkpoint['optimizer_state'])
+                        logger.log("[Loop] SKIPPING optimizer state load to avoid gradient explosion on LR reset.")
                         start_cycle = c + 1
                         logger.log(f"[Loop] Resumed from Cycle {c}. Next cycle: {start_cycle}")
                         loaded_cycle = c

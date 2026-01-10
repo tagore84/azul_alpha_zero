@@ -124,27 +124,27 @@ def run_tournament(players, num_games, base_rating=1500, num_passes=20):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--n_games", type=int, default=5, help="Partidas por enfrentamiento")
+    parser.add_argument("--n_games", type=int, default=10, help="Partidas por enfrentamiento")
     parser.add_argument("--n_passes", type=int, default=20, help="Número de pasadas para cálculo de Elo")
     args = parser.parse_args()
 
     players = {
-        "Cycle10": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_10.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle11": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_11.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle12": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_12.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle13": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_13.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle14": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_14.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle15": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_15.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle16": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_16.pt", device="cpu", mcts_iters=300, cpuct=1),
-        "Cycle17": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_17.pt", device="cpu", mcts_iters=300, cpuct=1),
+        "Cycle26": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_26.pt", device="cpu", mcts_iters=300, cpuct=1, single_player_mode=True, temperature=0.0),
+        "Cycle25": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_25.pt", device="cpu", mcts_iters=300, cpuct=1, single_player_mode=True, temperature=0.0),
+        "Heu": HeuristicPlayer(),
+        #"mM1": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=1),
+        "mM2": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=2),
+        
+        #"Bga": DeepMCTSPlayer("data/checkpoints_v5/best_bga.pt", device="cpu", mcts_iters=300, cpuct=1, single_player_mode=True),
+        #"Cycle1": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_1.pt", device="cpu", mcts_iters=300, cpuct=1),
+        #"Cycle5": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_5.pt", device="cpu", mcts_iters=300, cpuct=1),
+        #"Cycle11": DeepMCTSPlayer("data/checkpoints_v5/model_cycle_11.pt", device="cpu", mcts_iters=300, cpuct=1),
         #"AZ500": DeepMCTSPlayer("data/model_history/model_checkpoint_500.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1014": DeepMCTSPlayer("data/checkpoint_dir_2/model_epoch_019.pt", device="cpu", mcts_iters=100, cpuct=1),
         #"AZ1002": DeepMCTSPlayer("data/model_history/model_epoch_002.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"AZ1000": DeepMCTSPlayer("data/model_history/model_checkpoint_1000.pt", device="cpu", mcts_iters=1, cpuct=0),
         #"MCTS-200": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=200),
         #"MCTS-10k": HeuristicMinMaxMCTSPlayer(strategy='mcts', simulations=500),
-        "MinMax-3": HeuristicMinMaxMCTSPlayer(strategy='minmax', depth=3),
-        #"Heuv2": HeuristicPlayerV2(),
         #"Exp": ExpertPlayer(),
         # añade más aquí
     }
